@@ -9,9 +9,9 @@ BasicSubBlock.prototype = {
     init: function(contents) {
         this.id = contents.id;
 
-        this.contents = Object.assign(contents, {
-            type: this.type
-        });
+        this.contents = contents;
+
+        this.contents.type = this.type;
     },
 
     getElem: function() {

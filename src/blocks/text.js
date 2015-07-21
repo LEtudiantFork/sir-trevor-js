@@ -7,6 +7,7 @@
 var $               = require('jquery');
 var _               = require('../lodash.js');
 var Block           = require('../block');
+var ImageInserter   = require('../helpers/image-inserter.class.js');
 var stToHTML        = require('../to-html');
 var subBlockManager = require('../sub_blocks/index.js');
 var xhr             = require('etudiant-mod-xhr');
@@ -30,36 +31,47 @@ module.exports = Block.extend({
     controls: [
         {
             slug: 'show-picture',
-            'icon': 'image',
+            icon: 'image',
             sleep: true,
             eventTrigger: 'click',
             fn: function(e) {
+                debugger;
 
+                if (!this.imageInserter) {
+                    this.imageInserter = new ImageInserter({
+                        accessToken: this.globalConfig.accessToken,
+                        apiUrl: this.globalConfig.apiUrl,
+                        application: this.globalConfig.application,
+                        blockRef: this
+                    });
+
+                    this.imageInserter.on('imageSelected', function(selectedImage) {
+                        // do summat yeah?
+                    });
+                }
+
+                // this.imageInserter.open();
             }
         },
         {
             slug: 'add-paragraph',
-            'icon': 'Paragraph', // @todo find a proper icon for this
+            icon: 'Paragraph', // @todo find a proper icon for this
             sleep: true,
             eventTrigger: 'click',
             fn: function(e) {
-                contentEditableHelper.updateSelection(sel, range);
+                // contentEditableHelper.updateSelection(sel, range);
 
-                var firstParagraph = contentEditableHelper.getSelectedContent(block);
-                var secondParagraph = contentEditableHelper.getTextAfterParagraph(block, firstParagraph)
+                // var firstParagraph = contentEditableHelper.getSelectedContent(block);
+                // var secondParagraph = contentEditableHelper.getTextAfterParagraph(block, firstParagraph)
 
-                this.getTextBlock().html(firstParagraph); // will this be compatible with filteredimages ?
+                // this.getTextBlock().html(firstParagraph); // will this be compatible with filteredimages ?
 
-                this.mediator.trigger('block:create', 'text', {
-                    text: secondParagraph
-                });
+                // this.mediator.trigger('block:create', 'text', {
+                //     text: secondParagraph
+                // });
             }
         }
     ],
-
-    onBlockRender: function() {
-
-    },
 
     loadData: function(data) {
         this.getTextBlock().html(stToHTML(data.text));

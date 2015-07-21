@@ -122,8 +122,8 @@ var prototype = {
 
                 block.slider = new Slider(sliderConfig);
 
-                filterSearch(block, block.subBlockType);
                 filterUpdate(block, block.subBlockType);
+                filterSearch(block, block.subBlockType);
 
                 block.filterBar.search();
 

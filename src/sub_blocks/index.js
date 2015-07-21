@@ -1,6 +1,11 @@
 var $ = require('jquery');
 var _ = require('../lodash.js');
-var Media = require('../helpers/media.class.js');
+
+/*
+    Referred to as 'SubBlockManager' externally - this should be changed
+
+    This file provides helper functions for creating and manipulating multiple 'sub blocks'
+ */
 
 var subBlockTypes = {
     embed: {
@@ -13,7 +18,7 @@ var subBlockTypes = {
         video: require('./media/video.class.js'),
         image: require('./media/image.class.js')
     },
-    filteredImage: require('./filteredImageSubBlock.js')
+    dynamicImage: require('./dynamic-image.class.js')
 };
 
 function buildSingleBlock(type, subType, contents) {
@@ -35,7 +40,6 @@ function handleClick(event) {
     else {
         var id = $(event.currentTarget).data('sub-block-id').toString();
         event.data.callback(id, event.currentTarget);
-
     }
 }
 
@@ -51,38 +55,19 @@ var SubBlockManager = {
 
     getSubBlockById: function(id, subBlocks) {
         var retrievedSubBlock;
+
         subBlocks.some(function(subBlock) {
             if (subBlock.id.toString() === id.toString()) {
                 retrievedSubBlock = subBlock;
                 return true;
             }
         });
+
         if (retrievedSubBlock) {
             return retrievedSubBlock;
         }
+
         return false;
-    },
-
-    // @todo filteredImageSubBlock should handle this
-    jsonInit: function(jsonMedias, jsonFilters) {
-        var media = new Media();
-
-        var params = {
-            medias: jsonMedias,
-            filters: jsonFilters,
-            mediasType: 'filteredImage'
-        };
-
-        media.init(params);
-
-        var filters = media.parseImagesFilters();
-        var medias = media.parseImagesMedias();
-
-        var formatedArray = [];
-
-        formatedArray.push(medias);
-
-        return formatedArray;
     },
 
     render: function(subBlocks) {
