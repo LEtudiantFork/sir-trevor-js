@@ -201,22 +201,22 @@ module.exports = Block.extend({
                     access_token: this.globalConfig.accessToken
                 }
             })
-                .then(function(rawSubBlockData) {
-                    var subBlockData = Object.assign({}, rawSubBlockData.content, data);
+            .then(function(rawSubBlockData) {
+                var subBlockData = Object.assign({}, rawSubBlockData.content, data);
 
-                    var mediaSubBlock = subBlockManager.buildSingle(this.type, data.type, subBlockData);
+                var mediaSubBlock = subBlockManager.buildSingle(this.type, data.type, subBlockData);
 
-                    this.$editor.html(mediaSubBlock.renderLarge());
+                this.$editor.html(mediaSubBlock.renderLarge());
 
-                    mediaSubBlock.bindToRenderedHTML();
+                mediaSubBlock.bindToRenderedHTML();
 
-                    registerSaveMediaSubBlock(this, mediaSubBlock);
+                registerSaveMediaSubBlock(this, mediaSubBlock);
 
-                    this.ready();
-                }.bind(this))
-                .catch(function(err) {
-                    throw new Error('No block returned for id:' + this.subBlockData.id + ' on app:' + this.subBlockData.application + ' ' + err);
-                }.bind(this));
+                this.ready();
+            }.bind(this))
+            .catch(function(err) {
+                throw new Error('No block returned for id:' + this.subBlockData.id + ' on app:' + this.subBlockData.application + ' ' + err);
+            }.bind(this));
         }
     },
 
