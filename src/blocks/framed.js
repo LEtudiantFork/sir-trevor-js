@@ -20,7 +20,7 @@ var modalHelper = new ModalHelper();
 
 // @todo remove CSS from JS
 function getTemplate(params) {
-    var template = '<div class="frame"  style=" background-color:' + params.frameColor + '; border: 3px solid ' + params.frameBorder + '">';
+    var template = '<div class="frame" >';
     template += '</div>';
     return template;
 }
@@ -324,11 +324,7 @@ module.exports = Block.extend({
     ],
 
     onBlockRender: function() {
-        // @todo remove CSS from JS
-        var template = getTemplate({
-            frameColor: '#536A4C',
-            frameBorder: '#6C8365'
-        });
+
         modalHelper.modalStep1 = new Modal({
             slug: 'gallery-step-1',
             animation: 'fade',
@@ -339,8 +335,8 @@ module.exports = Block.extend({
             animation: 'fade',
             theme: 'media'
         });
-
-        this.$framed = $(template);
+        var frameContainer = '<div class="frame"></div>'
+        this.$framed = $(frameContainer);
         var textBlock = this.getTextBlock();
         textBlockListeners(textBlock);
 
@@ -369,14 +365,6 @@ module.exports = Block.extend({
     // @todo ideally, setData should not be overwritten
     setData: function(blockData) {
         var content = this.getTextBlock();
-
-        // @todo remove jQuery selector reference - very dangerous
-        console.warn('Please find a way to remove this jQuery selector');
-
-        $('.wrapper').contents().unwrap();
-        $('.wrapper').remove();
-        $('.st-block__control-ui-elements').remove();
-
         var framedContent;
         var frameText = content.html().replace(/(<\/?div>)/ig, '');
 
@@ -427,6 +415,7 @@ module.exports = Block.extend({
         if (ids === null){
             return this.getTextBlock().html(stToHTML(data.text));
         }
+        var eventListennerAttached = false;
 
         Object.keys(ids).forEach(function(value) {
             var val = ids[value].split('#')[1];
@@ -466,6 +455,7 @@ module.exports = Block.extend({
                 }
 
                 filteredBlock.bindHover(self, filteredBlock);
+
             }).catch(function(error){
                 console.error('Something went wrong');
             });

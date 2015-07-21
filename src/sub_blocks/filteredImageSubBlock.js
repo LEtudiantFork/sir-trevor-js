@@ -154,7 +154,8 @@ var prototype = {
     },
 
     // @todo subBlock should not work on block
-    bindHover: function(block, filteredImage){
+    bindHover: function(block, filteredImage) {
+        block.getTextBlock().off('click', 'figure');
         var buttons = _.template([
         '<div class="st-block__control-ui-elements top" style="min-width: <%= width %>; position:absolute; top:0; left:0; opacity:1; z-index:2">', // @todo remove CSS inline styles
             '<div class="st-block-control-ui-btn st-icon st-block-control-ui-btn--delete-picture st-icon st-block-control-ui-btn--delete-picture<%= id %>" data-id="<%= id %>"  data-icon="bin">',
@@ -166,15 +167,15 @@ var prototype = {
         '</div>'
         ].join('\n'));
 
-        // @todo is media a separate variable or a reference to this.media ?
-        var media = this.media; // check this line
 
-        // @todo do we use media.width anywhere else ?
-        media.width = this.media.size.split('x')[0];
+        // @todo do we use media.width anywhere else ? //Nope,  safely delete this
+        this.media.width = this.media.size.split('x')[0];
 
-        var btnTemplates = buttons(media);
+        var btnTemplates = buttons(this.media);
         var self = this;
+        self.block = block; //scoped the block
 
+        //refactored the figure + wrapper (Done)
         block.getTextBlock().on('click', 'figure', function(e){
             e.preventDefault();
             e.stopPropagation();
@@ -182,50 +183,30 @@ var prototype = {
             var imgClass = $(this).find('img').attr('class');
             var figureClasses = $(this).attr('class');
 
-            // @todo remove inline CSS
-            $(this).wrap('<div class="picture-wrapper wrapper ' + figureClasses +' '+ imgClass + '" style="width: ' + self.media.size.split('x')[0] + 'px; height:' + self.media.size.split('x')[1] + 'px"></div>');
+            self.$img = $(this); //scoped the img
 
-            block.$el.find('.wrapper').append(btnTemplates).css('position', 'relative');
-            block.$el.find('.st-block__control-ui-elements').append(btnTemplates).css('opacity', '1');
-            block.$el.find('.st-block__control-ui-elements, .st-block__control-ui-elements *').attr('contenteditable', false);
+            self.$wrapper = $('<div class="picture-wrapper wrapper ' + figureClasses + ' ' + imgClass + '" style="width: ' + self.media.size.split('x')[0] + 'px; height:' + self.media.size.split('x')[1] + 'px"></div>');
+            self.$wrapper.append(btnTemplates).css('position', 'relative').css('opacity', '1');
 
-            self.bindRemoveEvent(media.id);
-            self.bindTogglEvent(media.id, block);
-            self.bindUpdateEvent(media, block, filteredImage);
+            $(this).append(self.$wrapper);
+
+            self.$wrapper.on('click', '.st-block-control-ui-btn--delete-picture', function() {
+                self.$img.remove()
+                self.$wrapper.remove();
+            });
+
+            self.$wrapper.on('click', '.st-block-control-ui-btn--toggle-picture', function() {
+                self.$img.toggleClass('f-left').toggleClass('f-right');
+                self.$wrapper.remove();
+            });
+
+            self.$wrapper.on('click', '.st-block-control-ui-btn--update-picture', function() {
+                evt.publish('modal-gallery-step-2', self.block);
+                self.$wrapper.remove();
+            });
+
         });
     },
-
-    // @todo this functionality should be moved out of filteredImageSubBlock
-    bindRemoveEvent: function(elem) {
-        // @todo remove jQuery selector reference
-        $('.st-block-control-ui-btn--delete-picture' + elem).one('click', function() {
-            $(this).parent().parent().parent().find('figure').remove();
-            $('.st-block__control-ui-elements').remove();
-
-        });
-    },
-    // @todo this functionality should be moved out of filteredImageSubBlock
-    bindTogglEvent: function(elem, block) {
-        // @todo remove jQuery selector reference
-        $('.st-block-control-ui-btn--toggle-picture' + elem).one('click', function() {
-            $(this).parent().parent().parent().find('figure').toggleClass('f-left').toggleClass('f-right');
-            block.$el.find('.wrapper').contents().unwrap()
-            block.$el.find('.wrapper').remove();
-            $('.st-block__control-ui-elements').remove();
-        });
-    },
-    // @todo this functionality should be moved out of filteredImageSubBlock
-    bindUpdateEvent: function(elem, $block, filteredImage) {
-        // @todo remove jQuery selector reference
-        $('.st-block-control-ui-btn--update-picture').one('click', function(e) {
-            $block.$el.find('.wrapper').contents().unwrap()
-            $block.$el.find('.wrapper').remove();
-            $('.st-block__control-ui-elements').remove();
-            filteredImage.media.custom = filteredImage.resize(filteredImage.media.size);
-            $block.filteredImage =  filteredImage;
-             evt.publish('modal-gallery-step-2', $block);
-        });
-    }
 
 };
 

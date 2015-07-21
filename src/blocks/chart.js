@@ -25,14 +25,22 @@ var chooseableConfig = {
         }
     ]
 };
-
+/**
+ * triggered by the  "table:updated" event, instantiate chartbuilder, then save datas to ST block
+ * @param  {object} tableBuilder [description]
+ * @param  {object} block        [description]
+ */
 function tableUpdated(tableBuilder, block) {
+    //Container for the svg
     var $chart = block.$inner.find('.st__chart');
+    //Update datas in tablebuilder with the html table
     tableBuilder.data = tableBuilder.getDatas();
 
     tableBuilder.on('table:updated', function() {
+        //Set the display mode (letters or numeric)
         chartBuilderDisplay = this.display;
 
+        //instantiate the block chartbuilder
         chartBuilder = new ChartBuilder({
             data: this.data,
             type: this.chartType,
@@ -41,6 +49,7 @@ function tableUpdated(tableBuilder, block) {
             $elem: $chart
         });
 
+        //Prepare datas to be stored.
         var toSave = {
             dataList: this.data,
             type: this.chartType,
@@ -49,11 +58,15 @@ function tableUpdated(tableBuilder, block) {
             columnsHeaderValues: this.columnsHeaderValues,
             rowsHeaderValues: this.rowsHeaderValues
         };
+
         Object.assign(this.block.blockStorage.data, toSave);
+        // render the chart
         chartBuilder.render();
     });
 }
-
+/**
+ *  Run on block init, do the same job as tableUpdated but only at chart loading.
+ */
 function tableReady(tableBuilder, block) {
     var $chart = block.$inner.find('.st__chart');
     tableBuilder.data = tableBuilder.getDatas();
@@ -80,19 +93,24 @@ function tableReady(tableBuilder, block) {
     chartBuilder.render();
 }
 
-
+/**
+ *  Run on creation of a new block.
+ */
 function onChoose(choices) {
+    //Set the chart type
     var chartType = choices.chartType;
+    //table container
     var $table = this.$inner.find('.st__chart-table');
-
+    //Instantiate tablebuilder if its a new block
     var tableBuilder = new TableBuilder({
         chartType: chartType,
         block: this,
         data: [],
         $elem: $table
     });
-
+    // Source of the table ready event
     tableReady(tableBuilder, this);
+    // Source of the table updated event
     tableUpdated(tableBuilder, this);
 }
 
@@ -113,23 +131,27 @@ module.exports = Block.extend({
     loadData: function(data) {
         var $table = this.$inner.find('.st__chart-table');
 
+        //Instantiate tablebuilder for a loaded block
         var tableBuilder = new TableBuilder({
             chartType: data.type,
             block: this,
             data: data.dataList,
             $elem: $table,
+            //Array with all columns labels
             columnsHeaderValues: data.columnsHeaderValues,
+            //Array with all the rows labels
             rowsHeaderValues: data.rowsHeaderValues
         });
 
         tableBuilder.columnsCount = data.columns;
         tableBuilder.categoriesCount = data.categories;
         tableBuilder.display = data.display;
-
+        //Bind the tablenuilder to  the chart block
         this.tableBuilder = tableBuilder;
     },
 
     onBlockRender: function() {
+
         if (this.tableBuilder) {
             this.tableBuilder.render();
             tableReady(this.tableBuilder, this);
