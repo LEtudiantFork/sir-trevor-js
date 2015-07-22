@@ -1,17 +1,15 @@
 var _ = require('../lodash.js');
 
-var renderSelect = function(field) {
-    field.label = field.label || '';
-    field.placeholder = field.placeholder || '';
-    field.multiple = field.multiple ? 'multiple="multiple"' : '';
+var buildSelect = function(field) {
+    field.label = field.label ? ('<label for="' + field.name + '">' + field.label + '</label>') : '';
+    field.placeholder = field.placeholder ? ('<option value="" selected disabled>' + field.placeholder + '</option>') : '';
+    field.multiple = field.multiple ? ('multiple="multiple"') : '';
 
     var selectTemplate = [
         '<div class="st-block-field st-block-field-select">',
-            '<label for="<%= name %>">',
-                '<%= label %>',
-            '</label>',
+            '<%= label %>',
             '<select <%= multiple %> id="<%= name %>" name="<%= name %>">',
-                '<option value="" selected disabled><%= placeholder %></option>',
+                '<%= placeholder %>',
                 '<% _.forEach(options, function(option) { %>',
                     '<option value="<%= option.value %>"><%= option.label %></option>',
                 '<% }); %>',
@@ -22,7 +20,7 @@ var renderSelect = function(field) {
     return _.template(selectTemplate, field, { imports: { '_': _ } });
 };
 
-var renderStandardField = function(field) {
+var buildStandardField = function(field) {
     field.label = field.label || '';
     field.placeholder = field.placeholder || '';
     field.value = field.value || '';
@@ -45,19 +43,19 @@ var renderStandardField = function(field) {
     });
 };
 
-var renderField = function(field) {
+var buildField = function(field) {
     var fieldMarkup;
 
     switch (field.type) {
         case 'select':
-            fieldMarkup = renderSelect(field);
+            fieldMarkup = buildSelect(field);
             break;
         default:
-            fieldMarkup = renderStandardField(field);
+            fieldMarkup = buildStandardField(field);
             break;
     }
 
     return fieldMarkup;
 };
 
-module.exports = renderField;
+module.exports = buildField;

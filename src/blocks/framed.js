@@ -10,13 +10,12 @@ var Block           = require('../block');
 var eventBus        = require('../event-bus.js');
 var evt             = require('etudiant-mod-mediator');
 var Modal           = require('etudiant-mod-modal');
-var ModalHelper     = require('../helpers/modal.class.js');
 var Slider          = require('../helpers/slider.class.js');
 var stToHTML        = require('../to-html');
 var subBlockManager = require('../sub_blocks/index.js');
 var xhr             = require('etudiant-mod-xhr');
 
-var modalHelper = new ModalHelper();
+// var modalHelper = new ModalHelper();
 
 // @todo remove CSS from JS
 function getTemplate(params) {

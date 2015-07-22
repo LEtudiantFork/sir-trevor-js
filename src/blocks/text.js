@@ -35,8 +35,6 @@ module.exports = Block.extend({
             sleep: true,
             eventTrigger: 'click',
             fn: function(e) {
-                debugger;
-
                 if (!this.imageInserter) {
                     this.imageInserter = new ImageInserter({
                         accessToken: this.globalConfig.accessToken,
@@ -50,7 +48,7 @@ module.exports = Block.extend({
                     });
                 }
 
-                // this.imageInserter.open();
+                this.imageInserter.open();
             }
         },
         {

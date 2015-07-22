@@ -12,6 +12,19 @@ var Zoom                  = require('etudiant-mod-zoom'); // do I need this?
 
 var subBlockType = 'dynamicImage';
 
+// adds an option to 'reset' the select field in question
+function addNullOptionToArray(array, message) {
+    var arrayCopy = array.slice();
+
+    arrayCopy.unshift({
+        value: '',
+        label: message
+    });
+
+    return arrayCopy;
+}
+
+// prepares data for a template like '<option value="<%= value %>"><%= label %></option>'
 function prepareForSelect(array, valueKeyName, labelKeyName) {
     return array.map(function(arrayItem) {
         return {
@@ -21,46 +34,52 @@ function prepareForSelect(array, valueKeyName, labelKeyName) {
     });
 }
 
+// adds format strings like '500x500' to each image
+function prepareImageFormats(images, formats) {
+    return images.map(function(image) {
+        image.formats = formats.filter(function(singleFormat) {
+            return image.format_ids.indexOf(singleFormat.value) !== -1;
+        });
+        return image;
+    });
+}
+
 function filterUpdate(imageInserter, contentType) {
     imageInserter.slider.on('progress', function() {
         imageInserter.filterBar.moreResults();
     });
 
-    imageInserter.filterBar.on('update:result', function(updateResults) {
-        // var additionalSubBlocks = subBlockManager.build(block.type, contentType, updateResults);
-        // var subBlockMarkup = subBlockManager.render(additionalSubBlocks);
+    imageInserter.filterBar.on('update:result', function(images) {
+        // we process the results to find the corresponding format size eg. '100x100' per format_id eg. '73'
+        images = prepareImageFormats(images, imageInserter.filterData.formats);
 
-        // block.subBlocks = block.subBlocks.concat(additionalSubBlocks);
+        // we build multiple instances of the 'DyanmicImage' subBlock and concatenate them onto existing subBlocks
+        var additionalSubBlocks = subBlockManager.build(subBlockType, null, images);
+        imageInserter.subBlocks = imageInserter.subBlocks.concat(additionalSubBlocks);
 
-        // block.slider.update(subBlockMarkup);
+        // we generate the markup for these subBlocks
+        var subBlockMarkup = subBlockManager.render(additionalSubBlocks);
+
+        imageInserter.slider.update(subBlockMarkup);
     });
 }
 
 function filterSearch(imageInserter, contentType) {
     imageInserter.filterBar.on('search:start', function() {});
 
-    imageInserter.filterBar.on('search:result', function(searchResults) {
+    imageInserter.filterBar.on('search:result', function(images) {
         debugger;
         // we process the results to find the corresponding format size eg. '100x100' per format_id eg. '73'
-        searchResults = searchResults.map(function(searchResultItem) {
-            searchResultItem.formats = imageInserter.filterData.formats.filter(function(formatItem) {
-                return searchResultItem.format_ids.indexOf(formatItem.value) !== -1;
-            });
-
-            return searchResultItem;
-        });
+        images = prepareImageFormats(images, imageInserter.filterData.formats);
 
         // we build multiple instances of the 'DyanmicImage' subBlock
-        imageInserter.subBlocks = subBlockManager.build(subBlockType, null, searchResults);
+        imageInserter.subBlocks = subBlockManager.build(subBlockType, null, images);
 
         // we generate the markup for these subBlocks
         var subBlockMarkup = subBlockManager.render(imageInserter.subBlocks);
 
         // we update the slider with this markup
         imageInserter.slider.reset(subBlockMarkup);
-
-
-        // registerClickOnContents(block);
     });
 
     imageInserter.filterBar.on('search:no-result', function() {
@@ -81,7 +100,8 @@ var prototype = {
         this.modal = new Modal({
             slug: 'image-inserter',
             animation: 'fade',
-            theme: 'plain'
+            theme: 'plain',
+            cssClasses: 'pandora'
         });
 
         // create a wrapper element for our filterbar and slider
@@ -120,13 +140,13 @@ var prototype = {
                         name: 'category',
                         label: 'Catégories',
                         placeholder: 'Sélectionnez une catégorie',
-                        options: self.filterData.categories
+                        options: addNullOptionToArray(self.filterData.categories, 'Aucune catégorie')
                     }, {
                         type: 'select',
                         name: 'format',
                         label: 'Formats',
                         placeholder: 'Sélectionnez un format',
-                        options: self.filterData.formats
+                        options: addNullOptionToArray(self.filterData.formats, 'Aucun format')
                     }
                 ],
                 limit: 20,
@@ -148,7 +168,7 @@ var prototype = {
             self.filterBar = new FilterBar(filterConfig);
 
             // initialise the slider
-            self.slider = new Slider(sliderConfig);
+            self.slider = window.slider = new Slider(sliderConfig);
 
             // determine what happens when filter searches and updates
             filterUpdate(self);
@@ -158,6 +178,8 @@ var prototype = {
             self.modal.append(self.$elem);
 
             self.filterBar.search();
+
+            // registerClickOnContents(block); @todo implement this on the container (self.$elem)
         })
         .catch(function(error) {
             console.error(error);
