@@ -18,12 +18,20 @@ BasicSubBlock.prototype = {
         this.$elem = $([ 'data-sub-block-id="' + this.id + '"' ]);
     },
 
-    renderSmall: function() {
-        return _.template(this.smallTemplate, this.contents, { imports: { '_': _ } });
+    renderSmall: function(contents) {
+        if (!contents) {
+            contents = this.contents;
+        }
+
+        return _.template(this.smallTemplate, contents, { imports: { '_': _ } });
     },
 
-    renderLarge: function() {
-        return _.template(this.largeTemplate, this.contents, { imports: { '_': _ } });
+    renderLarge: function(contents) {
+        if (!contents) {
+            contents = this.contents;
+        }
+
+        return _.template(this.largeTemplate, contents, { imports: { '_': _ } });
     }
 };
 
