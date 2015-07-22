@@ -1,4 +1,3 @@
-var animate     = require('velocity-commonjs/velocity.ui');
 var eventablejs = require('eventablejs');
 var xhr         = require('etudiant-mod-xhr');
 
@@ -10,21 +9,13 @@ var utils = require('../utils.js');
 var subBlockManager = require('../sub_blocks/index.js');
 
 function registerClickOnContents(block) {
-    if (block.hasRegisteredClick !== true) {
-        block.hasRegisteredClick = true;
+    subBlockManager.bindEventsOnContainer(block.$inner, function(selectedSubBlockId, clickedElem) {
+        var selectedSubBlock = subBlockManager.getSubBlockById(selectedSubBlockId, block.subBlocks);
 
-        subBlockManager.bindEventsOnContainer(block.$inner, function(selectedSubBlockId, clickedElem) {
+        block.subBlockSearch.trigger('selected', selectedSubBlock);
 
-            animate(clickedElem, 'callout.bounce', { duration: 400 })
-                .then(function() {
-                    var selectedSubBlock = subBlockManager.getSubBlockById(selectedSubBlockId, block.subBlocks);
-
-                    block.subBlockSearch.trigger('selected', selectedSubBlock);
-
-                    subBlockManager.unBindEventsOnContainer(block.$inner);
-                });
-        });
-    }
+        subBlockManager.unBindEventsOnContainer(block.$inner);
+    });
 }
 
 function filterUpdate(block, contentType) {
@@ -53,8 +44,6 @@ function filterSearch(block, contentType) {
         var subBlockMarkup = subBlockManager.render(block.subBlocks);
 
         block.slider.reset(subBlockMarkup);
-
-        registerClickOnContents(block);
     });
 
     block.filterBar.on('search:no-result', function() {
@@ -131,6 +120,8 @@ var prototype = {
                     block.ready();
                     this.trigger('ready');
                     utils.log('subBlockSearch triggered ready');
+
+                    registerClickOnContents(block);
                 }.bind(this));
 
             }.bind(this))
