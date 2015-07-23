@@ -9,12 +9,10 @@ var utils = require('../utils.js');
 var subBlockManager = require('../sub_blocks/index.js');
 
 function registerClickOnContents(block) {
-    subBlockManager.bindEventsOnContainer(block.$inner, function(selectedSubBlockId, clickedElem) {
+    subBlockManager.bindEventsOnContainer('click', block.$inner, function(selectedSubBlockId) {
         var selectedSubBlock = subBlockManager.getSubBlockById(selectedSubBlockId, block.subBlocks);
 
         block.subBlockSearch.trigger('selected', selectedSubBlock);
-
-        subBlockManager.unBindEventsOnContainer(block.$inner);
     });
 }
 

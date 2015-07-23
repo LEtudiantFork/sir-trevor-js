@@ -12,6 +12,17 @@ var Zoom                  = require('etudiant-mod-zoom'); // do I need this?
 
 var subBlockType = 'dynamicImage';
 
+//
+function registerWatch(imageInserter) {
+    subBlockManager.bindEventsOnContainer('change', imageInserter.slider.$elem, function(selectedSubBlockId, selectedElement) {
+        debugger;
+
+        // var selectedSubBlock = subBlockManager.getSubBlockById(selectedSubBlockId, block.subBlocks);
+
+        // block.subBlockSearch.trigger('selected', selectedSubBlock);
+    });
+}
+
 // adds an option to 'reset' the select field in question
 function addNullOptionToArray(array, message) {
     var arrayCopy = array.slice();
@@ -68,7 +79,6 @@ function filterSearch(imageInserter, contentType) {
     imageInserter.filterBar.on('search:start', function() {});
 
     imageInserter.filterBar.on('search:result', function(images) {
-        debugger;
         // we process the results to find the corresponding format size eg. '100x100' per format_id eg. '73'
         images = prepareImageFormats(images, imageInserter.filterData.formats);
 
@@ -179,7 +189,7 @@ var prototype = {
 
             self.filterBar.search();
 
-            // registerClickOnContents(block); @todo implement this on the container (self.$elem)
+            registerWatch(self);
         })
         .catch(function(error) {
             console.error(error);

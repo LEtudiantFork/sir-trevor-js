@@ -51,13 +51,13 @@ var checkProgress = function() {
     }
 };
 
-var prepareSlides = function(slides, itemsPerSlide, indexModifier) {
+var prepareSlides = function(slideContents, itemsPerSlide, indexModifier) {
     var prepared = [];
 
-    _.chunk(slides, itemsPerSlide).forEach(function(slideContent, index) {
+    _.chunk(slideContents, itemsPerSlide).forEach(function(slideContentItem, index) {
         prepared.push(new Slide(
             indexModifier ? indexModifier + index : index,
-            slideContent,
+            slideContentItem,
             itemsPerSlide
         ));
     });
@@ -111,7 +111,7 @@ var sliderTemplate = [
 
 var noSlidesTemplate = [
     '<span class="st-slider-no-slides">',
-        'Il n\'y a pas de resultats',
+        'Il n\'y a pas de resultats', // @todo: i18n
     '</span>'
 ].join('\n');
 

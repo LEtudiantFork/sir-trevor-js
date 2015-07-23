@@ -42,6 +42,7 @@ DynamicImage.prototype = {
         this.contents = contents;
         this.contents.type = 'dynamic-image';
 
+        // @todo: this should be removed once Lamine has created the appropriate property
         this.contents.thumbnail = this.getFormattedSrc('100x100');
 
         this.smallTemplate = smallTemplate;

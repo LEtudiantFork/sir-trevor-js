@@ -7,12 +7,12 @@ var slideTemplate = _.template([
 ].join('\n'));
 
 var Slide = function() {
-    this.constructor.apply(this, arguments);
+    this.init.apply(this, arguments);
 };
 
 Slide.prototype = {
 
-    constructor: function(id, contents, max) {
+    init: function(id, contents, max) {
         this.template = slideTemplate;
         this.id = id;
         this.contents = contents;

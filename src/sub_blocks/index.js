@@ -33,24 +33,29 @@ function buildSingleBlock(type, subType, contents) {
     }
 }
 
-function handleClick(event) {
+function eventHandler(event) {
     if ($(event.target).hasClass('st-sub-block-link')) {
         window.open($target.attr('href'), '_blank');
     }
     else {
         var id = $(event.currentTarget).data('sub-block-id').toString();
+
         event.data.callback(id, event.currentTarget);
+
+        event.data.container.off(event.data.eventType, eventHandler);
     }
 }
 
 var SubBlockManager = {
 
-    bindEventsOnContainer: function(container, callback) {
-        container.on('click', '[data-sub-block-id]', { callback: callback }, handleClick);
-    },
+    bindEventsOnContainer: function(eventType, container, callback) {
+        var data = {
+            callback: callback,
+            container: container,
+            eventType: eventType
+        };
 
-    unBindEventsOnContainer: function(container) {
-        container.off('click', handleClick);
+        container.on(eventType, '[data-sub-block-id]', data, eventHandler);
     },
 
     getSubBlockById: function(id, subBlocks) {
