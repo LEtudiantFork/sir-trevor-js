@@ -16,6 +16,8 @@ var smallTemplate = [
 var JcsSubBlock = function() {
     BasicSubBlock.apply(this, arguments);
 
+    this.$elem.addClass('st-sub-block-jcs');
+
     this.smallTemplate = smallTemplate;
 };
 

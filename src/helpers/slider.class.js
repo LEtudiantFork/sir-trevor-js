@@ -187,6 +187,8 @@ var prototype = {
             while (!lastSlide.isFull()) {
                 lastSlide.addItem(additionalSlides.pop());
             }
+
+            lastSlide.render();
         }
 
         var newSlides = prepareSlides(additionalSlides, this.config.itemsPerSlide, indexModifier);
@@ -194,10 +196,8 @@ var prototype = {
         this.slides = this.slides.concat(newSlides);
 
         this.slides.slice(indexModifier, this.slides.length).forEach(function(slide) {
-            slidesMarkup += slide.render();
-        });
-
-        this.$slideContainer.append(slidesMarkup);
+            this.$slideContainer.append(slide.render());
+        }.bind(this));
 
         calculateSliderDimensions.call(this, false);
         checkButtons.call(this);
@@ -208,31 +208,28 @@ var prototype = {
         this.slides = [];
         this.hasEmitted = false;
 
-        animate(this.$elem[0], { opacity: 0 }, { duration: 200 })
-            .then(function() {
-                if (newSlides) {
-                    var slidesMarkup = '';
+        if (newSlides) {
+            this.slides = window.slides = prepareSlides(newSlides, this.config.itemsPerSlide);
 
-                    this.slides =  prepareSlides(newSlides, this.config.itemsPerSlide);
-
-                    this.slides.forEach(function(slide) {
-                        slidesMarkup += slide.render();
-                    });
-
-                    this.$slideContainer.html(slidesMarkup);
-                }
-                else {
-                    this.$slideContainer.html(noSlidesTemplate);
-                }
-
-                calculateSliderDimensions.call(this, true);
-                checkButtons.call(this);
-
-                return Promise.resolve();
-            }.bind(this))
-            .then(function() {
-                return animate(this.$elem[0], { opacity: 1 }, { duration: 200 });
+            this.slides.forEach(function(slide) {
+                this.$slideContainer.append(slide.render());
             }.bind(this));
+        }
+        else {
+            this.$slideContainer.html(noSlidesTemplate);
+        }
+
+        calculateSliderDimensions.call(this, true);
+        checkButtons.call(this);
+
+        // animate(this.$elem[0], { opacity: 0 }, { duration: 200 })
+            // .then(function() {
+
+                // return Promise.resolve();
+            // }.bind(this))
+            // .then(function() {
+                // return animate(this.$elem[0], { opacity: 1 }, { duration: 200 });
+            // }.bind(this));
     },
 
     goTo: function(index) {

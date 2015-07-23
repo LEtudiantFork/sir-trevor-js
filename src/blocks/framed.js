@@ -12,7 +12,7 @@ var evt             = require('etudiant-mod-mediator');
 var Modal           = require('etudiant-mod-modal');
 var Slider          = require('../helpers/slider.class.js');
 var stToHTML        = require('../to-html');
-var subBlockManager = require('../sub_blocks/index.js');
+var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 var xhr             = require('etudiant-mod-xhr');
 
 // var modalHelper = new ModalHelper();

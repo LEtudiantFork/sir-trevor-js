@@ -14,8 +14,6 @@ var largeTemplate = [
 ].join('\n');
 
 var QuizJcsSubBlock = function() {
-    this.type = 'quiz';
-
     BasicJcsSubBlock.apply(this, arguments);
 
     this.largeTemplate = largeTemplate;

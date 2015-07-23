@@ -2,6 +2,13 @@ var $ = require('jquery');
 var _ = require('../lodash.js');
 var eventablejs = require('eventablejs');
 
+// N.B
+//
+// This isn't really a sub block in the strictest of terms
+// It does not inherit from basicSubBlock
+//
+// It's here because it's used at the same level as a subBlock in the embed Block
+
 var outerTemplate = '<div data-sub-block-id="<%= id %>" class="st-sub-block st-sub-block__script"></div>';
 
 var innerTemplate = [

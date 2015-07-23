@@ -12,10 +12,10 @@ var Block = require('../block');
 var utils = require('../utils');
 
 var SubBlockSearch = require('../helpers/sub-block-search.class.js');
-var subBlockManager = require('../sub_blocks/index.js');
+var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
 var chooseableConfig = {
-    name: 'contentType',
+    name: 'subBlockType',
     options: [
         {
             title: i18n.t('sub_blocks:image'),
@@ -90,7 +90,7 @@ function prepareCategories(categories) {
 function onChoose(choices) {
     var block = this;
 
-    block.subBlockType = choices.contentType;
+    block.subBlockType = choices.subBlockType;
 
     var categoryOptionsUrl = block.globalConfig.apiUrl + '/edt/' + block.type + '/filters/' + block.globalConfig.application;
 
@@ -204,7 +204,7 @@ module.exports = Block.extend({
             .then(function(rawSubBlockData) {
                 var subBlockData = Object.assign({}, rawSubBlockData.content, data);
 
-                var mediaSubBlock = subBlockManager.buildSingle(this.type, data.type, subBlockData);
+                var mediaSubBlock = subBlockManager.buildSingle(data.type, subBlockData);
 
                 this.$editor.html(mediaSubBlock.renderLarge());
 
@@ -267,7 +267,7 @@ module.exports = Block.extend({
                     .then(function(subBlockData) {
                         self.$inputs.hide();
 
-                        var mediaSubBlock = subBlockManager.buildSingle(self.type, self.subBlockType, subBlockData.content);
+                        var mediaSubBlock = subBlockManager.buildSingle(self.subBlockType, subBlockData.content);
 
                         mediaSubBlock.addData({
                             copyrights: self.copyrights,

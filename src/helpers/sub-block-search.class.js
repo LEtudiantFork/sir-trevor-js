@@ -6,7 +6,7 @@ var Slider    = require('./slider.class.js');
 
 var utils = require('../utils.js');
 
-var subBlockManager = require('../sub_blocks/index.js');
+var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
 function registerClickOnContents(block) {
     subBlockManager.bindEventsOnContainer('click', block.$inner, function(selectedSubBlockId) {
@@ -16,13 +16,13 @@ function registerClickOnContents(block) {
     });
 }
 
-function filterUpdate(block, contentType) {
+function filterUpdate(block, subBlockType) {
     block.slider.on('progress', function() {
         block.filterBar.moreResults();
     });
 
     block.filterBar.on('update:result', function(results) {
-        var additionalSubBlocks = subBlockManager.build(block.type, contentType, results);
+        var additionalSubBlocks = subBlockManager.build(subBlockType, results);
         var subBlockMarkup = subBlockManager.render(additionalSubBlocks);
 
         block.subBlocks = block.subBlocks.concat(additionalSubBlocks);
@@ -31,13 +31,13 @@ function filterUpdate(block, contentType) {
     });
 }
 
-function filterSearch(block, contentType) {
+function filterSearch(block, subBlockType) {
     block.filterBar.on('search:start', function() {
         // on search start
     });
 
     block.filterBar.on('search:result', function(results) {
-        block.subBlocks = subBlockManager.build(block.type, contentType, results);
+        block.subBlocks = subBlockManager.build(subBlockType, results);
 
         var subBlockMarkup = subBlockManager.render(block.subBlocks);
 

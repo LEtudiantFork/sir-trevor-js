@@ -4,25 +4,17 @@ var BasicSubBlock = require('./basic.class.js');
 var fieldBuilder  = require('../helpers/field-builder.js');
 
 var smallTemplate = [
-    '<div data-sub-block-id="<%= id %>" class="st-sub-block st-sub-block-small st-sub-block__<%= type %>">',
-        '<figure class="st-sub-block-image" data-etu-zoom="">',
-            '<img src="<%= thumbnail %>" />',
-        '</figure>',
-        '<%= select %>',
-        '<span>légende : <%= legend %></span>',
-        '<span>&copy; <%= copyright %></span>',
-    '</div>'
+    '<figure class="st-sub-block-image" data-etu-zoom="">',
+        '<img src="<%= thumbnail %>" />',
+    '</figure>',
+    '<%= select %>',
+    '<span>légende : <%= legend %></span>',
+    '<span>&copy; <%= copyright %></span>'
 ].join('\n');
 
-var largeTemplate = [
-    '<div data-sub-block-id="<%= id %>" class="st-sub-block st-sub-block-large st-sub-block__<%= type %>">',
-    '</div>'
-].join('\n');
+var largeTemplate = ['large template here'].join('\n');
 
-var inBlockTemplate = [
-    '<div data-sub-block-id="<%= id %>" class="st-sub-block st-sub-block-large st-sub-block__<%= type %>">',
-    '</div>'
-].join('\n');
+var inBlockTemplate = [].join('\n');
 
 function hasFormatString(formatString, formats) {
     return formats.some(function(formatItem) {
@@ -31,63 +23,69 @@ function hasFormatString(formatString, formats) {
 }
 
 var DynamicImage = function() {
-    this.init.apply(this, arguments);
+    BasicSubBlock.prototype.init.apply(this, arguments);
+
+    this.init();
 };
 
-DynamicImage.prototype = {
+DynamicImage.prototype = Object.create(BasicSubBlock.prototype);
 
-    init: function(contents) {
-        this.id = contents.id;
+DynamicImage.prototype.constructor = BasicSubBlock;
 
-        this.contents = contents;
-        this.contents.type = 'dynamic-image';
+var prototype = {
 
-        // @todo: this should be removed once Lamine has created the appropriate property
-        this.contents.thumbnail = this.getFormattedSrc('100x100');
+    init: function() {
+        this.content.thumbnail = this.getFormattedSrc('100x100');
 
         this.smallTemplate = smallTemplate;
         this.largeTemplate = largeTemplate;
         this.inBlockTemplate = inBlockTemplate;
 
-        if (this.contents.formats.length === 1) {
-            this.activeFormat = this.contents.formats[0];
+        if (this.content.formats.length === 1) {
+            this.activeFormat = this.content.formats[0];
         }
+
+        this.$elem.on('click', function() {
+            alert('YYAAAY');
+        });
     },
 
     getFormattedSrc: function(formatString) {
-        if (hasFormatString(formatString, this.contents.formats)) {
-            return this.contents.file.replace('original', formatString);
+        if (hasFormatString(formatString, this.content.formats)) {
+            return this.content.file.replace('original', formatString);
         }
 
-        return this.contents.file;
+        return this.content.file;
     },
 
-    renderSmall: function() {
+    prepareSmallMarkup: function() {
         var select = '';
 
-        if (this.contents.formats.length > 1) {
+        if (this.content.formats.length > 1) {
             select = fieldBuilder({
                 type: 'select',
                 placeholder: 'Sélectionnez un format',
                 name: 'format-' + this.id,
-                options: this.contents.formats
+                options: this.content.formats
             });
         }
 
-        var toRender = Object.assign({}, this.contents, {
+        var toRender = Object.assign({}, this.content, {
             select: select
         });
 
-        return BasicSubBlock.prototype.renderSmall.call(this, toRender);
+        return _.template(smallTemplate, toRender, { imports: { '_' : _ } });
     },
 
-    renderLarge: function() {
-        return BasicSubBlock.prototype.renderLarge.call(this);
-    },
-
-    renderInBlock: function() {
-
+    prepareLargeMarkup: function() {
+        return _.template(largeTemplate, this.content, { imports: { '_' : _ } });
     }
+
+    // renderInBlock: function() {
+    //     return _.template(largeTemplate, this.content, { imports: { '_' : _ } });
+    // }
 };
+
+DynamicImage.prototype = Object.assign(DynamicImage.prototype, prototype);
 
 module.exports = DynamicImage;

@@ -1,10 +1,6 @@
-var _ = require('../lodash');
+var $ = require('jquery');
 
-var slideTemplate = _.template([
-    '<div class="st-slider-slide">',
-        '<%= slide_content %>',
-    '</div>'
-].join('\n'));
+var slideTemplate = '<div class="st-slider-slide"></div>';
 
 var Slide = function() {
     this.init.apply(this, arguments);
@@ -13,10 +9,11 @@ var Slide = function() {
 Slide.prototype = {
 
     init: function(id, contents, max) {
-        this.template = slideTemplate;
         this.id = id;
         this.contents = contents;
         this.max = max;
+
+        this.$elem = $(slideTemplate);
     },
 
     isFull: function() {
@@ -28,15 +25,13 @@ Slide.prototype = {
     },
 
     render: function() {
-        var markup = '';
+        this.$elem.empty();
 
-        this.contents.forEach(function(content) {
-            markup += content;
-        });
+        this.contents.forEach(function(contentItem) {
+            this.$elem.append(contentItem);
+        }.bind(this));
 
-        return this.template({
-            slide_content: markup
-        });
+        return this.$elem;
     }
 };
 

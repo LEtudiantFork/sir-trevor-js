@@ -11,10 +11,10 @@ var Block = require('../block');
 var utils = require('../utils');
 
 var SubBlockSearch  = require('../helpers/sub-block-search.class.js');
-var subBlockManager = require('../sub_blocks/index.js');
+var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
 var chooseableConfig = {
-    name: 'contentType',
+    name: 'subBlockType',
     options: [
         {
             title: i18n.t('sub_blocks:embed:poll:title'),
@@ -47,8 +47,8 @@ function bindEventsOnScriptSubBlock(block, scriptSubBlock) {
     });
 }
 
-function getPath(contentType) {
-    switch (contentType) {
+function getPath(subBlockType) {
+    switch (subBlockType) {
         case 'poll':
             return 'polls';
             break;
@@ -67,17 +67,17 @@ function getPath(contentType) {
 function onChoose(choices) {
     var block = this;
 
-    block.subBlockType = choices.contentType;
+    block.subBlockType = choices.subBlockType;
 
     if (block.subBlockType === 'script') {
-        var scriptSubBlock = subBlockManager.buildSingle(this.type, block.subBlockType);
+        var scriptSubBlock = subBlockManager.buildSingle(block.subBlockType);
 
         scriptSubBlock.appendTo(this.$editor);
 
         bindEventsOnScriptSubBlock(this, scriptSubBlock);
     }
     else {
-        var thematicOptionsUrl = block.globalConfig.apiUrl + '/jcs/thematics/list/' + getPath(choices.contentType);
+        var thematicOptionsUrl = block.globalConfig.apiUrl + '/jcs/thematics/list/' + getPath(choices.subBlockType);
 
         var thematicOptionsPromise = xhr.get(thematicOptionsUrl, {
             data: {
@@ -103,7 +103,7 @@ function onChoose(choices) {
         });
 
         var filterConfig = {
-            url: block.globalConfig.apiUrl + '/jcs/' + getPath(choices.contentType) + '/search',
+            url: block.globalConfig.apiUrl + '/jcs/' + getPath(choices.subBlockType) + '/search',
             accessToken: block.globalConfig.accessToken,
             fields: [
                 {
@@ -169,7 +169,7 @@ module.exports = Block.extend({
     loadData: function(data) {
         if (!_.isEmpty(data)) {
             if (data.type === 'script') {
-                var scriptSubBlock = subBlockManager.buildSingle(this.type, data.type, data.content);
+                var scriptSubBlock = subBlockManager.buildSingle(data.type, data.content);
 
                 scriptSubBlock.appendTo(this.$editor);
 
@@ -186,7 +186,7 @@ module.exports = Block.extend({
                     }
                 })
                 .then(function(subBlockData) {
-                    var subBlock = subBlockManager.buildSingle(this.type, data.type, subBlockData.content);
+                    var subBlock = subBlockManager.buildSingle(data.type, subBlockData.content);
 
                     this.$editor.html(subBlock.renderLarge());
 

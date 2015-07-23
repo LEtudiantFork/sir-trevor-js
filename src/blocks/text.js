@@ -9,8 +9,7 @@ var _               = require('../lodash.js');
 var Block           = require('../block');
 var ImageInserter   = require('../helpers/image-inserter.class.js');
 var stToHTML        = require('../to-html');
-var subBlockManager = require('../sub_blocks/index.js');
-var xhr             = require('etudiant-mod-xhr');
+var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
 module.exports = Block.extend({
 
@@ -40,7 +39,8 @@ module.exports = Block.extend({
                         accessToken: this.globalConfig.accessToken,
                         apiUrl: this.globalConfig.apiUrl,
                         application: this.globalConfig.application,
-                        blockRef: this
+                        blockRef: this,
+                        subBlockType: 'dynamicImage'
                     });
 
                     this.imageInserter.on('imageSelected', function(selectedImage) {

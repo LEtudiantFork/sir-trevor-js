@@ -14,8 +14,6 @@ var largeTemplate = [
 ].join('\n');
 
 var PersonalityJcsSubBlock = function() {
-    this.type = 'personality';
-
     BasicJcsSubBlock.apply(this, arguments);
 
     this.largeTemplate = largeTemplate;

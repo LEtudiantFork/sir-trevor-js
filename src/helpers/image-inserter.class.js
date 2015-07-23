@@ -5,22 +5,13 @@ var eventablejs           = require('eventablejs');
 var FilterBar             = require('./filterbar.class.js');
 var Modal                 = require('etudiant-mod-modal');
 var Slider                = require('./slider.class.js');
-var subBlockManager       = require('../sub_blocks/index.js');
+var subBlockManager       = require('../sub_blocks/sub-block-manager.js');
 var utils                 = require('../utils.js');
 var xhr                   = require('etudiant-mod-xhr');
 var Zoom                  = require('etudiant-mod-zoom'); // do I need this?
 
-var subBlockType = 'dynamicImage';
-
-//
 function registerWatch(imageInserter) {
-    subBlockManager.bindEventsOnContainer('change', imageInserter.slider.$elem, function(selectedSubBlockId, selectedElement) {
-        debugger;
-
-        // var selectedSubBlock = subBlockManager.getSubBlockById(selectedSubBlockId, block.subBlocks);
-
-        // block.subBlockSearch.trigger('selected', selectedSubBlock);
-    });
+    // link up with global event bus
 }
 
 // adds an option to 'reset' the select field in question
@@ -55,7 +46,7 @@ function prepareImageFormats(images, formats) {
     });
 }
 
-function filterUpdate(imageInserter, contentType) {
+function filterUpdate(imageInserter) {
     imageInserter.slider.on('progress', function() {
         imageInserter.filterBar.moreResults();
     });
@@ -64,8 +55,17 @@ function filterUpdate(imageInserter, contentType) {
         // we process the results to find the corresponding format size eg. '100x100' per format_id eg. '73'
         images = prepareImageFormats(images, imageInserter.filterData.formats);
 
-        // we build multiple instances of the 'DyanmicImage' subBlock and concatenate them onto existing subBlocks
-        var additionalSubBlocks = subBlockManager.build(subBlockType, null, images);
+        // we build multiple instances of the 'DyanmicImage' subBlock
+        var additionalSubBlocks = subBlockManager.build({
+            accessToken: imageInserter.accessToken,
+            apiUrl: imageInserter.apiUrl,
+            application: imageInserter.application,
+            contents: images,
+            parentId: imageInserter.id,
+            type: imageInserter.subBlockType
+        });
+
+        // we concatenate them onto existing subBlocks
         imageInserter.subBlocks = imageInserter.subBlocks.concat(additionalSubBlocks);
 
         // we generate the markup for these subBlocks
@@ -75,7 +75,7 @@ function filterUpdate(imageInserter, contentType) {
     });
 }
 
-function filterSearch(imageInserter, contentType) {
+function filterSearch(imageInserter) {
     imageInserter.filterBar.on('search:start', function() {});
 
     imageInserter.filterBar.on('search:result', function(images) {
@@ -83,13 +83,20 @@ function filterSearch(imageInserter, contentType) {
         images = prepareImageFormats(images, imageInserter.filterData.formats);
 
         // we build multiple instances of the 'DyanmicImage' subBlock
-        imageInserter.subBlocks = subBlockManager.build(subBlockType, null, images);
+        imageInserter.subBlocks = window.subBlocks = subBlockManager.build({
+            accessToken: imageInserter.accessToken,
+            apiUrl: imageInserter.apiUrl,
+            application: imageInserter.application,
+            contents: images,
+            parentId: imageInserter.id,
+            type: imageInserter.subBlockType
+        });
 
         // we generate the markup for these subBlocks
-        var subBlockMarkup = subBlockManager.render(imageInserter.subBlocks);
+        var $subBlockElems = subBlockManager.render(imageInserter.subBlocks);
 
         // we update the slider with this markup
-        imageInserter.slider.reset(subBlockMarkup);
+        imageInserter.slider.reset($subBlockElems);
     });
 
     imageInserter.filterBar.on('search:no-result', function() {
@@ -106,6 +113,13 @@ var prototype = {
     init: function(params) {
         var self = this;
 
+        this.id = Date.now();
+
+        this.apiUrl = params.apiUrl;
+        this.accessToken = params.accessToken;
+        this.application = params.application;
+        this.subBlockType = params.subBlockType;
+
         // initialise the modal
         this.modal = new Modal({
             slug: 'image-inserter',
@@ -119,9 +133,9 @@ var prototype = {
         this.$elem.addClass('image-inserter');
 
         // make a first request to get all filter information
-        xhr.get(params.apiUrl + '/edt/media/filters/' + params.application, {
+        xhr.get(this.apiUrl + '/edt/media/filters/' + this.application, {
             data: {
-                access_token: params.accessToken
+                access_token: this.accessToken
             }
         })
         .then(function(filterData) {
@@ -137,8 +151,8 @@ var prototype = {
 
             // @todo: need to put this in i18n
             var filterConfig = {
-                accessToken: params.accessToken,
-                application: params.application,
+                accessToken: self.accessToken,
+                application: self.application,
                 container: self.$elem,
                 fields: [
                     {
@@ -161,7 +175,7 @@ var prototype = {
                 ],
                 limit: 20,
                 type: 'image',
-                url: params.apiUrl + '/edt/media'
+                url: self.apiUrl + '/edt/media'
             };
 
             var sliderConfig = {
@@ -189,7 +203,7 @@ var prototype = {
 
             self.filterBar.search();
 
-            registerWatch(self);
+            // registerWatch(self);
         })
         .catch(function(error) {
             console.error(error);

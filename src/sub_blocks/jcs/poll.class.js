@@ -33,8 +33,6 @@ var largeTemplate = [
 ].join('\n');
 
 var PollJcsSubBlock = function() {
-    this.type = 'poll';
-
     BasicJcsSubBlock.apply(this, arguments);
 
     this.smallTemplate = smallTemplate;
