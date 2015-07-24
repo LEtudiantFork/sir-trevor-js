@@ -117,6 +117,10 @@ var ImageInserter = function(params) {
                 return prepareImageFormats(subBlockData, self.filterData.formats);
             }
         });
+
+        self.subBlockSearch.on('selected', function(selectedDynamicImage) {
+            self.editImage(selectedDynamicImage);
+        });
     })
     .catch(function(error) {
         console.error(error);
@@ -124,14 +128,12 @@ var ImageInserter = function(params) {
 };
 
 var prototype = {
-    editImage: function(subBlock) {
+    editImage: function(DynamicImage) {
         // create a container for the second 'view' of the image inserter - the image editor
         this.$imageEditor = $('<div class="image-inserter image-inserter-edit"></div>');
 
-        this.$imageEditor.append(subBlock.renderLarge());
+        this.$imageEditor.append(DynamicImage.renderLarge());
         this.$imageEditor.append('<button>go</button>');
-
-        // attach watcher on button
 
         this.modal.append(this.$imageEditor);
     },
