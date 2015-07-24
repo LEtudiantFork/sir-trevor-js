@@ -1,52 +1,69 @@
+var $           = require('jquery');
 var eventablejs = require('eventablejs');
-var xhr         = require('etudiant-mod-xhr');
 
-var FilterBar = require('./filterbar.class.js');
-var Slider    = require('./slider.class.js');
-
-var utils = require('../utils.js');
-
+var EventBus        = require('../event-bus.js');
+var FilterBar       = require('./filterbar.class.js');
+var Slider          = require('./slider.class.js');
 var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
-function registerClickOnContents(block) {
-    subBlockManager.bindEventsOnContainer('click', block.$inner, function(selectedSubBlockId) {
-        var selectedSubBlock = subBlockManager.getSubBlockById(selectedSubBlockId, block.subBlocks);
-
-        block.subBlockSearch.trigger('selected', selectedSubBlock);
+function registerSelectSubBlock(subBlockSearch) {
+    EventBus.on('sub-block-action:selected', function(subBlock) {
+        if (subBlock.parentId === subBlockSearch.id) {
+            subBlockSearch.trigger('selected', subBlock);
+        }
     });
 }
 
-function filterUpdate(block, subBlockType) {
-    block.slider.on('progress', function() {
-        block.filterBar.moreResults();
+function filterUpdate(subBlockSearch) {
+    subBlockSearch.slider.on('progress', function() {
+        subBlockSearch.filterBar.moreResults();
     });
 
-    block.filterBar.on('update:result', function(results) {
-        var additionalSubBlocks = subBlockManager.build(subBlockType, results);
-        var subBlockMarkup = subBlockManager.render(additionalSubBlocks);
+    subBlockSearch.filterBar.on('update:result', function(updateResults) {
 
-        block.subBlocks = block.subBlocks.concat(additionalSubBlocks);
+        if (subBlockSearch.hasOwnProperty('subBlockPreProcess')) {
+            updateResults = subBlockSearch.subBlockPreProcess(updateResults);
+        }
 
-        block.slider.update(subBlockMarkup);
+        var additionalSubBlocks = subBlockManager.build({
+            accessToken: subBlockSearch.accessToken,
+            apiUrl: subBlockSearch.apiUrl,
+            application: subBlockSearch.application,
+            contents: updateResults,
+            parentId: subBlockSearch.id,
+            type: subBlockSearch.subBlockType
+        });
+
+        subBlockSearch.subBlocks = subBlockSearch.subBlocks.concat(additionalSubBlocks);
+
+        subBlockSearch.slider.update(subBlockManager.render(additionalSubBlocks));
     });
 }
 
-function filterSearch(block, subBlockType) {
-    block.filterBar.on('search:start', function() {
-        // on search start
+function filterSearch(subBlockSearch) {
+    subBlockSearch.filterBar.on('search:start', function() {});
+
+    subBlockSearch.filterBar.on('search:result', function(searchResults) {
+
+        if (subBlockSearch.hasOwnProperty('subBlockPreProcess')) {
+            searchResults = subBlockSearch.subBlockPreProcess(searchResults);
+        }
+
+        subBlockSearch.subBlocks = subBlockManager.build({
+            accessToken: subBlockSearch.accessToken,
+            apiUrl: subBlockSearch.apiUrl,
+            application: subBlockSearch.application,
+            contents: searchResults,
+            parentId: subBlockSearch.id,
+            type: subBlockSearch.subBlockType
+        });
+
+        subBlockSearch.slider.reset(subBlockManager.render(subBlockSearch.subBlocks));
     });
 
-    block.filterBar.on('search:result', function(results) {
-        block.subBlocks = subBlockManager.build(subBlockType, results);
-
-        var subBlockMarkup = subBlockManager.render(block.subBlocks);
-
-        block.slider.reset(subBlockMarkup);
-    });
-
-    block.filterBar.on('search:no-result', function() {
-        block.subBlocks = [];
-        block.slider.reset();
+    subBlockSearch.filterBar.on('search:no-result', function() {
+        subBlockSearch.subBlocks = [];
+        subBlockSearch.slider.reset();
     });
 }
 
@@ -57,85 +74,87 @@ function filterOptionsIncomplete(filterConfig) {
 }
 
 function prepareFilterConfig(filterConfig) {
+
+    // if the filter's options fields are already present, resolve immediately
     if (!filterOptionsIncomplete(filterConfig)) {
         return Promise.resolve();
     }
-    else {
-        var promises = [];
 
-        filterConfig.fields.forEach(function(field) {
-            if (field.options && 'then' in field.options) {
-                promises.push(field.options);
-            }
-        });
+    var promises = [];
 
-        return Promise.all(promises)
-                .then(function(fetchedOptions) {
-                    fetchedOptions.forEach(function(fetchedOption) {
-                        filterConfig.fields.forEach(function(filterField) {
-                            if (filterField.name === fetchedOption.name) {
-                                filterField.options = fetchedOption.options;
-                            }
-                        });
+    filterConfig.fields.forEach(function(field) {
+        if (field.options && 'then' in field.options) {
+            promises.push(field.options);
+        }
+    });
+
+    return Promise.all(promises)
+            .then(function(fetchedOptions) {
+                fetchedOptions.forEach(function(fetchedOption) {
+                    filterConfig.fields.forEach(function(filterField) {
+                        if (filterField.name === fetchedOption.name) {
+                            filterField.options = fetchedOption.options;
+                        }
                     });
-
-                    return Promise.resolve();
-                })
-                .catch(function(err) {
-                    console.error(err);
                 });
-    }
-}
 
-var SubBlockSearch = function() {
-    this.init.apply(this, arguments);
-};
-
-var prototype = {
-    init: function(params) {
-        var block = this.block = params.block;
-
-        var apiUrl = params.apiUrl;
-        var filterConfig = params.filterConfig;
-        var sliderConfig = params.sliderConfig;
-
-        block.loading();
-
-        block.subBlocks = [];
-
-        prepareFilterConfig(filterConfig)
-            .then(function() {
-                block.filterBar = new FilterBar(filterConfig);
-
-                block.slider = new Slider(sliderConfig);
-
-                filterUpdate(block, block.subBlockType);
-                filterSearch(block, block.subBlockType);
-
-                block.filterBar.search();
-
-                block.filterBar.once('search:result', function() {
-                    block.ready();
-                    this.trigger('ready');
-                    utils.log('subBlockSearch triggered ready');
-
-                    registerClickOnContents(block);
-                }.bind(this));
-
-            }.bind(this))
+                return Promise.resolve();
+            })
             .catch(function(err) {
                 console.error(err);
             });
-    },
+}
 
+var SubBlockSearch = function(params) {
+    this.id = Date.now();
+
+    this.apiUrl = params.apiUrl;
+    this.application = params.application;
+    this.accessToken = params.accessToken;
+    this.$container = params.$container;
+    this.subBlockType = params.subBlockType;
+    this.subBlockPreProcess = params.subBlockPreProcess;
+
+    this.subBlocks = [];
+
+    // create container element
+    this.$elem = $('<div class="st-sub-block-search"></div>');
+
+    params.filterConfig.container = this.$elem;
+    params.sliderConfig.container = this.$elem;
+
+    this.trigger('loading');
+
+    prepareFilterConfig(params.filterConfig)
+        .then(function() {
+            this.filterBar = new FilterBar(params.filterConfig);
+
+            this.slider = new Slider(params.sliderConfig);
+
+            this.trigger('show');
+
+            this.$elem.appendTo(this.$container);
+
+            filterUpdate(this);
+            filterSearch(this);
+
+            this.filterBar.search();
+
+            this.filterBar.once('search:result', function() {
+                this.trigger('ready');
+            }.bind(this));
+
+            registerSelectSubBlock(this);
+
+        }.bind(this))
+        .catch(function(err) {
+            console.error(err);
+        });
+};
+
+var prototype = {
     destroy: function() {
-        this.block.filterBar.destroy();
-        this.block.slider.destroy()
-
-        subBlockManager.unBindEventsOnContainer(this.block.$inner);
-
-        this.block.filterBar = null;
-        this.block.slider = null;
+        this.$elem.remove();
     }
 };
 

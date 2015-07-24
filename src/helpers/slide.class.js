@@ -2,20 +2,15 @@ var $ = require('jquery');
 
 var slideTemplate = '<div class="st-slider-slide"></div>';
 
-var Slide = function() {
-    this.init.apply(this, arguments);
+var Slide = function(id, contents, max) {
+    this.id = id;
+    this.contents = contents;
+    this.max = max;
+
+    this.$elem = $(slideTemplate);
 };
 
 Slide.prototype = {
-
-    init: function(id, contents, max) {
-        this.id = id;
-        this.contents = contents;
-        this.max = max;
-
-        this.$elem = $(slideTemplate);
-    },
-
     isFull: function() {
         return this.max <= this.contents.length;
     },

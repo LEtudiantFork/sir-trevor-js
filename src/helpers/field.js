@@ -1,6 +1,6 @@
 var _ = require('../lodash.js');
 
-var buildSelect = function(field) {
+function buildSelect(field) {
     field.label = field.label ? ('<label for="' + field.name + '">' + field.label + '</label>') : '';
     field.placeholder = field.placeholder ? ('<option value="" selected disabled>' + field.placeholder + '</option>') : '';
     field.multiple = field.multiple ? ('multiple="multiple"') : '';
@@ -18,9 +18,9 @@ var buildSelect = function(field) {
     ].join('\n');
 
     return _.template(selectTemplate, field, { imports: { '_': _ } });
-};
+}
 
-var buildStandardField = function(field) {
+function buildStandardField(field) {
     field.label = field.label || '';
     field.placeholder = field.placeholder || '';
     field.value = field.value || '';
@@ -41,9 +41,9 @@ var buildStandardField = function(field) {
         placeholder: field.placeholder,
         value: field.value
     });
-};
+}
 
-var buildField = function(field) {
+function buildField(field) {
     var fieldMarkup;
 
     switch (field.type) {
@@ -56,6 +56,20 @@ var buildField = function(field) {
     }
 
     return fieldMarkup;
-};
+}
 
-module.exports = buildField;
+function addNullOptionToArray(array, message) {
+    var arrayCopy = array.slice();
+
+    arrayCopy.unshift({
+        value: '',
+        label: message
+    });
+
+    return arrayCopy;
+}
+
+module.exports = {
+    addNullOptionToArray: addNullOptionToArray,
+    build: buildField
+};

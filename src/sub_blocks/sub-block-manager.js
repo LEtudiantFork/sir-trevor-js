@@ -2,8 +2,6 @@ var $ = require('jquery');
 var _ = require('../lodash.js');
 
 /*
-    Referred to as 'SubBlockManager' externally - this should be changed
-
     This file provides helper functions for creating and manipulating multiple 'sub blocks'
  */
 
@@ -18,24 +16,6 @@ var subBlockTypes = {
 };
 
 var SubBlockManager = {
-
-    // given an array of sub blocks, retrieves the one that matches the passed id
-    getSubBlockById: function(id, subBlocks) {
-        var retrievedSubBlock;
-
-        subBlocks.some(function(subBlock) {
-            if (subBlock.id.toString() === id.toString()) {
-                retrievedSubBlock = subBlock;
-                return true;
-            }
-        });
-
-        if (retrievedSubBlock) {
-            return retrievedSubBlock;
-        }
-
-        return false;
-    },
 
     // renders multiple sub blocks
     render: function(subBlocks) {

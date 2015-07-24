@@ -1,7 +1,7 @@
 'use strict';
 
 /*
-  Jeux, Concours et Sondages Block
+  Embed (Jeux, Concours et Sondages & Script) Block
 */
 
 var xhr = require('etudiant-mod-xhr');
@@ -10,6 +10,7 @@ var _     = require('../lodash.js');
 var Block = require('../block');
 var utils = require('../utils');
 
+var fieldHelper = require('../helpers/field.js');
 var SubBlockSearch  = require('../helpers/sub-block-search.class.js');
 var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
@@ -85,12 +86,14 @@ function onChoose(choices) {
             }
         })
         .then(function(result) {
-            return result.content.map(function(filterOption) {
+            var filterOptions = result.content.map(function(filterOption) {
                 return {
                     value: filterOption.id,
                     label: filterOption.label
                 };
             });
+
+            return fieldHelper.addNullOptionToArray(filterOptions, 'Aucune Thematique');
         })
         .catch(function(err) {
             console.error(err);
@@ -118,7 +121,6 @@ function onChoose(choices) {
                 }
             ],
             limit: 20,
-            container: block.$inner,
             application: block.globalConfig.application
         };
 
@@ -128,15 +130,17 @@ function onChoose(choices) {
                 prev: 'Prev'
             },
             itemsPerSlide: 2,
-            increment: 2,
-            container: block.$inner
+            increment: 2
         };
 
         this.subBlockSearch = new SubBlockSearch({
+            application: block.globalConfig.application,
+            accessToken: block.globalConfig.accessToken,
             apiUrl: block.globalConfig.apiUrl,
-            block: block,
+            $container: block.$editor,
             filterConfig: filterConfig,
-            sliderConfig: sliderConfig
+            sliderConfig: sliderConfig,
+            subBlockType: block.subBlockType
         });
 
         this.subBlockSearch.on('selected', function(selectedSubBlock) {
@@ -146,10 +150,12 @@ function onChoose(choices) {
                 type: selectedSubBlock.type
             });
 
-            this.slider.destroy();
-            this.filterBar.destroy();
+            this.subBlockSearch.destroy();
 
-            this.$editor.html(selectedSubBlock.renderLarge());
+            this.$editor.append(selectedSubBlock.renderLarge());
+
+            this.$inputs.hide();
+            this.$editor.show();
         }.bind(this));
     }
 }
@@ -186,16 +192,23 @@ module.exports = Block.extend({
                     }
                 })
                 .then(function(subBlockData) {
-                    var subBlock = subBlockManager.buildSingle(data.type, subBlockData.content);
+                    var subBlock = subBlockManager.buildSingle({
+                        accessToken: this.globalConfig.accessToken,
+                        apiUrl: this.globalConfig.apiUrl,
+                        application: this.globalConfig.application,
+                        content: subBlockData.content,
+                        parentId: this.blockID,
+                        type: data.type
+                    });
 
-                    this.$editor.html(subBlock.renderLarge());
+                    this.$editor.append(subBlock.renderLarge());
 
                     this.ready();
                 }.bind(this))
                 .catch(function(err) {
                     throw new Error('No block returned for id:' + this.subBlockData.id + ' on app:' + this.subBlockData.application + ' ' + err);
                 }.bind(this));
-        }
+            }
         }
     },
 

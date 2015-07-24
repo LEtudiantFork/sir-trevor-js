@@ -1,5 +1,6 @@
 var $ = require('jquery');
-var _ = require('../lodash.js');
+
+var EventBus = require('../event-bus.js');
 
 var wrapperTemplate = '<div class="st-sub-block"></div>';
 
@@ -9,11 +10,12 @@ var BasicSubBlock = function() {
 
 BasicSubBlock.prototype = {
     init: function(params) {
+        this.id = params.content.id;
+
         this.accessToken = params.accessToken;
         this.apiUrl = params.apiUrl;
         this.application = params.application;
         this.content = params.content;
-        this.id = params.content.id;
         this.parentId = params.parentId;
         this.type = params.type;
 
@@ -21,13 +23,21 @@ BasicSubBlock.prototype = {
 
         this.$elem.attr('id', this.id);
         this.$elem.addClass('st-sub-block-' + this.type);
+
+        this.$elem.on('click', function() {
+            if (this.renderedAs === 'small') {
+                this.activeFormat = this.$elem.find('select').val() || this.content.formats[0].label;
+
+                EventBus.trigger('sub-block-action:selected', this);
+            }
+        }.bind(this));
     },
 
     prepareForRender: function() {
         this.$elem.empty();
 
-        this.$elem.removeClass(function (index, css) {
-            return (css.match (/(^|\s)st-sub-block-size-\S+/g) || []).join(' ');
+        this.$elem.removeClass(function(index, css) {
+            return (css.match(/(^|\s)st-sub-block-size-\S+/g) || []).join(' ');
         });
     },
 
@@ -40,6 +50,10 @@ BasicSubBlock.prototype = {
 
         this.renderedAs = 'small';
 
+        if ('postRenderSmall' in this) {
+            this.postRenderSmall();
+        }
+
         return this.$elem;
     },
 
@@ -51,6 +65,10 @@ BasicSubBlock.prototype = {
         this.$elem.addClass('st-sub-block-size-large');
 
         this.renderedAs = 'large';
+
+        if ('postRenderLarge' in this) {
+            this.postRenderLarge();
+        }
 
         return this.$elem;
     }

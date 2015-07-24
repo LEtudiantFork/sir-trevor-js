@@ -1,7 +1,7 @@
 var _             = require('../lodash.js');
-var $             = require('jquery');
+// var $             = require('jquery');
 var BasicSubBlock = require('./basic.class.js');
-var fieldBuilder  = require('../helpers/field-builder.js');
+var fieldHelper   = require('../helpers/field.js');
 
 var smallTemplate = [
     '<figure class="st-sub-block-image" data-etu-zoom="">',
@@ -12,9 +12,30 @@ var smallTemplate = [
     '<span>&copy; <%= copyright %></span>'
 ].join('\n');
 
-var largeTemplate = ['large template here'].join('\n');
+var largeTemplate = [
+    '<figure class="st-sub-block-image" data-etu-zoom="">',
+        '<img src="<%= thumbnail %>" />',
+    '</figure>',
+    '<span>Format : <%= activeFormat %></span>',
+    '<span>&copy; <%= copyright %></span>',
+    '<span>légende :</span>',
+    '<input type="text" name="legend" value="<%= legend %>" />',
+    '<span>url :</span>',
+    '<input type="url" name="link" value="" placeholder="entrez un lien" />',
+    '<span>Position :</span>',
+    '<select name="position">',
+        '<option value="left">A gauche du texte</option>',
+        '<option value="right">A droite du texte</option>',
+    '</select>'
+].join('\n');
 
-var inBlockTemplate = [].join('\n');
+var inBlockTemplate = [
+    '<figure class="st-sub-block-image" data-etu-zoom="">',
+        '<img src="<%= thumbnail %>" />',
+    '</figure>',
+    '<button>éditer</button>',
+    '<button>supprimer</button>'
+].join('\n');
 
 function hasFormatString(formatString, formats) {
     return formats.some(function(formatItem) {
@@ -35,6 +56,7 @@ DynamicImage.prototype.constructor = BasicSubBlock;
 var prototype = {
 
     init: function() {
+        // @todo remove once lamine has done this
         this.content.thumbnail = this.getFormattedSrc('100x100');
 
         this.smallTemplate = smallTemplate;
@@ -44,14 +66,10 @@ var prototype = {
         if (this.content.formats.length === 1) {
             this.activeFormat = this.content.formats[0];
         }
-
-        this.$elem.on('click', function() {
-            alert('YYAAAY');
-        });
     },
 
     getFormattedSrc: function(formatString) {
-        if (hasFormatString(formatString, this.content.formats)) {
+        if (hasFormatString(formatString, this.content.formats)) {
             return this.content.file.replace('original', formatString);
         }
 
@@ -62,7 +80,7 @@ var prototype = {
         var select = '';
 
         if (this.content.formats.length > 1) {
-            select = fieldBuilder({
+            select = fieldHelper.build({
                 type: 'select',
                 placeholder: 'Sélectionnez un format',
                 name: 'format-' + this.id,
@@ -74,18 +92,22 @@ var prototype = {
             select: select
         });
 
-        return _.template(smallTemplate, toRender, { imports: { '_' : _ } });
+        return _.template(smallTemplate, toRender, { imports: { '_': _ } });
     },
 
     prepareLargeMarkup: function() {
-        return _.template(largeTemplate, this.content, { imports: { '_' : _ } });
+        var toRender = Object.assign({}, this.content, {
+            activeFormat: this.activeFormat
+        });
+
+        return _.template(largeTemplate, toRender, { imports: { '_': _ } });
     }
 
     // renderInBlock: function() {
-    //     return _.template(largeTemplate, this.content, { imports: { '_' : _ } });
+    //     return _.template(largeTemplate, this.content, { imports: { '_' : _ } });
     // }
 };
 
-DynamicImage.prototype = Object.assign(DynamicImage.prototype, prototype);
+Object.assign(DynamicImage.prototype, prototype);
 
 module.exports = DynamicImage;

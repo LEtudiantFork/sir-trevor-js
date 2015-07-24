@@ -1,11 +1,7 @@
-'use strict';
-
 /*
   Text Block
 */
 
-var $               = require('jquery');
-var _               = require('../lodash.js');
 var Block           = require('../block');
 var ImageInserter   = require('../helpers/image-inserter.class.js');
 var stToHTML        = require('../to-html');
@@ -33,7 +29,7 @@ module.exports = Block.extend({
             icon: 'image',
             sleep: true,
             eventTrigger: 'click',
-            fn: function(e) {
+            fn: function() {
                 if (!this.imageInserter) {
                     this.imageInserter = new ImageInserter({
                         accessToken: this.globalConfig.accessToken,
@@ -43,9 +39,9 @@ module.exports = Block.extend({
                         subBlockType: 'dynamicImage'
                     });
 
-                    this.imageInserter.on('imageSelected', function(selectedImage) {
-                        // do summat yeah?
-                    });
+                    // this.imageInserter.on('imageSelected', function(selectedImage) {
+                    //     // do summat yeah?
+                    // });
                 }
 
                 this.imageInserter.open();
@@ -56,7 +52,7 @@ module.exports = Block.extend({
             icon: 'Paragraph', // @todo find a proper icon for this
             sleep: true,
             eventTrigger: 'click',
-            fn: function(e) {
+            fn: function() {
                 // contentEditableHelper.updateSelection(sel, range);
 
                 // var firstParagraph = contentEditableHelper.getSelectedContent(block);

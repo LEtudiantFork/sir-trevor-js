@@ -2,7 +2,7 @@ var _            = require('../lodash.js');
 var xhr          = require('etudiant-mod-xhr');
 var eventablejs  = require('eventablejs');
 
-var renderField = require('./field-builder.js');
+var fieldHelper = require('./field.js');
 
 var searchBuilder = function($elem) {
     var search = {};
@@ -25,39 +25,35 @@ var filterBarTemplate = [
     '</div>'
 ].join('\n');
 
-var FilterBar = function() {
-    this.init.apply(this, arguments);
+var FilterBar = function(params) {
+    this.accessToken = params.accessToken;
+    this.app = params.app;
+    this.application = params.application;
+    this.fields = params.fields;
+    this.limit = params.limit;
+    this.subType = params.subType;
+    this.template = filterBarTemplate;
+    this.type = params.type;
+    this.url = params.url;
+
+    if (params.container) {
+        if (params.before === true) {
+            params.container.before(this.render(this.fields));
+            this.bindToDOM(params.container.parent());
+        }
+        else {
+            params.container.append(this.render(this.fields));
+            this.bindToDOM(params.container);
+        }
+    }
 };
 
 var prototype = {
-    init: function(params) {
-        this.accessToken = params.accessToken;
-        this.app = params.app;
-        this.application = params.application;
-        this.fields = params.fields;
-        this.limit = params.limit;
-        this.subType = params.subType;
-        this.template = filterBarTemplate;
-        this.type = params.type;
-        this.url = params.url;
-
-        if (params.container) {
-            if (params.before === true) {
-                params.container.before(this.render(this.fields));
-                this.bindToDOM(params.container.parent());
-            }
-            else {
-                params.container.append(this.render(this.fields));
-                this.bindToDOM(params.container);
-            }
-        }
-    },
-
     render: function() {
         var fieldMarkup = '';
 
         this.fields.forEach(function(field) {
-            fieldMarkup += renderField(field);
+            fieldMarkup += fieldHelper.build(field);
         });
 
         return _.template(filterBarTemplate, { fields: fieldMarkup });

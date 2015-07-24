@@ -11,6 +11,8 @@ var _     = require('../lodash.js');
 var Block = require('../block');
 var utils = require('../utils');
 
+var fieldHelper = require('../helpers/field.js');
+
 var SubBlockSearch = require('../helpers/sub-block-search.class.js');
 var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
@@ -26,48 +28,6 @@ var chooseableConfig = {
         }
     ]
 };
-
-function addBlockMessageTemporarily(block, message) {
-    block.addMessage(message, 'st-block-displaying-message');
-
-    window.setTimeout(function() {
-        block.resetMessages();
-    }, 3000);
-}
-
-function registerSaveMediaSubBlock(block, mediaSubBlock) {
-    mediaSubBlock.on('save', function(saveData) {
-
-        if (mediaSubBlock.isSaving !== true) {
-            mediaSubBlock.isSaving = true;
-
-            if (mediaSubBlock.isEditable) {
-                var url = block.globalConfig.apiUrl + '/edt/media/' + mediaSubBlock.id + '?access_token=' + block.globalConfig.accessToken;
-
-                xhr.patch(url, saveData)
-                    .then(function(returnedData) {
-                        block.setData({
-                            id: returnedData.content.id,
-                            type: mediaSubBlock.type
-                        });
-
-                        addBlockMessageTemporarily(block, i18n.t('general:save'));
-                        mediaSubBlock.isSaving = false;
-                    })
-                    .catch(function(err) {
-                        console.error('Error updating media information', err);
-                    });
-            }
-            else if (!_.isEmpty(saveData)) {
-                block.setData(saveData);
-
-                addBlockMessageTemporarily(block, i18n.t('general:save'));
-
-                mediaSubBlock.isSaving = false;
-            }
-        }
-    });
-}
 
 function prepareCopyrights(copyrights) {
     return copyrights.map(function(copyright) {
@@ -87,14 +47,10 @@ function prepareCategories(categories) {
     });
 }
 
-function onChoose(choices) {
-    var block = this;
-
-    block.subBlockType = choices.subBlockType;
-
+function getCategoryOptionsPromise(block) {
     var categoryOptionsUrl = block.globalConfig.apiUrl + '/edt/' + block.type + '/filters/' + block.globalConfig.application;
 
-    var categoryOptionsPromise = xhr.get(categoryOptionsUrl, {
+    return xhr.get(categoryOptionsUrl, {
         data: {
             access_token: block.globalConfig.accessToken
         }
@@ -103,7 +59,7 @@ function onChoose(choices) {
         block.copyrights = prepareCopyrights(result.content.copyrights);
         block.categories = prepareCategories(result.content.categories);
 
-        return block.categories;
+        return fieldHelper.addNullOptionToArray(block.categories, 'Aucune categorie');
     })
     .catch(function(err) {
         console.error(err);
@@ -114,6 +70,14 @@ function onChoose(choices) {
             options: formattedCategories
         };
     });
+}
+
+function onChoose(choices) {
+    var block = this;
+
+    block.subBlockType = choices.subBlockType;
+
+    var categoryOptionsPromise = getCategoryOptionsPromise(block);
 
     var filterConfig = {
         url: block.globalConfig.apiUrl + '/edt/' + block.type,
@@ -126,12 +90,11 @@ function onChoose(choices) {
             }, {
                 type: 'select',
                 name: 'category',
-                placeholder: 'Category',
+                placeholder: 'Categorie',
                 options: categoryOptionsPromise
             }
         ],
         limit: 20,
-        container: block.$inner,
         application: block.globalConfig.application,
         subType: block.subBlockType
     };
@@ -142,16 +105,22 @@ function onChoose(choices) {
             prev: 'Prev'
         },
         itemsPerSlide: 2,
-        increment: 2,
-        container: block.$inner
+        increment: 2
     };
 
     this.subBlockSearch = new SubBlockSearch({
+        application: block.globalConfig.application,
+        accessToken: block.globalConfig.accessToken,
         apiUrl: block.globalConfig.apiUrl,
-        block: block,
+        $container: block.$editor,
         filterConfig: filterConfig,
-        sliderConfig: sliderConfig
+        sliderConfig: sliderConfig,
+        subBlockType: block.subBlockType
     });
+
+    this.subBlockSearch.on('show', function() {
+        this.$editor.show();
+    }.bind(this));
 
     this.subBlockSearch.on('ready', function() {
         this.$inner.prepend(this.$inputs);
@@ -164,13 +133,8 @@ function onChoose(choices) {
         });
 
         this.subBlockSearch.destroy();
-        this.subBlockSearch = null;
 
-        this.$editor.html(selectedSubBlock.renderLarge());
-
-        selectedSubBlock.bindToRenderedHTML();
-
-        registerSaveMediaSubBlock(this, selectedSubBlock);
+        this.$editor.append(selectedSubBlock.renderLarge());
 
         this.$inputs.hide();
         this.$editor.show();
@@ -204,13 +168,16 @@ module.exports = Block.extend({
             .then(function(rawSubBlockData) {
                 var subBlockData = Object.assign({}, rawSubBlockData.content, data);
 
-                var mediaSubBlock = subBlockManager.buildSingle(data.type, subBlockData);
+                var mediaSubBlock = subBlockManager.buildSingle({
+                    accessToken: this.globalConfig.accessToken,
+                    apiUrl: this.globalConfig.apiUrl,
+                    application: this.globalConfig.application,
+                    content: subBlockData,
+                    parentId: this.blockID,
+                    type: data.type
+                });
 
-                this.$editor.html(mediaSubBlock.renderLarge());
-
-                mediaSubBlock.bindToRenderedHTML();
-
-                registerSaveMediaSubBlock(this, mediaSubBlock);
+                this.$editor.append(mediaSubBlock.renderLarge());
 
                 this.ready();
             }.bind(this))
@@ -251,15 +218,15 @@ module.exports = Block.extend({
             self.subBlockSearch.destroy();
             self.subBlockSearch = null;
 
-             self.uploader.upload(file)
-                 .then(function(uploadData) {
+            self.uploader.upload(file)
+                .then(function(uploadData) {
                     var retrieveUrl = self.globalConfig.apiUrl + '/edt/' + self.type + '/' + uploadData.idMedia;
 
                     self.setData({
                         id: uploadData.idMedia
                     });
 
-                    xhr.get(retrieveUrl, {
+                    return xhr.get(retrieveUrl, {
                         data: {
                             access_token: self.globalConfig.accessToken
                         }
@@ -267,32 +234,35 @@ module.exports = Block.extend({
                     .then(function(subBlockData) {
                         self.$inputs.hide();
 
-                        var mediaSubBlock = subBlockManager.buildSingle(self.subBlockType, subBlockData.content);
+                        subBlockData.content.copyrights = self.copyrights;
+                        subBlockData.content.categories = self.categories;
 
-                        mediaSubBlock.addData({
-                            copyrights: self.copyrights,
-                            categories: self.categories
+                        var mediaSubBlock = subBlockManager.buildSingle({
+                            accessToken: self.globalConfig.accessToken,
+                            apiUrl: self.globalConfig.apiUrl,
+                            application: self.globalConfig.application,
+                            content: subBlockData.content,
+                            parentId: self.blockID,
+                            type: data.type
                         });
 
-                        self.$editor.html(mediaSubBlock.renderEditable());
+                        self.$editor.empty();
 
-                        mediaSubBlock.bindToRenderedHTML();
+                        self.$editor.append(mediaSubBlock.renderLarge());
 
                         self.$editor.show();
-
-                        registerSaveMediaSubBlock(self, mediaSubBlock);
 
                         self.ready();
                     })
                     .catch(function(err) {
                         throw new Error('No block returned for id:' + uploadData.idMedia + ' ' + err);
                     });
-                 })
-                 .catch(function(error) {
-                     console.error(error);
-                     self.addMessage(i18n.t('blocks:image:upload_error'));
-                     self.ready();
-                 });
+                })
+                .catch(function(error) {
+                    console.error(error);
+                    self.addMessage(i18n.t('blocks:image:upload_error'));
+                    self.ready();
+                });
         }
     }
 });
