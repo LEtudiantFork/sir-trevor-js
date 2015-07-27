@@ -63,6 +63,8 @@ var prototype = {
         this.largeTemplate = largeTemplate;
         this.inBlockTemplate = inBlockTemplate;
 
+        this.position = 'right';
+
         if (this.content.formats.length === 1) {
             this.activeFormat = this.content.formats[0];
         }
@@ -95,12 +97,36 @@ var prototype = {
         return _.template(smallTemplate, toRender, { imports: { '_': _ } });
     },
 
+    postRenderSmall: function() {
+        if (!this.hasRenderedSmall) {
+            this.hasRenderedSmall = true;
+
+            this.$elem.on('click', 'select', function(e) {
+                if (this.renderedAs === 'small') {
+                    e.stopPropagation();
+
+                    // change active image (and thus zoomable behaviour) on select
+                }
+            }.bind(this));
+        }
+    },
+
     prepareLargeMarkup: function() {
         var toRender = Object.assign({}, this.content, {
             activeFormat: this.activeFormat
         });
 
         return _.template(largeTemplate, toRender, { imports: { '_': _ } });
+    },
+
+    postRenderLarge: function() {
+        if (!this.hasRenderedLarge) {
+            this.hasRenderedLarge = true;
+
+            this.$elem.on('change', 'select[name="position"]', function(e) {
+                this.position = e.currentTarget.value;
+            }.bind(this));
+        }
     }
 
     // renderInBlock: function() {

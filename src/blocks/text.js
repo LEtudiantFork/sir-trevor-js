@@ -39,9 +39,9 @@ module.exports = Block.extend({
                         subBlockType: 'dynamicImage'
                     });
 
-                    // this.imageInserter.on('imageSelected', function(selectedImage) {
-                    //     // do summat yeah?
-                    // });
+                    this.imageInserter.on('select', function(selectedImage) {
+                        console.log('an image was selected :', selectedImage);
+                    });
                 }
 
                 this.imageInserter.open();

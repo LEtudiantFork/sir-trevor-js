@@ -135,6 +135,17 @@ var prototype = {
         this.$imageEditor.append(DynamicImage.renderLarge());
         this.$imageEditor.append('<button>go</button>');
 
+        this.$imageEditor.on('click', 'button', function(e) {
+            debugger;
+
+            var data = DynamicImage.getData();
+
+            // place into text
+
+            this.trigger('selected', data);
+
+        }.bind(this));
+
         this.modal.append(this.$imageEditor);
     },
 
