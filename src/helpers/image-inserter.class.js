@@ -2,33 +2,14 @@ var $                     = require('jquery');
 var contentEditableHelper = require('./content-editable-helper.js');
 var eventablejs           = require('eventablejs');
 var fieldHelper           = require('./field.js');
+var imageFormatHelper     = require('./image-format.js');
 var Modal                 = require('etudiant-mod-modal');
 var SubBlockSearch        = require('./sub-block-search.class.js');
-var xhr                   = require('etudiant-mod-xhr');
-
-// prepares data for a template like '<option value="<%= value %>"><%= label %></option>'
-function prepareForSelect(array, valueKeyName, labelKeyName) {
-    return array.map(function(arrayItem) {
-        return {
-            label: arrayItem[labelKeyName],
-            value: arrayItem[valueKeyName]
-        };
-    });
-}
-
-// adds format strings like '500x500' to each image
-function prepareImageFormats(images, formats) {
-    return images.map(function(image) {
-        image.formats = formats.filter(function(singleFormat) {
-            return image.format_ids.indexOf(singleFormat.value) !== -1;
-        });
-        return image;
-    });
-}
 
 var ImageInserter = function(params) {
     var self = this;
 
+    // create random id
     this.id = Date.now();
 
     this.apiUrl = params.apiUrl;
@@ -48,21 +29,15 @@ var ImageInserter = function(params) {
     this.$imageSearchContainer = $('<div class="image-inserter image-inserter-search"></div>');
 
     // make a first request to get all filter information
-    xhr.get(this.apiUrl + '/edt/media/filters/' + this.application, {
-        data: {
-            access_token: this.accessToken
-        }
+    imageFormatHelper.fetchFormats({
+        apiUrl: this.apiUrl,
+        application: this.application,
+        accessToken: this.accessToken
     })
+    // @todo is filterData still the best name for this return variable?
     .then(function(filterData) {
         // store the filter information on our ImageInserter instance
-        if (filterData && filterData.content) {
-            // homogenise the data into label,value pairs for the filterbar's select
-            self.filterData = {
-                categories: prepareForSelect(filterData.content.categories, 'id', 'label'),
-                copyrights: prepareForSelect(filterData.content.copyrights, 'id', 'name'),
-                formats: prepareForSelect(filterData.content.formats, 'id', 'label')
-            };
-        }
+        self.filterData = filterData;
 
         // @todo: need to put this in i18n
         var filterConfig = {
@@ -103,8 +78,6 @@ var ImageInserter = function(params) {
             container: self.$imageSearchContainer
         };
 
-        // self.modal.append(self.$imageSearchContainer);
-
         self.subBlockSearch = new SubBlockSearch({
             application: self.application,
             accessToken: self.accessToken,
@@ -114,7 +87,7 @@ var ImageInserter = function(params) {
             sliderConfig: sliderConfig,
             subBlockType: self.subBlockType,
             subBlockPreProcess: function(subBlockData) {
-                return prepareImageFormats(subBlockData, self.filterData.formats);
+                return imageFormatHelper.prepareImageFormats(subBlockData, self.filterData.formats);
             }
         });
 
@@ -122,6 +95,7 @@ var ImageInserter = function(params) {
             self.trigger('ready');
         });
 
+        // once an image has been selected from search, we can go to editImage state
         self.subBlockSearch.on('selected', function(selectedDynamicImage) {
             self.editImage(selectedDynamicImage);
         });
@@ -136,6 +110,7 @@ var prototype = {
         // create a container for the second 'view' of the image inserter - the image editor
         this.$imageEditor = $('<div class="image-inserter image-inserter-edit"></div>');
 
+        // append image and submit button
         this.$imageEditor.append(dynamicImage.renderLarge());
         this.$imageEditor.append('<button>go</button>');
 
@@ -173,7 +148,7 @@ ImageInserter.prototype = Object.assign({}, prototype, eventablejs);
 
 // Static classes
 
-ImageInserter.isInstantiated = function(imageInserterInstance) {
+function isInstantiated(imageInserterInstance) {
     if (imageInserterInstance) {
         return Promise.resolve();
     }
@@ -181,19 +156,72 @@ ImageInserter.isInstantiated = function(imageInserterInstance) {
     return Promise.reject();
 }
 
-ImageInserter.getInsertionPoint = function($elem, cb) {
+function getInsertionPoint($elem, cb) {
     $elem.css('cursor', 'copy');
 
-    $elem.one('click', function(e) {
-
+    $elem.one('click', function() {
         $elem.css('cursor', '');
 
         cb(contentEditableHelper.getRange());
     });
-};
+}
 
-ImageInserter.insertImage = function(insertionPoint, elem) {
+function insertImage(insertionPoint, elem) {
     contentEditableHelper.insertElementAtRange(insertionPoint, elem);
+}
+
+ImageInserter.init = function(block) {
+    // use static class method to return callback with insertion point on click in editable area of block
+    getInsertionPoint(block.getTextBlock(), function(insertionPoint) {
+
+        block.imageInsertAwaitingClick = false;
+
+        // check if image inserter is instantiated
+        isInstantiated(block.imageInserter)
+            .then(function() {
+                // if it's instantiated, we can open the image inserter straight away
+                block.imageInserter.open();
+            })
+            .catch(function() {
+                // if not, we have to instantiate it
+                block.imageInserter = new ImageInserter({
+                    accessToken: block.globalConfig.accessToken,
+                    apiUrl: block.globalConfig.apiUrl,
+                    application: block.globalConfig.application,
+                    blockRef: block,
+                    subBlockType: 'dynamicImage'
+                });
+
+                // once it's ready, then we can open it
+                block.imageInserter.once('ready', function() {
+                    block.imageInserter.open();
+                });
+            })
+            // as this follows the above then/catch, it will always run
+            .then(function() {
+                // in case we closed the modal, we need to clear the onSelected
+                block.imageInserter.clearOnSelected();
+
+                // we set a listener for the onSelected behaviour
+                block.imageInserter.once('selected', function(dynamicImage) {
+                    // create dynamic images object if missing
+                    if (!block.blockStorage.data.dynamicImages) {
+                        block.blockStorage.data.dynamicImages = {};
+                    }
+
+                    // store dynamicImage on block
+                    block.blockStorage.data.dynamicImages[dynamicImage.id] = {
+                        position: dynamicImage.position,
+                        id: dynamicImage.id,
+                        legend: dynamicImage.legend,
+                        format: dynamicImage.activeFormat
+                    };
+
+                    // static method to insert the element at the insertionPoint
+                    insertImage(insertionPoint, dynamicImage.renderInBlock().get(0));
+                });
+            });
+    });
 };
 
 module.exports = ImageInserter;

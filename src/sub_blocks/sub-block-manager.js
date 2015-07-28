@@ -17,6 +17,12 @@ var subBlockTypes = {
 
 var SubBlockManager = {
 
+    getSubBlockByID: function(subBlockArray, id) {
+        return subBlockArray.filter(function(subBlock) {
+            return subBlock.id === id;
+        })[0];
+    },
+
     // renders multiple sub blocks
     render: function(subBlocks) {
         return subBlocks.map(function(subBlock) {

@@ -136,7 +136,11 @@ var prototype = {
     renderInBlock: function() {
         var elem = document.createElement('div');
 
-        elem.innerHTML = '\[ this is an image in the text \]';
+        elem.classList.add('st-sub-block');
+
+        elem.setAttribute('data-sub-block-id', this.id);
+
+        elem.innerHTML = '<img src="http://placehold.it/400x400" />';
 
         return $(elem);
         // return _.template(largeTemplate, this.content, { imports: { '_' : _ } });
