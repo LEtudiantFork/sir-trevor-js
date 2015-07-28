@@ -137,6 +137,68 @@ var Slider = function(params) {
 };
 
 var prototype = {
+    appendToDOM: function(container) {
+        this.$elem = container.find('.st-block__slider');
+        this.$slideContainer = this.$elem.find('.st-slider-container');
+
+        if (!this.isBoundToDOM) {
+
+            if (this.config.controls) {
+                registerButtons.call(this);
+            }
+
+            this.refreshDimensions(true);
+
+            this.isBoundToDOM = true;
+        }
+    },
+
+    destroy: function() {
+        this.$elem.remove();
+    },
+
+    detach: function() {
+        this.$elem.detach();
+    },
+
+    goTo: function(index) {
+        animate(this.$slideContainer[0],
+            {
+                left: '-' + ((100 / this.config.increment).toFixed(2) * index) + '%'
+            },
+            {
+                queue: false,
+                duration: 400,
+                easing: 'ease-in-out'
+        });
+
+        this.currentIndex = index;
+
+        checkProgress.call(this);
+        checkButtons.call(this);
+    },
+
+    next: function() {
+        var newIndex = this.currentIndex + 1;
+
+        if (canGoTo.call(this, newIndex)) {
+            this.goTo(newIndex);
+        }
+    },
+
+    prev: function() {
+        var newIndex = this.currentIndex - 1;
+
+        if (canGoTo.call(this, newIndex)) {
+            this.goTo(newIndex);
+        }
+    },
+
+    refreshDimensions: function(reset) {
+        calculateSliderDimensions.call(this, reset);
+        checkButtons.call(this);
+    },
+
     render: function() {
         var slidesMarkup = '';
 
@@ -150,21 +212,24 @@ var prototype = {
         }, { imports: { '_': _ }});
     },
 
-    appendToDOM: function(container) {
-        this.$elem = container.find('.st-block__slider');
-        this.$slideContainer = this.$elem.find('.st-slider-container');
+    reset: function(newSlides) {
+        this.slides = [];
+        this.hasEmitted = false;
 
-        if (!this.isBoundToDOM) {
+        if (newSlides) {
+            this.$slideContainer.empty();
 
-            if (this.config.controls) {
-                registerButtons.call(this);
-            }
+            this.slides = prepareSlides(newSlides, this.config.itemsPerSlide);
 
-            calculateSliderDimensions.call(this, true);
-            checkButtons.call(this);
-
-            this.isBoundToDOM = true;
+            this.slides.forEach(function(slide) {
+                this.$slideContainer.append(slide.render());
+            }.bind(this));
         }
+        else {
+            this.$slideContainer.html(noSlidesTemplate);
+        }
+
+        this.refreshDimensions(true);
     },
 
     update: function(additionalSlides) {
@@ -194,71 +259,8 @@ var prototype = {
             this.$slideContainer.append(slide.render());
         }.bind(this));
 
-        calculateSliderDimensions.call(this, false);
-        checkButtons.call(this);
+        this.refreshDimensions(false);
         this.hasEmitted = false;
-    },
-
-    reset: function(newSlides) {
-        this.slides = [];
-        this.hasEmitted = false;
-
-        if (newSlides) {
-            this.$slideContainer.empty();
-
-            this.slides = prepareSlides(newSlides, this.config.itemsPerSlide);
-
-            this.slides.forEach(function(slide) {
-                this.$slideContainer.append(slide.render());
-            }.bind(this));
-        }
-        else {
-            this.$slideContainer.html(noSlidesTemplate);
-        }
-
-        calculateSliderDimensions.call(this, true);
-        checkButtons.call(this);
-    },
-
-    goTo: function(index) {
-        animate(this.$slideContainer[0],
-            {
-                left: '-' + ((100 / this.config.increment).toFixed(2) * index) + '%'
-            },
-            {
-                queue: false,
-                duration: 400,
-                easing: 'ease-in-out'
-        });
-
-        this.currentIndex = index;
-
-        checkProgress.call(this);
-        checkButtons.call(this);
-    },
-
-    prev: function() {
-        var newIndex = this.currentIndex - 1;
-
-        if (canGoTo.call(this, newIndex)) {
-            this.goTo(newIndex);
-        }
-    },
-
-    next: function() {
-        var newIndex = this.currentIndex + 1;
-
-        if (canGoTo.call(this, newIndex)) {
-            this.goTo(newIndex);
-        }
-    },
-
-    detach: function() {
-        this.$elem.detach();
-    },
-
-    destroy: function() {
-        this.$elem.remove();
     }
 };
 

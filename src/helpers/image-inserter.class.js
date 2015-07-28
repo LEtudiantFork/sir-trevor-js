@@ -1,5 +1,5 @@
 var $                     = require('jquery');
-// var contentEditableHelper = require('./content-editable-helper.js');
+var contentEditableHelper = require('./content-editable-helper.js');
 var eventablejs           = require('eventablejs');
 var fieldHelper           = require('./field.js');
 var Modal                 = require('etudiant-mod-modal');
@@ -45,7 +45,7 @@ var ImageInserter = function(params) {
     });
 
     // create a wrapper element for our filterbar and slider
-    this.$imageSearch = $('<div class="image-inserter image-inserter-search"></div>');
+    this.$imageSearchContainer = $('<div class="image-inserter image-inserter-search"></div>');
 
     // make a first request to get all filter information
     xhr.get(this.apiUrl + '/edt/media/filters/' + this.application, {
@@ -68,7 +68,7 @@ var ImageInserter = function(params) {
         var filterConfig = {
             accessToken: self.accessToken,
             application: self.application,
-            container: self.$imageSearch,
+            container: self.$imageSearchContainer,
             fields: [
                 {
                     type: 'search',
@@ -100,22 +100,26 @@ var ImageInserter = function(params) {
             },
             itemsPerSlide: 3,
             increment: 1,
-            container: self.$imageSearch
+            container: self.$imageSearchContainer
         };
 
-        self.modal.append(self.$imageSearch);
+        // self.modal.append(self.$imageSearchContainer);
 
         self.subBlockSearch = new SubBlockSearch({
             application: self.application,
             accessToken: self.accessToken,
             apiUrl: self.apiUrl,
-            $container: self.$imageSearch,
+            $container: self.$imageSearchContainer,
             filterConfig: filterConfig,
             sliderConfig: sliderConfig,
             subBlockType: self.subBlockType,
             subBlockPreProcess: function(subBlockData) {
                 return prepareImageFormats(subBlockData, self.filterData.formats);
             }
+        });
+
+        self.subBlockSearch.on('ready', function() {
+            self.trigger('ready');
         });
 
         self.subBlockSearch.on('selected', function(selectedDynamicImage) {
@@ -128,32 +132,68 @@ var ImageInserter = function(params) {
 };
 
 var prototype = {
-    editImage: function(DynamicImage) {
+    editImage: function(dynamicImage) {
         // create a container for the second 'view' of the image inserter - the image editor
         this.$imageEditor = $('<div class="image-inserter image-inserter-edit"></div>');
 
-        this.$imageEditor.append(DynamicImage.renderLarge());
+        this.$imageEditor.append(dynamicImage.renderLarge());
         this.$imageEditor.append('<button>go</button>');
 
         this.$imageEditor.on('click', 'button', function(e) {
-            debugger;
+            e.stopPropagation();
 
-            var data = DynamicImage.getData();
+            this.trigger('selected', dynamicImage);
 
-            // place into text
-
-            this.trigger('selected', data);
-
+            this.close();
         }.bind(this));
 
         this.modal.append(this.$imageEditor);
     },
 
     open: function() {
+        this.modal.append(this.$imageSearchContainer);
+
         this.modal.open();
+
+        this.subBlockSearch.refreshDimensions();
+    },
+
+    close: function() {
+        this.modal.close();
+    },
+
+    clearOnSelected: function() {
+        if (this._events) {
+            this._events.selected = undefined;
+        }
     }
 };
 
-ImageInserter.prototype = Object.assign(prototype, eventablejs);
+ImageInserter.prototype = Object.assign({}, prototype, eventablejs);
+
+// Static classes
+
+ImageInserter.isInstantiated = function(imageInserterInstance) {
+    if (imageInserterInstance) {
+        return Promise.resolve();
+    }
+
+    return Promise.reject();
+}
+
+ImageInserter.getInsertionPoint = function($elem, cb) {
+    $elem.css('cursor', 'copy');
+
+    $elem.one('click', function(e) {
+
+        $elem.css('cursor', '');
+
+        cb(contentEditableHelper.getRange());
+    });
+};
+
+ImageInserter.insertImage = function(insertionPoint, elem) {
+    contentEditableHelper.insertElementAtRange(insertionPoint, elem);
+};
 
 module.exports = ImageInserter;

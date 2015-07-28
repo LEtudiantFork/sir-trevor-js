@@ -1,5 +1,5 @@
 var _             = require('../lodash.js');
-// var $             = require('jquery');
+var $             = require('jquery');
 var BasicSubBlock = require('./basic.class.js');
 var fieldHelper   = require('../helpers/field.js');
 
@@ -70,6 +70,10 @@ var prototype = {
         }
     },
 
+    getData: function() {
+        return { prop: 'hi there kids' };
+    },
+
     getFormattedSrc: function(formatString) {
         if (hasFormatString(formatString, this.content.formats)) {
             return this.content.file.replace('original', formatString);
@@ -127,11 +131,16 @@ var prototype = {
                 this.position = e.currentTarget.value;
             }.bind(this));
         }
-    }
+    },
 
-    // renderInBlock: function() {
-    //     return _.template(largeTemplate, this.content, { imports: { '_' : _ } });
-    // }
+    renderInBlock: function() {
+        var elem = document.createElement('div');
+
+        elem.innerHTML = '\[ this is an image in the text \]';
+
+        return $(elem);
+        // return _.template(largeTemplate, this.content, { imports: { '_' : _ } });
+    }
 };
 
 Object.assign(DynamicImage.prototype, prototype);

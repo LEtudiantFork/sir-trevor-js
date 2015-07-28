@@ -129,7 +129,7 @@ var SubBlockSearch = function(params) {
         .then(function() {
             this.filterBar = new FilterBar(params.filterConfig);
 
-            this.slider = new Slider(params.sliderConfig);
+            this.slider = window.slider = new Slider(params.sliderConfig);
 
             this.trigger('show');
 
@@ -153,6 +153,10 @@ var SubBlockSearch = function(params) {
 };
 
 var prototype = {
+    refreshDimensions: function() {
+        this.slider.refreshDimensions(true);
+    },
+
     destroy: function() {
         this.$elem.remove();
     }
