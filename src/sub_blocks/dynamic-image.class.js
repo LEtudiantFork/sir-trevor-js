@@ -1,6 +1,7 @@
 var _             = require('../lodash.js');
 var $             = require('jquery');
 var BasicSubBlock = require('./basic.class.js');
+var EventBus      = require('../event-bus.js');
 var fieldHelper   = require('../helpers/field.js');
 
 var smallTemplate = [
@@ -23,14 +24,14 @@ var largeTemplate = [
     '<span>url :</span>',
     '<input type="url" name="link" value="" placeholder="entrez un lien" />',
     '<span>Position :</span>',
-    '<select name="position">',
-        '<option value="left">A gauche du texte</option>',
-        '<option value="right">A droite du texte</option>',
+    '<select name="align">',
+        '<option <%= isLeft %> value="left">A gauche du texte</option>',
+        '<option <%= isRight %> value="right">A droite du texte</option>',
     '</select>'
 ].join('\n');
 
 var inBlockTemplate = [
-    '<figure class="st-sub-block-image" data-etu-zoom="">',
+    '<figure class="st-sub-block-image">',
         '<img src="<%= thumbnail %>" />',
     '</figure>',
     '<button>éditer</button>',
@@ -56,14 +57,11 @@ DynamicImage.prototype.constructor = BasicSubBlock;
 var prototype = {
 
     init: function() {
-        // @todo remove once lamine has done this
-        this.content.thumbnail = this.getFormattedSrc('100x100');
-
         this.smallTemplate = smallTemplate;
         this.largeTemplate = largeTemplate;
         this.inBlockTemplate = inBlockTemplate;
 
-        this.position = 'right';
+        this.content.align = this.content.align || 'right';
 
         if (this.content.formats.length === 1) {
             this.activeFormat = this.content.formats[0];
@@ -117,7 +115,9 @@ var prototype = {
 
     prepareLargeMarkup: function() {
         var toRender = Object.assign({}, this.content, {
-            activeFormat: this.activeFormat
+            activeFormat: this.activeFormat,
+            isLeft: this.content.align === 'left' ? 'selected' : '',
+            isRight: this.content.align === 'right' ? 'selected' : ''
         });
 
         return _.template(largeTemplate, toRender, { imports: { '_': _ } });
@@ -127,23 +127,35 @@ var prototype = {
         if (!this.hasRenderedLarge) {
             this.hasRenderedLarge = true;
 
-            this.$elem.on('change', 'select[name="position"]', function(e) {
-                this.position = e.currentTarget.value;
+            this.$elem.on('change', 'select[name="align"]', function(e) {
+                this.content.align = e.currentTarget.value;
             }.bind(this));
         }
     },
 
+    // unlike renderSmall/Large this makes a new element every time
     renderInBlock: function() {
+        var $elem = $('<figure data-sub-block-in-block="' + this.id + '"></figure>');
+
+        $elem.html('<img src="' + this.getFormattedSrc('100x100') + '" />');
+
+        $elem.on('click', function() {
+            EventBus.trigger('editImage', this);
+        }.bind(this));
+
+        return $elem.get(0);
+    },
+
+    getHTMLPlaceholder: function() {
         var elem = document.createElement('div');
 
-        elem.classList.add('st-sub-block');
+        $(elem).attr('data-sub-block-in-block', this.id);
 
-        elem.setAttribute('data-sub-block-id', this.id);
+        return elem.outerHTML;
+    },
 
-        elem.innerHTML = '<img src="http://placehold.it/400x400" />';
-
-        return $(elem);
-        // return _.template(largeTemplate, this.content, { imports: { '_' : _ } });
+    replaceRenderedInBlock: function() {
+        $('[data-sub-block-in-block="' + this.id + '"]').replaceWith(this.renderInBlock());
     }
 };
 

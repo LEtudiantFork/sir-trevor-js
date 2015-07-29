@@ -8,7 +8,7 @@ var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
 function registerSelectSubBlock(subBlockSearch) {
     EventBus.on('sub-block-action:selected', function(subBlock) {
-        if (subBlock.parentId === subBlockSearch.id) {
+        if (subBlock.parentID === subBlockSearch.id) {
             subBlockSearch.trigger('selected', subBlock);
         }
     });
@@ -21,7 +21,7 @@ function filterUpdate(subBlockSearch) {
 
     subBlockSearch.filterBar.on('update:result', function(updateResults) {
 
-        if (subBlockSearch.hasOwnProperty('subBlockPreProcess')) {
+        if (subBlockSearch.subBlockPreProcess) {
             updateResults = subBlockSearch.subBlockPreProcess(updateResults);
         }
 
@@ -30,7 +30,7 @@ function filterUpdate(subBlockSearch) {
             apiUrl: subBlockSearch.apiUrl,
             application: subBlockSearch.application,
             contents: updateResults,
-            parentId: subBlockSearch.id,
+            parentID: subBlockSearch.id,
             type: subBlockSearch.subBlockType
         });
 
@@ -45,7 +45,7 @@ function filterSearch(subBlockSearch) {
 
     subBlockSearch.filterBar.on('search:result', function(searchResults) {
 
-        if (subBlockSearch.hasOwnProperty('subBlockPreProcess')) {
+        if (subBlockSearch.subBlockPreProcess) {
             searchResults = subBlockSearch.subBlockPreProcess(searchResults);
         }
 
@@ -54,7 +54,7 @@ function filterSearch(subBlockSearch) {
             apiUrl: subBlockSearch.apiUrl,
             application: subBlockSearch.application,
             contents: searchResults,
-            parentId: subBlockSearch.id,
+            parentID: subBlockSearch.id,
             type: subBlockSearch.subBlockType
         });
 
@@ -129,7 +129,7 @@ var SubBlockSearch = function(params) {
         .then(function() {
             this.filterBar = new FilterBar(params.filterConfig);
 
-            this.slider = window.slider = new Slider(params.sliderConfig);
+            this.slider = new Slider(params.sliderConfig);
 
             this.trigger('show');
 

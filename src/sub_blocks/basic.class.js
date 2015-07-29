@@ -16,12 +16,12 @@ BasicSubBlock.prototype = {
         this.apiUrl = params.apiUrl;
         this.application = params.application;
         this.content = params.content;
-        this.parentId = params.parentId;
+        this.parentID = params.parentID;
         this.type = params.type;
 
         this.$elem = $(wrapperTemplate);
 
-        this.$elem.attr('id', this.id);
+        this.$elem.attr('data-sub-block-id', this.id);
         this.$elem.addClass('st-sub-block-' + this.type);
 
         this.$elem.on('click', function() {

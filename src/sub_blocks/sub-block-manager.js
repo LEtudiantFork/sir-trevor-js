@@ -19,7 +19,7 @@ var SubBlockManager = {
 
     getSubBlockByID: function(subBlockArray, id) {
         return subBlockArray.filter(function(subBlock) {
-            return subBlock.id === id;
+            return subBlock.id.toString() === id.toString();
         })[0];
     },
 
@@ -38,7 +38,7 @@ var SubBlockManager = {
                 apiUrl: params.apiUrl,
                 application: params.application,
                 content: singleContent,
-                parentId: params.parentId,
+                parentID: params.parentID,
                 type: params.type
             });
         }.bind(this));

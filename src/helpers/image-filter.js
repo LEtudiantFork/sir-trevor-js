@@ -10,7 +10,7 @@ function prepareForSelect(array, valueKeyName, labelKeyName) {
     });
 }
 
-function fetchFormats(params) {
+function fetch(params) {
     return xhr.get(params.apiUrl + '/edt/media/filters/' + params.application, {
         data: {
             access_token: params.accessToken
@@ -49,7 +49,7 @@ function prepareSingleImageFormat(image, formats) {
 }
 
 module.exports = {
-    fetchFormats: fetchFormats,
+    fetch: fetch,
     prepareImageFormats: prepareImageFormats,
     prepareSingleImageFormat: prepareSingleImageFormat
 };

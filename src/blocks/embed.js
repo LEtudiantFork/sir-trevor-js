@@ -197,7 +197,7 @@ module.exports = Block.extend({
                         apiUrl: this.globalConfig.apiUrl,
                         application: this.globalConfig.application,
                         content: subBlockData.content,
-                        parentId: this.blockID,
+                        parentID: this.blockID,
                         type: data.type
                     });
 
