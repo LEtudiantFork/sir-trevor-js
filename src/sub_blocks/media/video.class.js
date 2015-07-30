@@ -28,7 +28,7 @@ VideoSubBlock.prototype = Object.create(BasicMediaSubBlock.prototype);
 
 VideoSubBlock.prototype.constructor = BasicMediaSubBlock;
 
-var prototype = {
+VideoSubBlock.prototype = Object.assign(VideoSubBlock.prototype, {
     postRenderLarge: function() {
         BasicMediaSubBlock.prototype.postRenderLarge.call(this);
 
@@ -43,8 +43,6 @@ var prototype = {
                   .css('width', '100%');
         });
     }
-};
-
-Object.assign(VideoSubBlock.prototype, prototype);
+});
 
 module.exports = VideoSubBlock;

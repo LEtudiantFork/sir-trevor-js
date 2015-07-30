@@ -136,7 +136,7 @@ var Slider = function(params) {
     }
 };
 
-var prototype = {
+Slider.prototype = Object.assign(Slider.prototype, {
     appendToDOM: function(container) {
         this.$elem = container.find('.st-block__slider');
         this.$slideContainer = this.$elem.find('.st-slider-container');
@@ -209,7 +209,7 @@ var prototype = {
         return _.template(sliderTemplate, {
             content: slidesMarkup,
             controls: this.config.controls
-        }, { imports: { '_': _ }});
+        }, { imports: { '_': _ } });
     },
 
     reset: function(newSlides) {
@@ -234,7 +234,6 @@ var prototype = {
 
     update: function(additionalSlides) {
         var indexModifier;
-        var slidesMarkup = '';
         var lastSlide = this.slides[this.slides.length - 1];
 
         indexModifier = this.slides.indexOf(lastSlide) + 1;
@@ -262,8 +261,7 @@ var prototype = {
         this.refreshDimensions(false);
         this.hasEmitted = false;
     }
-};
 
-Slider.prototype = Object.assign({}, prototype, eventablejs);
+}, eventablejs);
 
 module.exports = Slider;

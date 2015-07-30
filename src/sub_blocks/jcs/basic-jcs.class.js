@@ -21,12 +21,10 @@ JcsSubBlock.prototype = Object.create(BasicSubBlock.prototype);
 
 JcsSubBlock.prototype.constructor = BasicSubBlock;
 
-var prototype = {
+JcsSubBlock.prototype = Object.assign(JcsSubBlock.prototype, {
     prepareSmallMarkup: function() {
         return _.template(smallTemplate, this.content, { imports: { '_': _ } });
     }
-};
-
-Object.assign(JcsSubBlock.prototype, prototype);
+});
 
 module.exports = JcsSubBlock;

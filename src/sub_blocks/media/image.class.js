@@ -27,4 +27,8 @@ ImageSubBlock.prototype = Object.create(BasicMediaSubBlock.prototype);
 
 ImageSubBlock.prototype.constructor = BasicMediaSubBlock;
 
+ImageSubBlock.prototype = Object.assign(ImageSubBlock.prototype, {
+
+});
+
 module.exports = ImageSubBlock;

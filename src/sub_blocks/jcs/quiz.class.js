@@ -19,12 +19,10 @@ QuizJcsSubBlock.prototype = Object.create(BasicJcsSubBlock.prototype);
 
 QuizJcsSubBlock.prototype.constructor = BasicJcsSubBlock;
 
-var prototype = {
+QuizJcsSubBlock.prototype = Object.assign(QuizJcsSubBlock.prototype, {
     prepareLargeMarkup: function() {
         return _.template(largeTemplate, this.content, { imports: { '_': _ } });
     }
-};
-
-Object.assign(QuizJcsSubBlock.prototype, prototype);
+});
 
 module.exports = QuizJcsSubBlock;

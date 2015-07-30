@@ -36,7 +36,7 @@ PollJcsSubBlock.prototype = Object.create(BasicJcsSubBlock.prototype);
 
 PollJcsSubBlock.prototype.constructor = BasicJcsSubBlock;
 
-var prototype = {
+PollJcsSubBlock.prototype = Object.assign(PollJcsSubBlock.prototype, {
     prepareSmallMarkup: function() {
         return _.template(smallTemplate, this.content, { imports: { '_': _ } });
     },
@@ -44,8 +44,6 @@ var prototype = {
     prepareLargeMarkup: function() {
         return _.template(largeTemplate, this.content, { imports: { '_': _ } });
     }
-};
-
-Object.assign(PollJcsSubBlock.prototype, prototype);
+});
 
 module.exports = PollJcsSubBlock;

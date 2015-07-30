@@ -91,7 +91,7 @@ var ImageInserter = function(params) {
     }.bind(this));
 };
 
-var prototype = {
+ImageInserter.prototype = Object.assign(ImageInserter.prototype, {
     editImage: function(dynamicImage, shouldReplace) {
         // create a container for the second 'view' of the image inserter - the image editor
         this.$imageEditor = $('<div class="image-inserter image-inserter-edit"></div>');
@@ -218,9 +218,8 @@ var prototype = {
             console.error(err);
         });
     }
-};
 
-ImageInserter.prototype = Object.assign({}, prototype, eventablejs);
+}, eventablejs);
 
 // Static classes
 
@@ -253,27 +252,6 @@ ImageInserter.prepareParams = function(params) {
 
         return params;
     });
-};
-
-ImageInserter.init = function(block) {
-
-    if (!block.imageInserter) {
-        // return promise to initialise
-        return ImageInserter.prepareParams({
-            accessToken: block.globalConfig.accessToken,
-            apiUrl: block.globalConfig.apiUrl,
-            application: block.globalConfig.application,
-            blockRef: block,
-            subBlockType: 'dynamicImage'
-        })
-        .then(function(preparedParams) {
-            block.imageInserter = new ImageInserter(preparedParams);
-        });
-    }
-
-    block.imageInserter.clearOnSelected();
-
-    return Promise.resolve();
 };
 
 ImageInserter.saveDynamicImage = function(store, dynamicImage) {
@@ -328,6 +306,27 @@ ImageInserter.checkForDynamicImageStrings = function(textContent, blockStore) {
     }
 
     return false;
+};
+
+ImageInserter.init = function(block) {
+
+    if (!block.imageInserter) {
+        // return promise to initialise
+        return ImageInserter.prepareParams({
+            accessToken: block.globalConfig.accessToken,
+            apiUrl: block.globalConfig.apiUrl,
+            application: block.globalConfig.application,
+            blockRef: block,
+            subBlockType: 'dynamicImage'
+        })
+        .then(function(preparedParams) {
+            block.imageInserter = new ImageInserter(preparedParams);
+        });
+    }
+
+    block.imageInserter.clearOnSelected();
+
+    return Promise.resolve();
 };
 
 module.exports = ImageInserter;

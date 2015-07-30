@@ -48,7 +48,8 @@ var FilterBar = function(params) {
     }
 };
 
-var prototype = {
+FilterBar.prototype = Object.assign(FilterBar.prototype, {
+
     render: function() {
         var fieldMarkup = '';
 
@@ -120,8 +121,7 @@ var prototype = {
     destroy: function() {
         this.$elem.parent().remove();
     }
-};
 
-FilterBar.prototype = Object.assign({}, prototype, eventablejs);
+}, eventablejs);
 
 module.exports = FilterBar;

@@ -19,12 +19,10 @@ PersonalityJcsSubBlock.prototype = Object.create(BasicJcsSubBlock.prototype);
 
 PersonalityJcsSubBlock.prototype.constructor = BasicJcsSubBlock;
 
-var prototype = {
+PersonalityJcsSubBlock.prototype = Object.assign(PersonalityJcsSubBlock.prototype, {
     prepareLargeMarkup: function() {
         return _.template(largeTemplate, this.content, { imports: { '_': _ } });
     }
-};
-
-Object.assign(PersonalityJcsSubBlock.prototype, prototype);
+});
 
 module.exports = PersonalityJcsSubBlock;
