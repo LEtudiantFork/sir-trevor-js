@@ -1,5 +1,3 @@
-'use strict';
-
 /*
   Illustrated Block
 */

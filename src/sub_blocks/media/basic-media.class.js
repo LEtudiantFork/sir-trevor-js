@@ -1,9 +1,10 @@
 var $             = require('jquery');
 var _             = require('../../lodash.js');
-var eventablejs   = require('eventablejs');
 var BasicSubBlock = require('../basic.class.js');
+var eventablejs   = require('eventablejs');
+var xhr           = require('etudiant-mod-xhr');
 
-var renderField = require('../../helpers/field-builder.js');
+var fieldHelper = require('../../helpers/field.js');
 
 var innerStaticTemplate = [
     '<%= legend %>',
@@ -53,8 +54,6 @@ function watchFields(subBlock) {
 }
 
 var BasicMediaSubBlock = function() {
-    this.toSave = {};
-
     BasicSubBlock.apply(this, arguments);
 };
 
@@ -62,102 +61,136 @@ BasicMediaSubBlock.prototype = Object.create(BasicSubBlock.prototype);
 
 BasicMediaSubBlock.prototype.constructor = BasicSubBlock;
 
-var prototype = {
-    addData: function(data) {
-        this.contents = Object.assign(this.contents, data);
-    },
+BasicMediaSubBlock.prototype = Object.assign(BasicMediaSubBlock.prototype, {
+    save: function() {
+        // actually save here.
+        if (this.isSaving !== true) {
+            this.isSaving = true;
 
-    bindToRenderedHTML: function() {
-        this.$elem = $('[data-sub-block-id="' + this.id + '"]');
+            if (this.isEditable) {
+                var url = block.globalConfig.apiUrl + '/edt/media/' + this.id + '?access_token=' + block.globalConfig.accessToken;
 
-        watchFields(this);
+                xhr.patch(url, saveData)
+                    .then(function(returnedData) {
+                        block.setData({
+                            id: returnedData.content.id,
+                            type: this.type
+                        });
 
-        if ('ready' in this) {
-            this.ready();
+                        addBlockMessageTemporarily(block, i18n.t('general:save'));
+                        this.isSaving = false;
+                    })
+                    .catch(function(err) {
+                        console.error('Error updating media information', err);
+                    });
+            }
+            else if (!_.isEmpty(saveData)) {
+                block.setData(saveData);
+
+                addBlockMessageTemporarily(block, i18n.t('general:save'));
+
+                this.isSaving = false;
+            }
         }
 
-        this.$elem.on('click', '[data-button-type="save"]', function() {
-            this.save();
-        }.bind(this));
-    },
-
-    save: function() {
         this.trigger('save', this.toSave);
     },
+    // bindToRenderedHTML: function() {
+    //     this.$elem = $('[data-sub-block-id="' + this.id + '"]');
 
-    renderEditable: function() {
-        this.isEditable = true;
+    //     watchFields(this);
 
-        var fieldMarkup = '';
+    //     this.$elem.on('click', '[data-button-type="save"]', function() {
+    //         this.save();
+    //     }.bind(this));
+    // },
 
-        fieldMarkup += renderField({
-            label: i18n.t('sub_blocks:media:legend'),
-            name: 'legende',
-            type: 'text',
-            value: this.contents.legend
-        });
 
-        fieldMarkup += renderField({
-            label: i18n.t('sub_blocks:media:copyright'),
-            name: 'copyrights',
-            multiple: true,
-            type: 'select',
-            options: this.contents.copyrights
-        });
+    // renderEditable: function() {
+    //     this.isEditable = true;
 
-        fieldMarkup += renderField({
-            label: i18n.t('sub_blocks:media:category'),
-            name: 'id_categorie',
-            type: 'select',
-            options: this.contents.categories
-        });
+    //     var fieldMarkup = '';
 
-        var editArea = _.template(innerEditTemplate, { fields: fieldMarkup });
+    //     fieldMarkup += fieldHelper.build({
+    //         label: i18n.t('sub_blocks:media:legend'),
+    //         name: 'legende',
+    //         type: 'text',
+    //         value: this.content.legend
+    //     });
 
-        return _.template(this.outerTemplate,
-            {
-                id: this.id,
-                type: this.type,
-                file: this.contents.file,
-                editArea: editArea,
-                footer: getFooter()
-            }
-        );
+    //     fieldMarkup += fieldHelper.build({
+    //         label: i18n.t('sub_blocks:media:copyright'),
+    //         name: 'copyrights',
+    //         multiple: true,
+    //         type: 'select',
+    //         options: this.content.copyrights
+    //     });
+
+    //     fieldMarkup += fieldHelper.build({
+    //         label: i18n.t('sub_blocks:media:category'),
+    //         name: 'id_categorie',
+    //         type: 'select',
+    //         options: this.content.categories
+    //     });
+
+    //     var editArea = _.template(innerEditTemplate, { fields: fieldMarkup });
+
+    //     return _.template(this.outerTemplate,
+    //         {
+    //             id: this.id,
+    //             type: this.type,
+    //             file: this.content.file,
+    //             editArea: editArea,
+    //             footer: getFooter()
+    //         }
+    //     );
+    // },
+
+    // renderLarge: function(extraData) {
+    //     extraData = extraData || {};
+
+    //     var legend = fieldHelper.build({
+    //         label: i18n.t('sub_blocks:media:legend'),
+    //         name: 'legend',
+    //         value: this.content.legend
+    //     });
+
+    //     var editArea = _.template(innerStaticTemplate, {
+    //         legend: legend,
+    //         copyright: this.content.copyright,
+    //         copyrightLabel: i18n.t('sub_blocks:media:copyright')
+    //     });
+
+    //     var outerTemplateData = {
+    //             id: this.id,
+    //             type: this.type,
+    //             file: this.content.file,
+    //             editArea: editArea,
+    //             footer: getFooter()
+    //     };
+
+    //     if (extraData) {
+    //         Object.keys(extraData).forEach(function(extraDataKey) {
+    //             outerTemplateData[extraDataKey] = extraData[extraDataKey];
+    //         });
+    //     }
+
+    //     return _.template(this.outerTemplate, outerTemplateData);
+    // },
+
+    prepareSmallMarkup: function() {
+        return _.template(this.smallTemplate, this.content, { imports: { '_' : _ } });
     },
 
-    renderLarge: function(extraData) {
-        extraData = extraData || {};
+    prepareLargeMarkup: function() {
+        var toRender = Object.assign({}, this.content, {
+            editArea: '',
 
-        var legend = renderField({
-            label: i18n.t('sub_blocks:media:legend'),
-            name: 'legend',
-            value: this.contents.legend
         });
 
-        var editArea = _.template(innerStaticTemplate, {
-            legend: legend,
-            copyright: this.contents.copyright,
-            copyrightLabel: i18n.t('sub_blocks:media:copyright')
-        });
-
-        var outerTemplateData = {
-                id: this.id,
-                type: this.type,
-                file: this.contents.file,
-                editArea: editArea,
-                footer: getFooter()
-        };
-
-        if (extraData) {
-            Object.keys(extraData).forEach(function(extraDataKey) {
-                outerTemplateData[extraDataKey] = extraData[extraDataKey];
-            });
-        }
-
-        return _.template(this.outerTemplate, outerTemplateData);
+        return _.template(this.largeTemplate, toRender, { imports: { '_' : _ } });
     }
-};
 
-Object.assign(BasicMediaSubBlock.prototype, prototype, eventablejs);
+}, eventablejs);
 
 module.exports = BasicMediaSubBlock;

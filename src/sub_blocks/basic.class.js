@@ -1,29 +1,74 @@
 var $ = require('jquery');
-var _ = require('../lodash.js');
+
+var EventBus = require('../event-bus.js');
+
+var wrapperTemplate = '<div class="st-sub-block"></div>';
 
 var BasicSubBlock = function() {
     this.init.apply(this, arguments);
 };
 
 BasicSubBlock.prototype = {
-    init: function(contents) {
-        this.id = contents.id;
+    init: function(params) {
+        this.id = params.content.id;
 
-        this.contents = Object.assign(contents, {
-            type: this.type
+        this.accessToken = params.accessToken;
+        this.apiUrl = params.apiUrl;
+        this.application = params.application;
+        this.content = params.content;
+        this.parentID = params.parentID;
+        this.type = params.type;
+
+        this.$elem = $(wrapperTemplate);
+
+        this.$elem.attr('data-sub-block-id', this.id);
+        this.$elem.addClass('st-sub-block-' + this.type);
+
+        this.$elem.on('click', function() {
+            if (this.renderedAs === 'small') {
+                EventBus.trigger('sub-block-action:selected', this);
+            }
+        }.bind(this));
+    },
+
+    prepareForRender: function() {
+        this.$elem.empty();
+
+        this.$elem.removeClass(function(index, css) {
+            return (css.match(/(^|\s)st-sub-block-size-\S+/g) || []).join(' ');
         });
     },
 
-    getElem: function() {
-        this.$elem = $([ 'data-sub-block-id="' + this.id + '"' ]);
-    },
-
     renderSmall: function() {
-        return _.template(this.smallTemplate, this.contents, { imports: { '_': _ } });
+        this.prepareForRender();
+
+        this.$elem.append(this.prepareSmallMarkup());
+
+        this.$elem.addClass('st-sub-block-size-small');
+
+        this.renderedAs = 'small';
+
+        if ('postRenderSmall' in this) {
+            this.postRenderSmall();
+        }
+
+        return this.$elem;
     },
 
     renderLarge: function() {
-        return _.template(this.largeTemplate, this.contents, { imports: { '_': _ } });
+        this.prepareForRender();
+
+        this.$elem.append(this.prepareLargeMarkup());
+
+        this.$elem.addClass('st-sub-block-size-large');
+
+        this.renderedAs = 'large';
+
+        if ('postRenderLarge' in this) {
+            this.postRenderLarge();
+        }
+
+        return this.$elem;
     }
 };
 

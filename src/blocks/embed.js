@@ -1,20 +1,18 @@
-'use strict';
-
 /*
-  Jeux, Concours et Sondages Block
+  Embed (Jeux, Concours et Sondages & Script) Block
 */
 
 var xhr = require('etudiant-mod-xhr');
 
 var _     = require('../lodash.js');
 var Block = require('../block');
-var utils = require('../utils');
 
+var fieldHelper = require('../helpers/field.js');
 var SubBlockSearch  = require('../helpers/sub-block-search.class.js');
-var subBlockManager = require('../sub_blocks/index.js');
+var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
 var chooseableConfig = {
-    name: 'contentType',
+    name: 'subBlockType',
     options: [
         {
             title: i18n.t('sub_blocks:embed:poll:title'),
@@ -32,6 +30,7 @@ var chooseableConfig = {
     ]
 };
 
+// @todo: should this sort of functionality be generic and go through the EventBus?
 function bindEventsOnScriptSubBlock(block, scriptSubBlock) {
     scriptSubBlock.on('valid', function(scriptBlockData) {
         block.resetErrors();
@@ -47,37 +46,44 @@ function bindEventsOnScriptSubBlock(block, scriptSubBlock) {
     });
 }
 
-function getPath(contentType) {
-    switch (contentType) {
+function getPath(subBlockType) {
+    var result;
+
+    switch (subBlockType) {
         case 'poll':
-            return 'polls';
+            result = 'polls';
             break;
         case 'quiz':
-            return 'quizzes';
+            result = 'quizzes';
             break;
         case 'personality':
-            return 'personalities';
+            result = 'personalities';
             break;
         default:
-            throw new Error('Unknown sub block type');
+            result = new Error('Unknown sub block type');
             break;
     }
+
+    return result;
 }
 
 function onChoose(choices) {
     var block = this;
 
-    block.subBlockType = choices.contentType;
+    block.subBlockType = choices.subBlockType;
 
     if (block.subBlockType === 'script') {
-        var scriptSubBlock = subBlockManager.buildSingle(this.type, block.subBlockType);
+        var scriptSubBlock = subBlockManager.buildSingle({
+            parentID: block.id,
+            type: block.subBlockType
+        });
 
         scriptSubBlock.appendTo(this.$editor);
 
         bindEventsOnScriptSubBlock(this, scriptSubBlock);
     }
     else {
-        var thematicOptionsUrl = block.globalConfig.apiUrl + '/jcs/thematics/list/' + getPath(choices.contentType);
+        var thematicOptionsUrl = block.globalConfig.apiUrl + '/jcs/thematics/list/' + getPath(choices.subBlockType);
 
         var thematicOptionsPromise = xhr.get(thematicOptionsUrl, {
             data: {
@@ -85,12 +91,14 @@ function onChoose(choices) {
             }
         })
         .then(function(result) {
-            return result.content.map(function(filterOption) {
+            var filterOptions = result.content.map(function(filterOption) {
                 return {
                     value: filterOption.id,
                     label: filterOption.label
                 };
             });
+
+            return fieldHelper.addNullOptionToArray(filterOptions, 'Aucune Thematique');
         })
         .catch(function(err) {
             console.error(err);
@@ -103,7 +111,7 @@ function onChoose(choices) {
         });
 
         var filterConfig = {
-            url: block.globalConfig.apiUrl + '/jcs/' + getPath(choices.contentType) + '/search',
+            url: block.globalConfig.apiUrl + '/jcs/' + getPath(choices.subBlockType) + '/search',
             accessToken: block.globalConfig.accessToken,
             fields: [
                 {
@@ -118,7 +126,6 @@ function onChoose(choices) {
                 }
             ],
             limit: 20,
-            container: block.$inner,
             application: block.globalConfig.application
         };
 
@@ -128,29 +135,37 @@ function onChoose(choices) {
                 prev: 'Prev'
             },
             itemsPerSlide: 2,
-            increment: 2,
-            container: block.$inner
+            increment: 2
         };
 
-        this.subBlockSearch = new SubBlockSearch({
-            apiUrl: block.globalConfig.apiUrl,
-            block: block,
-            filterConfig: filterConfig,
-            sliderConfig: sliderConfig
-        });
+        SubBlockSearch.prepareParams(filterConfig)
+            .then(function(preparedFilterConfig) {
+                block.subBlockSearch = new SubBlockSearch({
+                    application: block.globalConfig.application,
+                    accessToken: block.globalConfig.accessToken,
+                    apiUrl: block.globalConfig.apiUrl,
+                    $container: block.$editor,
+                    filterConfig: preparedFilterConfig,
+                    sliderConfig: sliderConfig,
+                    subBlockType: block.subBlockType
+                });
 
-        this.subBlockSearch.on('selected', function(selectedSubBlock) {
-            this.setData({
-                id: selectedSubBlock.id,
-                application: selectedSubBlock.contents.application,
-                type: selectedSubBlock.type
+                block.subBlockSearch.on('selected', function(selectedSubBlock) {
+                    block.setData({
+                        id: selectedSubBlock.id,
+                        application: selectedSubBlock.content.application,
+                        type: selectedSubBlock.type
+                    });
+
+                    block.subBlockSearch.destroy();
+
+                    block.$editor.append(selectedSubBlock.renderLarge());
+                    block.$editor.show();
+                });
+            })
+            .catch(function(err) {
+                console.error(err);
             });
-
-            this.slider.destroy();
-            this.filterBar.destroy();
-
-            this.$editor.html(selectedSubBlock.renderLarge());
-        }.bind(this));
     }
 }
 
@@ -169,7 +184,11 @@ module.exports = Block.extend({
     loadData: function(data) {
         if (!_.isEmpty(data)) {
             if (data.type === 'script') {
-                var scriptSubBlock = subBlockManager.buildSingle(this.type, data.type, data.content);
+                var scriptSubBlock = subBlockManager.buildSingle({
+                    parentID: this.blockID,
+                    content: data.content,
+                    type: data.type
+                });
 
                 scriptSubBlock.appendTo(this.$editor);
 
@@ -186,16 +205,23 @@ module.exports = Block.extend({
                     }
                 })
                 .then(function(subBlockData) {
-                    var subBlock = subBlockManager.buildSingle(this.type, data.type, subBlockData.content);
+                    var subBlock = subBlockManager.buildSingle({
+                        accessToken: this.globalConfig.accessToken,
+                        apiUrl: this.globalConfig.apiUrl,
+                        application: this.globalConfig.application,
+                        content: subBlockData.content,
+                        parentID: this.blockID,
+                        type: data.type
+                    });
 
-                    this.$editor.html(subBlock.renderLarge());
+                    this.$editor.append(subBlock.renderLarge());
 
                     this.ready();
                 }.bind(this))
                 .catch(function(err) {
                     throw new Error('No block returned for id:' + this.subBlockData.id + ' on app:' + this.subBlockData.application + ' ' + err);
                 }.bind(this));
-        }
+            }
         }
     },
 

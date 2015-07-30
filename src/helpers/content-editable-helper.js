@@ -1,43 +1,82 @@
-'use strict'
+var $ = require('jquery');
 
-var _   = require('../lodash.js');
+function getRange() {
+    return window.getSelection().getRangeAt(0);
+}
 
-var sel;
-var range;
+function insertElementAtRange(range, elem) {
+    var frag = document.createDocumentFragment();
 
-exports.updateSelection = function(selection, blockRange) {
-    sel = selection;
-    range = blockRange;
-};
+    frag.appendChild(elem);
 
-exports.getSelectedContent = function(block) {
-    var html = '';
+    range.insertNode(frag);
+}
 
-    if (sel !== undefined) {
-        sel.removeAllRanges();
-        range.setStart(block.getTextBlock().get(0), 0);
-        sel.addRange(range);
-        if (sel.rangeCount) {
+function normaliseNewLine(elem) {
+    $(elem).on('keydown', function(event) {
+        // if enter key is pressed
+        if (event.keyCode === 13) {
+            var docFragment = document.createDocumentFragment();
 
-            var container = document.createElement('div');
-            for (var i = 0, len = sel.rangeCount; i < len; ++i) {
-                container.appendChild(sel.getRangeAt(i).cloneContents());
-            }
-            html = container.innerHTML;
-            return html;
+            // add the br
+            var newEl = document.createElement('br');
+
+            docFragment.appendChild(newEl);
+
+            // make the br replace selection
+            var range = getRange();
+            range.deleteContents();
+            range.insertNode(docFragment);
+
+            // create a new range
+            range = document.createRange();
+            range.setStartAfter(newEl);
+            range.collapse(true);
+
+            // place the cursor at the end
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+
+            // prevents default browser behaviour
+            return false;
         }
-    }
-    else {
-        console.error('your browser isnt supported yet');
-    }
+    });
+}
+
+function splitContentAtCaret(elem, cb) {
+    // var sel = window.getSelection();
+
+    var firstParagraph = '';
+    var secondParagraph = '';
+
+    // @todo reimplement
+    //
+    // sel.removeAllRanges();
+
+    // range.setStart(block.getTextBlock().get(0), 0);
+
+    // sel.addRange(range);
+
+    // if (sel.rangeCount) {
+
+    //     var container = document.createElement('div');
+
+    //     for (var i = 0, len = sel.rangeCount; i < len; ++i) {
+    //         container.appendChild(sel.getRangeAt(i).cloneContents());
+    //     }
+
+    //     html = container.innerHTML;
+
+    //     return html;
+    // }
+
+    cb(firstParagraph, secondParagraph);
+}
+
+module.exports = {
+    getRange: getRange,
+    insertElementAtRange: insertElementAtRange,
+    normaliseNewLine: normaliseNewLine,
+    splitContentAtCaret: splitContentAtCaret
 };
-
-exports.getTextAfterParagraph = function(block, paragraph ) {
-    var textAfter = block.getTextBlock().html().replace(paragraph, '');
-
-    return textAfter;
-};
-
-// @todo put the pasteHTMLAtCaret here
-// @todo put findCursorPosition here
-// @todo put resetCursorPosition here

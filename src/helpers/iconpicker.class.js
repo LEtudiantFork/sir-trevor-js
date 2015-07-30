@@ -1,13 +1,11 @@
-'use strict';
-
-var $                = require('jquery');
-var eventablejs      = require('eventablejs');
-var _                = require('../lodash.js');
-var Modal            = require('etudiant-mod-modal');
-var xhr              = require('etudiant-mod-xhr');
-var Slider           = require('./slider.class.js');
-var FileUploader     = require('../extensions/file-uploader.js');
-var CopyrightPicker  = require('./copyrightPicker.class.js');
+var $               = require('jquery');
+var _               = require('../lodash.js');
+var eventablejs     = require('eventablejs');
+var Modal           = require('etudiant-mod-modal');
+var xhr             = require('etudiant-mod-xhr');
+var Slider          = require('./slider.class.js');
+var FileUploader    = require('../extensions/file-uploader.js');
+var CopyrightPicker = require('./copyrightPicker.class.js');
 
 var iconPickerHtml = [
 '<div class="icon-picker"><div class="droppable st-block__upload-container">',

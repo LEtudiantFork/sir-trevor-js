@@ -1,65 +1,69 @@
-var animate     = require('velocity-commonjs/velocity.ui');
+var $           = require('jquery');
 var eventablejs = require('eventablejs');
-var xhr         = require('etudiant-mod-xhr');
 
-var FilterBar = require('./filterbar.class.js');
-var Slider    = require('./slider.class.js');
+var EventBus        = require('../event-bus.js');
+var FilterBar       = require('./filterbar.class.js');
+var Slider          = require('./slider.class.js');
+var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
-var utils = require('../utils.js');
+function registerSelectSubBlock(subBlockSearch) {
+    EventBus.on('sub-block-action:selected', function(subBlock) {
+        if (subBlock.parentID === subBlockSearch.id) {
+            subBlockSearch.trigger('selected', subBlock);
+        }
+    });
+}
 
-var subBlockManager = require('../sub_blocks/index.js');
+function filterUpdate(subBlockSearch) {
+    subBlockSearch.slider.on('progress', function() {
+        subBlockSearch.filterBar.moreResults();
+    });
 
-function registerClickOnContents(block) {
-    if (block.hasRegisteredClick !== true) {
-        block.hasRegisteredClick = true;
+    subBlockSearch.filterBar.on('update:result', function(updateResults) {
 
-        subBlockManager.bindEventsOnContainer(block.$inner, function(selectedSubBlockId, clickedElem) {
+        if (subBlockSearch.subBlockPreProcess) {
+            updateResults = subBlockSearch.subBlockPreProcess(updateResults);
+        }
 
-            animate(clickedElem, 'callout.bounce', { duration: 400 })
-                .then(function() {
-                    var selectedSubBlock = subBlockManager.getSubBlockById(selectedSubBlockId, block.subBlocks);
-
-                    block.subBlockSearch.trigger('selected', selectedSubBlock);
-
-                    subBlockManager.unBindEventsOnContainer(block.$inner);
-                });
+        var additionalSubBlocks = subBlockManager.build({
+            accessToken: subBlockSearch.accessToken,
+            apiUrl: subBlockSearch.apiUrl,
+            application: subBlockSearch.application,
+            contents: updateResults,
+            parentID: subBlockSearch.id,
+            type: subBlockSearch.subBlockType
         });
-    }
-}
 
-function filterUpdate(block, contentType) {
-    block.slider.on('progress', function() {
-        block.filterBar.moreResults();
-    });
+        subBlockSearch.subBlocks = subBlockSearch.subBlocks.concat(additionalSubBlocks);
 
-    block.filterBar.on('update:result', function(results) {
-        var additionalSubBlocks = subBlockManager.build(block.type, contentType, results);
-        var subBlockMarkup = subBlockManager.render(additionalSubBlocks);
-
-        block.subBlocks = block.subBlocks.concat(additionalSubBlocks);
-
-        block.slider.update(subBlockMarkup);
+        subBlockSearch.slider.update(subBlockManager.render(additionalSubBlocks));
     });
 }
 
-function filterSearch(block, contentType) {
-    block.filterBar.on('search:start', function() {
-        // on search start
+function filterSearch(subBlockSearch) {
+    subBlockSearch.filterBar.on('search:start', function() {});
+
+    subBlockSearch.filterBar.on('search:result', function(searchResults) {
+
+        if (subBlockSearch.subBlockPreProcess) {
+            searchResults = subBlockSearch.subBlockPreProcess(searchResults);
+        }
+
+        subBlockSearch.subBlocks = subBlockManager.build({
+            accessToken: subBlockSearch.accessToken,
+            apiUrl: subBlockSearch.apiUrl,
+            application: subBlockSearch.application,
+            contents: searchResults,
+            parentID: subBlockSearch.id,
+            type: subBlockSearch.subBlockType
+        });
+
+        subBlockSearch.slider.reset(subBlockManager.render(subBlockSearch.subBlocks));
     });
 
-    block.filterBar.on('search:result', function(results) {
-        block.subBlocks = subBlockManager.build(block.type, contentType, results);
-
-        var subBlockMarkup = subBlockManager.render(block.subBlocks);
-
-        block.slider.reset(subBlockMarkup);
-
-        registerClickOnContents(block);
-    });
-
-    block.filterBar.on('search:no-result', function() {
-        block.subBlocks = [];
-        block.slider.reset();
+    subBlockSearch.filterBar.on('search:no-result', function() {
+        subBlockSearch.subBlocks = [];
+        subBlockSearch.slider.reset();
     });
 }
 
@@ -70,86 +74,86 @@ function filterOptionsIncomplete(filterConfig) {
 }
 
 function prepareFilterConfig(filterConfig) {
+
+    // if the filter's options fields are already present, resolve immediately
     if (!filterOptionsIncomplete(filterConfig)) {
-        return Promise.resolve();
+        return Promise.resolve(filterConfig);
     }
-    else {
-        var promises = [];
 
-        filterConfig.fields.forEach(function(field) {
-            if (field.options && 'then' in field.options) {
-                promises.push(field.options);
-            }
-        });
+    var promises = [];
 
-        return Promise.all(promises)
-                .then(function(fetchedOptions) {
-                    fetchedOptions.forEach(function(fetchedOption) {
-                        filterConfig.fields.forEach(function(filterField) {
-                            if (filterField.name === fetchedOption.name) {
-                                filterField.options = fetchedOption.options;
-                            }
-                        });
+    filterConfig.fields.forEach(function(field) {
+        // if field.options is promisey
+        if (field.options && 'then' in field.options) {
+            promises.push(field.options);
+        }
+    });
+
+    // otherwise we need to loop through and complete all the async operations
+    return Promise.all(promises)
+            .then(function(fetchedOptions) {
+                fetchedOptions.forEach(function(fetchedOption) {
+                    filterConfig.fields.forEach(function(filterField) {
+                        if (filterField.name === fetchedOption.name) {
+                            filterField.options = fetchedOption.options;
+                        }
                     });
-
-                    return Promise.resolve();
-                })
-                .catch(function(err) {
-                    console.error(err);
                 });
-    }
+
+                return Promise.resolve(filterConfig);
+            });
 }
 
-var SubBlockSearch = function() {
-    this.init.apply(this, arguments);
+var SubBlockSearch = function(params) {
+    this.id = Date.now();
+
+    this.apiUrl = params.apiUrl;
+    this.application = params.application;
+    this.accessToken = params.accessToken;
+    this.$container = params.$container;
+    this.subBlockType = params.subBlockType;
+    this.subBlockPreProcess = params.subBlockPreProcess;
+
+    this.subBlocks = [];
+
+    // create container element
+    this.$elem = $('<div class="st-sub-block-search"></div>');
+
+    params.filterConfig.container = this.$elem;
+    params.sliderConfig.container = this.$elem;
+
+    this.filterBar = new FilterBar(params.filterConfig);
+
+    this.slider = new Slider(params.sliderConfig);
+
+    this.$elem.appendTo(this.$container);
+
+    filterUpdate(this);
+    filterSearch(this);
+
+    this.filterBar.search();
+
+    registerSelectSubBlock(this);
+
+    this.filterBar.once('search:result', function() {
+        this.trigger('ready');
+    }.bind(this));
 };
 
 var prototype = {
-    init: function(params) {
-        var block = this.block = params.block;
-
-        var apiUrl = params.apiUrl;
-        var filterConfig = params.filterConfig;
-        var sliderConfig = params.sliderConfig;
-
-        block.loading();
-
-        block.subBlocks = [];
-
-        prepareFilterConfig(filterConfig)
-            .then(function() {
-                block.filterBar = new FilterBar(filterConfig);
-
-                block.slider = new Slider(sliderConfig);
-
-                filterSearch(block, block.subBlockType);
-                filterUpdate(block, block.subBlockType);
-
-                block.filterBar.search();
-
-                block.filterBar.once('search:result', function() {
-                    block.ready();
-                    this.trigger('ready');
-                    utils.log('subBlockSearch triggered ready');
-                }.bind(this));
-
-            }.bind(this))
-            .catch(function(err) {
-                console.error(err);
-            });
+    refreshDimensions: function() {
+        this.slider.refreshDimensions(true);
     },
 
     destroy: function() {
-        this.block.filterBar.destroy();
-        this.block.slider.destroy()
-
-        subBlockManager.unBindEventsOnContainer(this.block.$inner);
-
-        this.block.filterBar = null;
-        this.block.slider = null;
+        this.$elem.remove();
     }
 };
 
 SubBlockSearch.prototype = Object.assign({}, prototype, eventablejs);
+
+SubBlockSearch.prepareParams = function(filterConfig) {
+    return prepareFilterConfig(filterConfig);
+};
 
 module.exports = SubBlockSearch;

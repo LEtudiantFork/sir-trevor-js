@@ -1,15 +1,14 @@
-var $ = require('jquery');
+var $           = require('jquery');
+var _           = require('../lodash');
+var animate     = require('velocity-commonjs/velocity.ui');
 var eventablejs = require('eventablejs');
-var _ = require('../lodash');
-var animate = require('velocity-commonjs/velocity.ui');
+var Slide       = require('./slide.class.js');
 
-var Slide = require('./slide.class.js');
-
-var canGoTo = function(index) {
+function canGoTo(index) {
     return !(index < 0 || index > this.slides.length - 1);
-};
+}
 
-var calculateSliderDimensions = function(reset) {
+function calculateSliderDimensions(reset) {
     this.$slides = this.$slideContainer.find('.st-slider-slide');
 
     if (this.$slides.length > 0) {
@@ -24,9 +23,9 @@ var calculateSliderDimensions = function(reset) {
     else {
         this.$slideContainer.css('width', 'auto');
     }
-};
+}
 
-var checkButtons = function() {
+function checkButtons() {
     if (this.currentIndex === 0 || this.slides.length === 0) {
         this.trigger('buttons:prev:disable');
     }
@@ -40,40 +39,32 @@ var checkButtons = function() {
     else {
         this.trigger('buttons:next:enable');
     }
-    // @todo - check if still pertinent
-    // var slideRows = 0 ;
-    // this.slides.forEach(function(slide) {
-    //     slideRows += slide.contents.length;
-    // });
-    // if (slideRows < (this.config.itemsPerSlide * this.config.increment)) {
-    //     this.eventBus.trigger('buttons:all:disable');
-    // }
-};
+}
 
-var checkProgress = function() {
+function checkProgress() {
     var progress = Math.round((this.currentIndex / this.slides.length) * 100);
 
     if (progress > 50 && this.hasEmitted !== true) {
         this.trigger('progress');
         this.hasEmitted = true;
     }
-};
+}
 
-var prepareSlides = function(slides, itemsPerSlide, indexModifier) {
+function prepareSlides(slideContents, itemsPerSlide, indexModifier) {
     var prepared = [];
 
-    _.chunk(slides, itemsPerSlide).forEach(function(slideContent, index) {
+    _.chunk(slideContents, itemsPerSlide).forEach(function(slideContentItem, index) {
         prepared.push(new Slide(
             indexModifier ? indexModifier + index : index,
-            slideContent,
+            slideContentItem,
             itemsPerSlide
         ));
     });
 
     return prepared;
-};
+}
 
-var registerButtons = function() {
+function registerButtons() {
     var prevButton = this.$elem.find('.st-slider-controls button[data-direction="prev"]');
     var nextButton = this.$elem.find('.st-slider-controls button[data-direction="next"]');
 
@@ -96,7 +87,7 @@ var registerButtons = function() {
     this.on('buttons:next:enable', function() {
         nextButton.removeAttr('disabled');
     });
-};
+}
 
 var sliderTemplate = [
     '<div class="st-block__slider">',
@@ -119,35 +110,93 @@ var sliderTemplate = [
 
 var noSlidesTemplate = [
     '<span class="st-slider-no-slides">',
-        'Il n\'y a pas de resultats',
+        'Il n\'y a pas de resultats', // @todo: i18n
     '</span>'
 ].join('\n');
 
 // PUBLIC
 
-var Slider = function() {
-    this.init.apply(this, arguments);
+var Slider = function(params) {
+    this.slides = [];
+    this.template = sliderTemplate;
+
+    this.config = {
+        itemsPerSlide: params.itemsPerSlide,
+        increment: params.increment,
+        controls: params.controls
+    };
+
+    if (params.contents) {
+        this.slides = prepareSlides(params.contents, this.config.itemsPerSlide);
+    }
+
+    if (params.container) {
+        params.container.append(this.render());
+        this.appendToDOM(params.container);
+    }
 };
 
-var prototype = {
-    init: function(params) {
-        this.slides = [];
-        this.template = sliderTemplate;
+Slider.prototype = Object.assign(Slider.prototype, {
+    appendToDOM: function(container) {
+        this.$elem = container.find('.st-block__slider');
+        this.$slideContainer = this.$elem.find('.st-slider-container');
 
-        this.config = {
-            itemsPerSlide: params.itemsPerSlide,
-            increment: params.increment,
-            controls: params.controls
-        };
+        if (!this.isBoundToDOM) {
 
-        if (params.contents) {
-            this.slides = prepareSlides(params.contents, this.config.itemsPerSlide);
+            if (this.config.controls) {
+                registerButtons.call(this);
+            }
+
+            this.refreshDimensions(true);
+
+            this.isBoundToDOM = true;
         }
+    },
 
-        if (params.container) {
-            params.container.append(this.render());
-            this.appendToDOM(params.container);
+    destroy: function() {
+        this.$elem.remove();
+    },
+
+    detach: function() {
+        this.$elem.detach();
+    },
+
+    goTo: function(index) {
+        animate(this.$slideContainer[0],
+            {
+                left: '-' + ((100 / this.config.increment).toFixed(2) * index) + '%'
+            },
+            {
+                queue: false,
+                duration: 400,
+                easing: 'ease-in-out'
+        });
+
+        this.currentIndex = index;
+
+        checkProgress.call(this);
+        checkButtons.call(this);
+    },
+
+    next: function() {
+        var newIndex = this.currentIndex + 1;
+
+        if (canGoTo.call(this, newIndex)) {
+            this.goTo(newIndex);
         }
+    },
+
+    prev: function() {
+        var newIndex = this.currentIndex - 1;
+
+        if (canGoTo.call(this, newIndex)) {
+            this.goTo(newIndex);
+        }
+    },
+
+    refreshDimensions: function(reset) {
+        calculateSliderDimensions.call(this, reset);
+        checkButtons.call(this);
     },
 
     render: function() {
@@ -160,44 +209,31 @@ var prototype = {
         return _.template(sliderTemplate, {
             content: slidesMarkup,
             controls: this.config.controls
-        }, { imports: { '_': _ }});
+        }, { imports: { '_': _ } });
     },
 
-    appendToDOM: function(container) {
-        // check if container is jQuery object
+    reset: function(newSlides) {
+        this.slides = [];
+        this.hasEmitted = false;
 
+        if (newSlides) {
+            this.$slideContainer.empty();
 
-        this.$elem = container.find('.st-block__slider');
-        this.$slideContainer = this.$elem.find('.st-slider-container');
+            this.slides = prepareSlides(newSlides, this.config.itemsPerSlide);
 
-        if (!this.isBoundToDOM) {
-
-            if (this.config.controls) {
-                registerButtons.call(this);
-            }
-
-            calculateSliderDimensions.call(this, true);
-            checkButtons.call(this);
-
-            this.isBoundToDOM = true;
+            this.slides.forEach(function(slide) {
+                this.$slideContainer.append(slide.render());
+            }.bind(this));
         }
-    },
-
-    // @todo see if it is still pertinent
-    alwaysAppendToDOM: function(container) {
-        this.$elem = container.find('.st-block__slider');
-        this.$slideContainer = this.$elem.find('.st-slider-container');
-        if (this.config.controls) {
-            registerButtons.call(this);
+        else {
+            this.$slideContainer.html(noSlidesTemplate);
         }
-        calculateSliderDimensions.call(this, true);
-        checkButtons.call(this);
 
+        this.refreshDimensions(true);
     },
 
     update: function(additionalSlides) {
         var indexModifier;
-        var slidesMarkup = '';
         var lastSlide = this.slides[this.slides.length - 1];
 
         indexModifier = this.slides.indexOf(lastSlide) + 1;
@@ -210,6 +246,8 @@ var prototype = {
             while (!lastSlide.isFull()) {
                 lastSlide.addItem(additionalSlides.pop());
             }
+
+            lastSlide.render();
         }
 
         var newSlides = prepareSlides(additionalSlides, this.config.itemsPerSlide, indexModifier);
@@ -217,77 +255,13 @@ var prototype = {
         this.slides = this.slides.concat(newSlides);
 
         this.slides.slice(indexModifier, this.slides.length).forEach(function(slide) {
-            slidesMarkup += slide.render();
-        });
+            this.$slideContainer.append(slide.render());
+        }.bind(this));
 
-        this.$slideContainer.append(slidesMarkup);
-
-        calculateSliderDimensions.call(this, false);
-        checkButtons.call(this);
+        this.refreshDimensions(false);
         this.hasEmitted = false;
-    },
-
-    reset: function(newSlides) {
-        this.slides = [];
-        this.hasEmitted = false;
-
-        animate(this.$elem[0], { opacity: 0 }, { duration: 200 })
-            .then(function() {
-                if (newSlides) {
-                    var slidesMarkup = '';
-
-                    this.slides =  prepareSlides(newSlides, this.config.itemsPerSlide);
-
-                    this.slides.forEach(function(slide) {
-                        slidesMarkup += slide.render();
-                    });
-
-                    this.$slideContainer.html(slidesMarkup);
-                }
-                else {
-                    this.$slideContainer.html(noSlidesTemplate);
-                }
-
-                calculateSliderDimensions.call(this, true);
-                checkButtons.call(this);
-
-                return Promise.resolve();
-            }.bind(this))
-            .then(function() {
-                return animate(this.$elem[0], { opacity: 1 }, { duration: 200 });
-            }.bind(this));
-    },
-
-    goTo: function(index) {
-        animate(this.$slideContainer[0], { left: '-' + ((100 / this.config.increment).toFixed(2) * index) + '%' }, { queue: false, duration: 400, easing: 'ease-in-out' });
-
-        this.currentIndex = index;
-
-        checkProgress.call(this);
-        checkButtons.call(this);
-    },
-
-    prev: function() {
-        var newIndex = this.currentIndex - 1;
-
-        if (canGoTo.call(this, newIndex)) {
-            this.goTo(newIndex);
-        }
-    },
-
-    next: function() {
-        var newIndex = this.currentIndex + 1;
-
-        if (canGoTo.call(this, newIndex)) {
-            this.goTo(newIndex);
-        }
-    },
-
-    destroy: function() {
-        this.$elem.remove();
     }
-};
 
-Slider.prototype = Object.assign({}, prototype, eventablejs);
+}, eventablejs);
 
 module.exports = Slider;
