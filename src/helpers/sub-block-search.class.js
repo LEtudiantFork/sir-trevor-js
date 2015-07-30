@@ -77,17 +77,19 @@ function prepareFilterConfig(filterConfig) {
 
     // if the filter's options fields are already present, resolve immediately
     if (!filterOptionsIncomplete(filterConfig)) {
-        return Promise.resolve();
+        return Promise.resolve(filterConfig);
     }
 
     var promises = [];
 
     filterConfig.fields.forEach(function(field) {
+        // if field.options is promisey
         if (field.options && 'then' in field.options) {
             promises.push(field.options);
         }
     });
 
+    // otherwise we need to loop through and complete all the async operations
     return Promise.all(promises)
             .then(function(fetchedOptions) {
                 fetchedOptions.forEach(function(fetchedOption) {
@@ -98,10 +100,7 @@ function prepareFilterConfig(filterConfig) {
                     });
                 });
 
-                return Promise.resolve();
-            })
-            .catch(function(err) {
-                console.error(err);
+                return Promise.resolve(filterConfig);
             });
 }
 
@@ -123,33 +122,22 @@ var SubBlockSearch = function(params) {
     params.filterConfig.container = this.$elem;
     params.sliderConfig.container = this.$elem;
 
-    this.trigger('loading');
+    this.filterBar = new FilterBar(params.filterConfig);
 
-    prepareFilterConfig(params.filterConfig)
-        .then(function() {
-            this.filterBar = new FilterBar(params.filterConfig);
+    this.slider = new Slider(params.sliderConfig);
 
-            this.slider = new Slider(params.sliderConfig);
+    this.$elem.appendTo(this.$container);
 
-            this.trigger('show');
+    filterUpdate(this);
+    filterSearch(this);
 
-            this.$elem.appendTo(this.$container);
+    this.filterBar.search();
 
-            filterUpdate(this);
-            filterSearch(this);
+    registerSelectSubBlock(this);
 
-            this.filterBar.search();
-
-            this.filterBar.once('search:result', function() {
-                this.trigger('ready');
-            }.bind(this));
-
-            registerSelectSubBlock(this);
-
-        }.bind(this))
-        .catch(function(err) {
-            console.error(err);
-        });
+    this.filterBar.once('search:result', function() {
+        this.trigger('ready');
+    }.bind(this));
 };
 
 var prototype = {
@@ -163,5 +151,9 @@ var prototype = {
 };
 
 SubBlockSearch.prototype = Object.assign({}, prototype, eventablejs);
+
+SubBlockSearch.prepareParams = function(filterConfig) {
+    return prepareFilterConfig(filterConfig);
+};
 
 module.exports = SubBlockSearch;

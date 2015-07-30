@@ -1,5 +1,3 @@
-"use strict";
-
 module.exports = {
   Text: require('./text'),
   Heading: require('./heading'),

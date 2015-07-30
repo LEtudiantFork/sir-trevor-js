@@ -42,7 +42,7 @@ function getInner() {
 }
 
 function createBlock(subBlock, id) {
-    var $elem = $(_.template(outerTemplate, { id: id } ));
+    var $elem = $(_.template(outerTemplate, { id: id }));
 
     return $elem.append(getInner());
 }
@@ -66,10 +66,10 @@ var ScriptBlock = function() {
 };
 
 var prototype = {
-    init: function(contents) {
-        this.contents = contents || {};
+    init: function(params) {
+        this.contents = params.contents || {};
 
-        this.id = 'st-sub-block-' + Date.now();
+        this.id = Date.now();
 
         this.$elem = createBlock(this.id);
 

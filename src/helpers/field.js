@@ -5,13 +5,25 @@ function buildSelect(field) {
     field.placeholder = field.placeholder ? ('<option value="" selected disabled>' + field.placeholder + '</option>') : '';
     field.multiple = field.multiple ? ('multiple="multiple"') : '';
 
+    field.options = field.options.map(function(singleOption) {
+
+        if (singleOption.selected && singleOption.selected !== '') {
+            singleOption.selected = 'selected';
+        }
+        else {
+            singleOption.selected = '';
+        }
+
+        return singleOption;
+    });
+
     var selectTemplate = [
         '<div class="st-block-field st-block-field-select">',
             '<%= label %>',
             '<select <%= multiple %> id="<%= name %>" name="<%= name %>">',
                 '<%= placeholder %>',
                 '<% _.forEach(options, function(option) { %>',
-                    '<option value="<%= option.value %>"><%= option.label %></option>',
+                    '<option <%= option.selected %> value="<%= option.value %>"><%= option.label %></option>',
                 '<% }); %>',
             '</select>',
         '</div>'

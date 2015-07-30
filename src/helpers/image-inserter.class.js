@@ -1,4 +1,5 @@
 var $                     = require('jquery');
+var _                     = require('../lodash.js');
 var contentEditableHelper = require('./content-editable-helper.js');
 var eventablejs           = require('eventablejs');
 var fieldHelper           = require('./field.js');
@@ -9,14 +10,12 @@ var subBlockManager       = require('../sub_blocks/sub-block-manager.js');
 var xhr                   = require('etudiant-mod-xhr');
 
 var ImageInserter = function(params) {
-    var self = this;
-
-    // create random id
     this.id = Date.now();
 
     this.apiUrl = params.apiUrl;
     this.accessToken = params.accessToken;
     this.application = params.application;
+    this.filterData = params.filterData;
     this.subBlockType = params.subBlockType;
 
     // initialise the modal
@@ -30,81 +29,66 @@ var ImageInserter = function(params) {
     // create a wrapper element for our filterbar and slider
     this.$imageSearchContainer = $('<div class="image-inserter image-inserter-search"></div>');
 
-    // make a first request to get all filter information
-    imageFilterHelper.fetch({
-        apiUrl: this.apiUrl,
+    // @todo: need to put this in i18n
+    var filterConfig = {
+        accessToken: this.accessToken,
         application: this.application,
-        accessToken: this.accessToken
-    })
-    // @todo is filterData still the best name for this return variable?
-    .then(function(filterData) {
-        // store the filter information on our ImageInserter instance
-        self.filterData = filterData;
-
-        // @todo: need to put this in i18n
-        var filterConfig = {
-            accessToken: self.accessToken,
-            application: self.application,
-            container: self.$imageSearchContainer,
-            fields: [
-                {
-                    type: 'search',
-                    name: 'query',
-                    placeholder: 'Rechercher'
-                }, {
-                    type: 'select',
-                    name: 'category',
-                    label: 'Catégories',
-                    placeholder: 'Sélectionnez une catégorie',
-                    options: fieldHelper.addNullOptionToArray(self.filterData.categories, 'Aucune catégorie')
-                }, {
-                    type: 'select',
-                    name: 'format',
-                    label: 'Formats',
-                    placeholder: 'Sélectionnez un format',
-                    options: fieldHelper.addNullOptionToArray(self.filterData.formats, 'Aucun format')
-                }
-            ],
-            limit: 20,
-            type: 'image',
-            url: self.apiUrl + '/edt/media'
-        };
-
-        var sliderConfig = {
-            controls: {
-                next: 'Next',
-                prev: 'Prev'
-            },
-            itemsPerSlide: 3,
-            increment: 1,
-            container: self.$imageSearchContainer
-        };
-
-        self.subBlockSearch = new SubBlockSearch({
-            application: self.application,
-            accessToken: self.accessToken,
-            apiUrl: self.apiUrl,
-            $container: self.$imageSearchContainer,
-            filterConfig: filterConfig,
-            sliderConfig: sliderConfig,
-            subBlockType: self.subBlockType,
-            subBlockPreProcess: function(subBlockData) {
-                return imageFilterHelper.prepareImageFormats(subBlockData, self.filterData.formats);
+        container: this.$imageSearchContainer,
+        fields: [
+            {
+                type: 'search',
+                name: 'query',
+                placeholder: 'Rechercher'
+            }, {
+                type: 'select',
+                name: 'category',
+                label: 'Catégories',
+                placeholder: 'Sélectionnez une catégorie',
+                options: fieldHelper.addNullOptionToArray(this.filterData.categories, 'Aucune catégorie')
+            }, {
+                type: 'select',
+                name: 'format',
+                label: 'Formats',
+                placeholder: 'Sélectionnez un format',
+                options: fieldHelper.addNullOptionToArray(this.filterData.formats, 'Aucun format')
             }
-        });
+        ],
+        limit: 20,
+        type: 'image',
+        url: this.apiUrl + '/edt/media'
+    };
 
-        self.subBlockSearch.on('ready', function() {
-            self.trigger('ready');
-        });
+    var sliderConfig = {
+        controls: {
+            next: 'Next',
+            prev: 'Prev'
+        },
+        itemsPerSlide: 3,
+        increment: 1,
+        container: this.$imageSearchContainer
+    };
 
-        // once an image has been selected from search, we can go to editImage state
-        self.subBlockSearch.on('selected', function(selectedDynamicImage) {
-            self.editImage(selectedDynamicImage);
-        });
-    })
-    .catch(function(error) {
-        console.error(error);
+    this.subBlockSearch = new SubBlockSearch({
+        application: this.application,
+        accessToken: this.accessToken,
+        apiUrl: this.apiUrl,
+        $container: this.$imageSearchContainer,
+        filterConfig: filterConfig,
+        sliderConfig: sliderConfig,
+        subBlockType: this.subBlockType,
+        subBlockPreProcess: function(subBlockData) {
+            return imageFilterHelper.prepareImageFormats(subBlockData, this.filterData.formats);
+        }.bind(this)
     });
+
+    this.subBlockSearch.on('ready', function() {
+        this.trigger('ready');
+    }.bind(this));
+
+    // once an image has been selected from search, we can go to editImage state
+    this.subBlockSearch.on('selected', function(selectedDynamicImage) {
+        this.editImage(selectedDynamicImage);
+    }.bind(this));
 };
 
 var prototype = {
@@ -149,20 +133,96 @@ var prototype = {
         if (this._events) {
             this._events.selected = undefined;
         }
+    },
+
+    reinitialiseImages: function(params) {
+        var self = this;
+
+        var block = params.block;
+        var storedDynamicImageData = params.storedData.dynamicImages;
+        var storedTextData = params.storedData.text;
+
+        return Promise.all(
+            // populate an array of promises; each corresponding to a request for an image
+            Object.keys(storedDynamicImageData).map(function(dynamicImageId) {
+                var retrievalUrl = block.globalConfig.apiUrl + '/edt/media/' + dynamicImageId;
+
+                return xhr.get(retrievalUrl, {
+                    data: {
+                        access_token: block.globalConfig.accessToken
+                    }
+                });
+            })
+        )
+        .then(function(rawDynamicImageData) {
+            // add the formats property to each image with the human readable image formats eg '500x500'
+            return rawDynamicImageData.map(function(singleRawDynamicImageData) {
+                return imageFilterHelper.prepareSingleImageFormat(singleRawDynamicImageData.content, self.filterData.formats);
+            });
+        })
+        .then(function(formattedDynamicImageData) {
+            var dynamicImages = formattedDynamicImageData.map(function(singleFormattedDynamicImageData) {
+
+                function findStoredImageDataItemByID(id, storedImageData) {
+                    var result;
+
+                    Object.keys(storedImageData).some(function(singleStoredImageData) {
+                        if (storedImageData[singleStoredImageData].id.toString() === id.toString()) {
+                            result = storedImageData[singleStoredImageData];
+                            return true;
+                        }
+                        return false;
+                    });
+
+                    return result;
+                }
+
+                var storedDynamicImageDataItem = findStoredImageDataItemByID(singleFormattedDynamicImageData.id, storedDynamicImageData);
+
+                singleFormattedDynamicImageData = Object.assign({}, singleFormattedDynamicImageData, storedDynamicImageDataItem);
+
+                return subBlockManager.buildSingle({
+                    accessToken: block.globalConfig.accessToken,
+                    apiUrl: block.globalConfig.apiUrl,
+                    application: block.globalConfig.application,
+                    content: singleFormattedDynamicImageData,
+                    parentID: block.blockID,
+                    type: 'dynamicImage'
+                });
+            });
+
+            // get all the image placeholders in the text
+            var dynamicImagePlaceholders = storedTextData.match(/@{[0-9]+}@/gm);
+
+            dynamicImagePlaceholders.forEach(function(dynamicImagePlaceholder) {
+                // get just the ID of the dynamic image from the text
+                var dynamicImageID = storedTextData.match(/@{([0-9]+)}@/)[1];
+
+                // get the corresponding subblock from the array we populated earlier
+                var dynamicImage = subBlockManager.getSubBlockByID(dynamicImages, dynamicImageID);
+
+                // get the rawHTML for this subBlock (so we lose the events and will have to rebind it later)
+                var dynamicImageHTML = dynamicImage.getHTMLPlaceholder();
+
+                // replace placeholder with html in text
+                storedTextData = storedTextData.replace(dynamicImagePlaceholder, dynamicImageHTML);
+            });
+
+            // make sure that imageinserter is ready in case we need to edit an image
+            return {
+                text: storedTextData,
+                dynamicImages: dynamicImages
+            };
+        })
+        .catch(function(err) {
+            console.error(err);
+        });
     }
 };
 
 ImageInserter.prototype = Object.assign({}, prototype, eventablejs);
 
 // Static classes
-
-function isInstantiated(imageInserterInstance) {
-    if (imageInserterInstance) {
-        return Promise.resolve();
-    }
-
-    return Promise.reject();
-}
 
 // use static class method to return callback with insertion point on click in editable area of block
 ImageInserter.awaitClick = function($elem, cb) {
@@ -179,36 +239,41 @@ ImageInserter.insertImage = function(insertionPoint, elem) {
     contentEditableHelper.insertElementAtRange(insertionPoint, elem);
 };
 
-ImageInserter.init = function(block) {
-    return isInstantiated(block.imageInserter)
-    .then(function() {
-        // if it's instantiated, we can open the image inserter straight away so let's trigger ready
-        block.imageInserter.trigger('ready');
+ImageInserter.prepareParams = function(params) {
+    // make a first request to get all filter information
+    return imageFilterHelper.fetch({
+        apiUrl: params.apiUrl,
+        application: params.application,
+        accessToken: params.accessToken
     })
-    .catch(function() {
-        // if not, we have to instantiate it
-        block.imageInserter = new ImageInserter({
+    // @todo is filterData still the best name for this return variable?
+    .then(function(filterData) {
+
+        params.filterData = filterData;
+
+        return params;
+    });
+};
+
+ImageInserter.init = function(block) {
+
+    if (!block.imageInserter) {
+        // return promise to initialise
+        return ImageInserter.prepareParams({
             accessToken: block.globalConfig.accessToken,
             apiUrl: block.globalConfig.apiUrl,
             application: block.globalConfig.application,
             blockRef: block,
             subBlockType: 'dynamicImage'
+        })
+        .then(function(preparedParams) {
+            block.imageInserter = new ImageInserter(preparedParams);
         });
-    })
-    // as this follows the above then/catch, it will always run
-    .then(function() {
-        // in case we closed the modal, we need to clear the onSelected
-        block.imageInserter.clearOnSelected();
+    }
 
-        // prepare behaviour for an image that has already been added but is then altered
-        block.imageInserter.on('replace', function(dynamicImage) {
-            ImageInserter.saveDynamicImage(block.blockStorage.data, dynamicImage);
+    block.imageInserter.clearOnSelected();
 
-            dynamicImage.replaceRenderedInBlock();
-        });
-
-        return Promise.resolve();
-    });
+    return Promise.resolve();
 };
 
 ImageInserter.saveDynamicImage = function(store, dynamicImage) {
@@ -219,116 +284,12 @@ ImageInserter.saveDynamicImage = function(store, dynamicImage) {
 
     // store dynamicImage on block
     store.dynamicImages[dynamicImage.id] = {
-        align: dynamicImage.align,
+        activeFormat: dynamicImage.content.activeFormat,
+        align: dynamicImage.content.align,
         id: dynamicImage.id,
-        legend: dynamicImage.legend,
-        format: dynamicImage.activeFormat
+        legend: dynamicImage.content.legend,
+        link: dynamicImage.content.link
     };
-};
-
-ImageInserter.reinitialiseImages = function(params) {
-    var block = params.block;
-
-    var storedDynamicImageData = params.storedData.dynamicImages;
-    var storedTextData = params.storedData.text;
-
-    // for the filter format data
-    var formattedFilterData;
-
-    var dynamicImagesPromises = [];
-
-    // populate an array of promises; each corresponding to a request for an image
-    Object.keys(storedDynamicImageData).forEach(function(dynamicImageId) {
-        var retrievalUrl = block.globalConfig.apiUrl + '/edt/media/' + dynamicImageId;
-
-        dynamicImagesPromises.push(
-            xhr.get(retrievalUrl, {
-                data: {
-                    access_token: block.globalConfig.accessToken
-                }
-            })
-        );
-    });
-
-    // first, fetch the format data we need to correspond with the format_ids that the api sends us
-    return imageFilterHelper.fetch({
-        apiUrl: block.globalConfig.apiUrl,
-        application: block.globalConfig.application,
-        accessToken: block.globalConfig.accessToken
-    })
-    .then(function(formattedData) {
-        // store this formatted data on our block
-        formattedFilterData = formattedData;
-
-        // get the raw image data from the api for each image id saved in block data
-        return Promise.all(dynamicImagesPromises);
-    })
-    .then(function(rawDynamicImageData) {
-        // add the formats property to each image with the human readable image formats eg '500x500'
-        return rawDynamicImageData.map(function(singleRawDynamicImageData) {
-            return imageFilterHelper.prepareSingleImageFormat(singleRawDynamicImageData.content, formattedFilterData.formats);
-        });
-    })
-    .then(function(formattedDynamicImageData) {
-        var dynamicImages = formattedDynamicImageData.map(function(singleFormattedDynamicImageData) {
-
-            function findStoredImageDataItemByID(id, storedImageData) {
-                var result;
-
-                Object.keys(storedImageData).some(function(singleStoredImageData) {
-                    if (storedImageData[singleStoredImageData].id.toString() === id) {
-                        result = storedImageData[singleStoredImageData];
-                        return true;
-                    }
-                    return false;
-                });
-
-                return result;
-            }
-
-            var storedDynamicImageDataItem = findStoredImageDataItemByID(singleFormattedDynamicImageData.id, storedDynamicImageData);
-
-            singleFormattedDynamicImageData = Object.assign(singleFormattedDynamicImageData, storedDynamicImageDataItem);
-
-            return subBlockManager.buildSingle({
-                accessToken: block.globalConfig.accessToken,
-                apiUrl: block.globalConfig.apiUrl,
-                application: block.globalConfig.application,
-                content: singleFormattedDynamicImageData,
-                parentID: block.blockID,
-                type: 'dynamicImage'
-            });
-        });
-
-        // get all the image placeholders in the text
-        var dynamicImagePlaceholders = storedTextData.match(/@{[0-9]+}@/gm);
-
-        dynamicImagePlaceholders.forEach(function(dynamicImagePlaceholder) {
-            // get just the ID of the dynamic image from the text
-            var dynamicImageID = storedTextData.match(/@{([0-9]+)}@/)[1];
-
-            // get the corresponding subblock from the array we populated earlier
-            var dynamicImage = subBlockManager.getSubBlockByID(dynamicImages, dynamicImageID);
-
-            // get the rawHTML for this subBlock (so we lose the events and will have to rebind it later)
-            var dynamicImageHTML = dynamicImage.getHTMLPlaceholder();
-
-            // replace placeholder with html in text
-            storedTextData = storedTextData.replace(dynamicImagePlaceholder, dynamicImageHTML);
-        });
-
-        // make sure that imageinserter is ready in case we need to edit an image
-        return ImageInserter.init(block)
-            .then(function() {
-                return {
-                    text: storedTextData,
-                    dynamicImages: dynamicImages
-                };
-            });
-    })
-    .catch(function(err) {
-        console.error(err);
-    });
 };
 
 ImageInserter.checkForDynamicImageStrings = function(textContent, blockStore) {
@@ -360,10 +321,13 @@ ImageInserter.checkForDynamicImageStrings = function(textContent, blockStore) {
             });
         }
 
-        return Promise.resolve(textContent);
+        return {
+            textContent: textContent,
+            blockStore: blockStore
+        };
     }
 
-    return Promise.reject();
+    return false;
 };
 
 module.exports = ImageInserter;

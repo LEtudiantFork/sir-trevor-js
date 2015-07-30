@@ -149,7 +149,7 @@ var prototype = {
     renderLarge: function(extraData) {
         extraData = extraData || {};
 
-        var legend = field({
+        var legend = fieldHelper.build({
             label: i18n.t('sub_blocks:media:legend'),
             name: 'legend',
             value: this.content.legend

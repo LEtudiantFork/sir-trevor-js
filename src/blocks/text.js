@@ -2,7 +2,6 @@
   Text Block
 */
 
-var _                     = require('../lodash.js');
 var Block                 = require('../block');
 var contentEditableHelper = require('../helpers/content-editable-helper.js');
 var EventBus              = require('../event-bus.js');
@@ -15,7 +14,9 @@ module.exports = Block.extend({
 
     type: 'text',
 
-    title: i18n.t('blocks:text:title'),
+    title: function() {
+        return i18n.t('blocks:text:title');
+    },
 
     controllable: true,
     formattable: true,
@@ -37,13 +38,19 @@ module.exports = Block.extend({
                 var self = this;
 
                 ImageInserter.awaitClick(self.getTextBlock(), function(insertionPoint) {
-
                     ImageInserter.init(self)
                         .then(function() {
                             self.imageInserter.openSearch();
 
-                            self.imageInserter.once('selected', function(dynamicImage) {
+                            // here we know that the imageinserter is initialised
+                            EventBus.on('editImage', function(dynamicImage) {
+                                if (dynamicImage.parentID === self.imageInserter.subBlockSearch.id) {
+                                    var shouldReplace = true;
+                                    self.imageInserter.editImage(dynamicImage, shouldReplace);
+                                }
+                            });
 
+                            self.imageInserter.once('selected', function(dynamicImage) {
                                 ImageInserter.saveDynamicImage(self.blockStorage.data, dynamicImage);
 
                                 // static method to insert the element at the insertionPoint
@@ -52,24 +59,25 @@ module.exports = Block.extend({
                         });
                 });
             }
-        },
-        {
-            slug: 'add-paragraph',
-            icon: 'Paragraph', // @todo find a proper icon for this
-            sleep: true,
-            eventTrigger: 'click',
-            fn: function() {
-                contentEditableHelper.splitContentAtCaret(this.getTextBlock(), function(firstParagraph, secondParagraph) {
-                    // @todo: as this creates just a 'string', we need to go back through the method
-                    this.getTextBlock().html(firstParagraph);
-
-                    // create a second block with the same content as the last
-                    this.mediator.trigger('block:create', 'text', {
-                        text: secondParagraph
-                    });
-                }.bind(this));
-            }
         }
+        // @todo repair this functionality
+        // {
+        //     slug: 'add-paragraph',
+        //     icon: 'Paragraph', // @todo find a proper icon for this
+        //     sleep: true,
+        //     eventTrigger: 'click',
+        //     fn: function() {
+        //         contentEditableHelper.splitContentAtCaret(this.getTextBlock(), function(firstParagraph, secondParagraph) {
+        //             // @todo: as this creates just a 'string', we need to go back through the method
+        //             this.getTextBlock().html(firstParagraph);
+
+        //             // create a second block with the same content as the last
+        //             this.mediator.trigger('block:create', 'text', {
+        //                 text: secondParagraph
+        //             });
+        //         }.bind(this));
+        //     }
+        // }
     ],
 
     onBlockRender: function() {
@@ -87,19 +95,15 @@ module.exports = Block.extend({
 
         if (textContent.length > 0) {
 
-            ImageInserter.checkForDynamicImageStrings(textContent, self.blockStorage.data)
-                .then(function(processedTextContent, newBlockStore) {
-                    data.text = stToMarkdown(processedTextContent, this.type);
-                })
-                .catch(function() {
-                    // otherwise we need to make sure that any dynamic images that were added are removed
-                    // this is because we could have added them then deleted them with a keystroke
-                    if (self.blockStorage.data && self.blockStorage.data.dynamicImages) {
-                        delete self.blockStorage.data.dynamicImages;
-                    }
+            var parsedBlockContent = ImageInserter.checkForDynamicImageStrings(textContent, self.blockStorage.data)
 
-                    data.text = stToMarkdown(content, this.type);
-                });
+            data.text = stToMarkdown(parsedBlockContent.textContent, this.type);
+            self.blockStorage.data = parsedBlockContent.blockStore;
+
+            if (!parsedBlockContent) {
+                delete self.blockStorage.data.dynamicImages;
+                data.text = stToMarkdown(textContent, this.type);
+            }
         }
 
         return data;
@@ -112,34 +116,45 @@ module.exports = Block.extend({
             self.loading();
             self.getTextBlock().hide();
 
-            ImageInserter.reinitialiseImages({
-                block: self,
-                storedData: {
-                    dynamicImages: data.dynamicImages,
-                    text: data.text
-                }
-            })
-            .then(function(result) {
-                self.dynamicImages = result.dynamicImages;
+            ImageInserter.init(self)
+                .then(function() {
+                    return self.imageInserter.reinitialiseImages({
+                        block: self,
+                        storedData: {
+                            dynamicImages: data.dynamicImages,
+                            text: data.text
+                        }
+                    });
+                })
+                .then(function(result) {
+                    self.dynamicImages = result.dynamicImages;
 
-                self.getTextBlock().html(stToHTML(result.text));
+                    self.getTextBlock().html(stToHTML(result.text));
 
-                self.dynamicImages.forEach(function(dynamicImage) {
-                    dynamicImage.replaceRenderedInBlock();
+                    self.dynamicImages.forEach(function(dynamicImage) {
+                        dynamicImage.replaceRenderedInBlock();
+                    });
+
+                    // here we know that the imageinserter is initialised
+                    EventBus.on('editImage', function(dynamicImage) {
+                        if (dynamicImage.parentID === self.blockID) {
+                            var shouldReplace = true;
+                            self.imageInserter.editImage(dynamicImage, shouldReplace);
+                        }
+                    });
+
+                    self.getTextBlock().show();
+
+                    // prepare behaviour for an image that has already been added but is then altered
+                    self.imageInserter.on('replace', function(dynamicImage) {
+                        ImageInserter.saveDynamicImage(self.blockStorage.data, dynamicImage);
+
+                        dynamicImage.replaceRenderedInBlock();
+                    });
+                })
+                .catch(function(error) {
+                    console.error(error);
                 });
-
-                // here we know that the imageinserter is initialised
-                EventBus.on('editImage', function(dynamicImage) {
-                    if (dynamicImage.parentID === self.blockID) {
-                        self.imageInserter.editImage(dynamicImage);
-                    }
-                });
-
-                self.getTextBlock().show();
-            })
-            .catch(function(error) {
-                console.error(error);
-            });
         }
         else {
             self.getTextBlock().html(stToHTML(data.text));

@@ -1,5 +1,3 @@
-'use strict';
-
 /*
   Media block - images et vidéos
 */
@@ -108,37 +106,41 @@ function onChoose(choices) {
         increment: 2
     };
 
-    this.subBlockSearch = new SubBlockSearch({
-        application: block.globalConfig.application,
-        accessToken: block.globalConfig.accessToken,
-        apiUrl: block.globalConfig.apiUrl,
-        $container: block.$editor,
-        filterConfig: filterConfig,
-        sliderConfig: sliderConfig,
-        subBlockType: block.subBlockType
-    });
+    SubBlockSearch.prepareParams(filterConfig)
+        .then(function(preparedFilterConfig) {
+            block.subBlockSearch = new SubBlockSearch({
+                application: block.globalConfig.application,
+                accessToken: block.globalConfig.accessToken,
+                apiUrl: block.globalConfig.apiUrl,
+                $container: block.$editor,
+                filterConfig: preparedFilterConfig,
+                sliderConfig: sliderConfig,
+                subBlockType: block.subBlockType
+            });
 
-    this.subBlockSearch.on('show', function() {
-        this.$editor.show();
-    }.bind(this));
+            block.$editor.show();
 
-    this.subBlockSearch.on('ready', function() {
-        this.$inner.prepend(this.$inputs);
-    }.bind(this));
+            block.subBlockSearch.on('ready', function() {
+                block.$inner.prepend(block.$inputs);
+            });
 
-    this.subBlockSearch.on('selected', function(selectedSubBlock) {
-        this.setData({
-            id: selectedSubBlock.id,
-            type: selectedSubBlock.type
+            block.subBlockSearch.on('selected', function(selectedSubBlock) {
+                block.setData({
+                    id: selectedSubBlock.id,
+                    type: selectedSubBlock.type
+                });
+
+                block.subBlockSearch.destroy();
+
+                block.$editor.append(selectedSubBlock.renderLarge());
+
+                block.$inputs.hide();
+                block.$editor.show();
+            });
+        })
+        .catch(function(err) {
+            console.error(err);
         });
-
-        this.subBlockSearch.destroy();
-
-        this.$editor.append(selectedSubBlock.renderLarge());
-
-        this.$inputs.hide();
-        this.$editor.show();
-    }.bind(this));
 }
 
 module.exports = Block.extend({

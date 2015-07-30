@@ -1,5 +1,3 @@
-'use strict';
-
 /*
   Embed (Jeux, Concours et Sondages & Script) Block
 */
@@ -8,7 +6,6 @@ var xhr = require('etudiant-mod-xhr');
 
 var _     = require('../lodash.js');
 var Block = require('../block');
-var utils = require('../utils');
 
 var fieldHelper = require('../helpers/field.js');
 var SubBlockSearch  = require('../helpers/sub-block-search.class.js');
@@ -33,6 +30,7 @@ var chooseableConfig = {
     ]
 };
 
+// @todo: should this sort of functionality be generic and go through the EventBus?
 function bindEventsOnScriptSubBlock(block, scriptSubBlock) {
     scriptSubBlock.on('valid', function(scriptBlockData) {
         block.resetErrors();
@@ -49,20 +47,24 @@ function bindEventsOnScriptSubBlock(block, scriptSubBlock) {
 }
 
 function getPath(subBlockType) {
+    var result;
+
     switch (subBlockType) {
         case 'poll':
-            return 'polls';
+            result = 'polls';
             break;
         case 'quiz':
-            return 'quizzes';
+            result = 'quizzes';
             break;
         case 'personality':
-            return 'personalities';
+            result = 'personalities';
             break;
         default:
-            throw new Error('Unknown sub block type');
+            result = new Error('Unknown sub block type');
             break;
     }
+
+    return result;
 }
 
 function onChoose(choices) {
@@ -71,7 +73,10 @@ function onChoose(choices) {
     block.subBlockType = choices.subBlockType;
 
     if (block.subBlockType === 'script') {
-        var scriptSubBlock = subBlockManager.buildSingle(block.subBlockType);
+        var scriptSubBlock = subBlockManager.buildSingle({
+            parentID: block.id,
+            type: block.subBlockType
+        });
 
         scriptSubBlock.appendTo(this.$editor);
 
@@ -133,30 +138,34 @@ function onChoose(choices) {
             increment: 2
         };
 
-        this.subBlockSearch = new SubBlockSearch({
-            application: block.globalConfig.application,
-            accessToken: block.globalConfig.accessToken,
-            apiUrl: block.globalConfig.apiUrl,
-            $container: block.$editor,
-            filterConfig: filterConfig,
-            sliderConfig: sliderConfig,
-            subBlockType: block.subBlockType
-        });
+        SubBlockSearch.prepareParams(filterConfig)
+            .then(function(preparedFilterConfig) {
+                block.subBlockSearch = new SubBlockSearch({
+                    application: block.globalConfig.application,
+                    accessToken: block.globalConfig.accessToken,
+                    apiUrl: block.globalConfig.apiUrl,
+                    $container: block.$editor,
+                    filterConfig: preparedFilterConfig,
+                    sliderConfig: sliderConfig,
+                    subBlockType: block.subBlockType
+                });
 
-        this.subBlockSearch.on('selected', function(selectedSubBlock) {
-            this.setData({
-                id: selectedSubBlock.id,
-                application: selectedSubBlock.contents.application,
-                type: selectedSubBlock.type
+                block.subBlockSearch.on('selected', function(selectedSubBlock) {
+                    block.setData({
+                        id: selectedSubBlock.id,
+                        application: selectedSubBlock.content.application,
+                        type: selectedSubBlock.type
+                    });
+
+                    block.subBlockSearch.destroy();
+
+                    block.$editor.append(selectedSubBlock.renderLarge());
+                    block.$editor.show();
+                });
+            })
+            .catch(function(err) {
+                console.error(err);
             });
-
-            this.subBlockSearch.destroy();
-
-            this.$editor.append(selectedSubBlock.renderLarge());
-
-            this.$inputs.hide();
-            this.$editor.show();
-        }.bind(this));
     }
 }
 
@@ -175,7 +184,11 @@ module.exports = Block.extend({
     loadData: function(data) {
         if (!_.isEmpty(data)) {
             if (data.type === 'script') {
-                var scriptSubBlock = subBlockManager.buildSingle(data.type, data.content);
+                var scriptSubBlock = subBlockManager.buildSingle({
+                    parentID: this.blockID,
+                    content: data.content,
+                    type: data.type
+                });
 
                 scriptSubBlock.appendTo(this.$editor);
 

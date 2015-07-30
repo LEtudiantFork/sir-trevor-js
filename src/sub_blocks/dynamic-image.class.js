@@ -17,12 +17,13 @@ var largeTemplate = [
     '<figure class="st-sub-block-image" data-etu-zoom="">',
         '<img src="<%= thumbnail %>" />',
     '</figure>',
-    '<span>Format : <%= activeFormat %></span>',
+    '<span>Format :</span>',
+    '<%= formats %>',
     '<span>&copy; <%= copyright %></span>',
     '<span>légende :</span>',
     '<input type="text" name="legend" value="<%= legend %>" />',
     '<span>url :</span>',
-    '<input type="url" name="link" value="" placeholder="entrez un lien" />',
+    '<input type="url" name="link" value="<%= link %>" placeholder="entrez un lien" />',
     '<span>Position :</span>',
     '<select name="align">',
         '<option <%= isLeft %> value="left">A gauche du texte</option>',
@@ -31,11 +32,10 @@ var largeTemplate = [
 ].join('\n');
 
 var inBlockTemplate = [
-    '<figure class="st-sub-block-image">',
-        '<img src="<%= thumbnail %>" />',
-    '</figure>',
-    '<button>éditer</button>',
-    '<button>supprimer</button>'
+    '<%= img %>',
+    '<span>légende : <%= legend %></span>',
+    '<button data-edit>éditer</button>',
+    '<button data-delete>supprimer</button>'
 ].join('\n');
 
 function hasFormatString(formatString, formats) {
@@ -59,12 +59,11 @@ var prototype = {
     init: function() {
         this.smallTemplate = smallTemplate;
         this.largeTemplate = largeTemplate;
-        this.inBlockTemplate = inBlockTemplate;
 
         this.content.align = this.content.align || 'right';
 
         if (this.content.formats.length === 1) {
-            this.activeFormat = this.content.formats[0];
+            this.content.activeFormat = this.content.formats[0];
         }
     },
 
@@ -84,11 +83,18 @@ var prototype = {
         var select = '';
 
         if (this.content.formats.length > 1) {
+            var formats = this.content.formats.map(function(formatItem) {
+                return {
+                    value: formatItem.label,
+                    label: formatItem.label
+                };
+            });
+
             select = fieldHelper.build({
                 type: 'select',
                 placeholder: 'Sélectionnez un format',
                 name: 'format-' + this.id,
-                options: this.content.formats
+                options: formats
             });
         }
 
@@ -104,20 +110,42 @@ var prototype = {
             this.hasRenderedSmall = true;
 
             this.$elem.on('click', 'select', function(e) {
-                if (this.renderedAs === 'small') {
+                if (this.renderedAs === 'small') {
+                    e.stopPropagation();
+                }
+            }.bind(this));
+
+            this.$elem.on('change', 'select', function(e) {
+                if (this.renderedAs === 'small') {
                     e.stopPropagation();
 
-                    // change active image (and thus zoomable behaviour) on select
+                    this.content.activeFormat = e.currentTarget.value;
                 }
             }.bind(this));
         }
     },
 
     prepareLargeMarkup: function() {
+        var formatOptions = this.content.formats.map(function(formatItem) {
+            return {
+                value: formatItem.label,
+                label: formatItem.label,
+                selected: this.content.activeFormat === formatItem.label
+            };
+        }.bind(this));
+
+        var formats = fieldHelper.build({
+            type: 'select',
+            name: 'format',
+            options: formatOptions
+        });
+
         var toRender = Object.assign({}, this.content, {
-            activeFormat: this.activeFormat,
+            formats: formats,
             isLeft: this.content.align === 'left' ? 'selected' : '',
-            isRight: this.content.align === 'right' ? 'selected' : ''
+            isRight: this.content.align === 'right' ? 'selected' : '',
+            link: this.content.link ? this.content.link : '',
+            hasLink: this.content.link === '' ? this.content.link : 'entrez un lien'
         });
 
         return _.template(largeTemplate, toRender, { imports: { '_': _ } });
@@ -130,18 +158,58 @@ var prototype = {
             this.$elem.on('change', 'select[name="align"]', function(e) {
                 this.content.align = e.currentTarget.value;
             }.bind(this));
+
+            this.$elem.on('change', 'select[name="format"]', function(e) {
+                this.content.activeFormat = e.currentTarget.value;
+            }.bind(this));
+
+            this.$elem.on('keyup', 'input[name="legend"]', function(e) {
+                this.content.legend = e.currentTarget.value;
+            }.bind(this));
+
+            this.$elem.on('keyup', 'input[name="link"]', function(e) {
+                this.content.link = e.currentTarget.value;
+            }.bind(this));
+
         }
     },
 
     // unlike renderSmall/Large this makes a new element every time
     renderInBlock: function() {
-        var $elem = $('<figure data-sub-block-in-block="' + this.id + '"></figure>');
+        var $elem = $('<figure contenteditable="false" data-sub-block-in-block="' + this.id + '"></figure>');
 
-        $elem.html('<img src="' + this.getFormattedSrc('100x100') + '" />');
-
-        $elem.on('click', function() {
+        $elem.on('click', 'button[data-edit]', function() {
             EventBus.trigger('editImage', this);
         }.bind(this));
+
+        $elem.on('click', 'button[data-delete]', function() {
+            if (confirm('Supprimez cette image ?')) {
+                $elem.remove();
+                $elem = null;
+            }
+        });
+
+        $elem.addClass('st-sub-block-align-' + this.content.align);
+
+        var img;
+
+        if (this.content.link && this.content.link !== '') {
+            img = [
+                '<a href="' + this.content.link + '" target="_blank">',
+                    '<img src="' + this.getFormattedSrc(this.content.activeFormat) + '" />',
+                '</a>'
+            ].join('\n');
+        }
+        else {
+            img = '<img src="' + this.getFormattedSrc(this.content.activeFormat) + '" />';
+        }
+
+        $elem.html(
+            _.template(inBlockTemplate, {
+                legend: this.content.legend,
+                img: img
+            })
+        );
 
         return $elem.get(0);
     },

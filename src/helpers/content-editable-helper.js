@@ -1,7 +1,4 @@
-'use strict'
-
 var $ = require('jquery');
-var _ = require('../lodash.js');
 
 function getRange() {
     return window.getSelection().getRangeAt(0);
@@ -20,9 +17,6 @@ function normaliseNewLine(elem) {
         // if enter key is pressed
         if (event.keyCode === 13) {
             var docFragment = document.createDocumentFragment();
-
-            // add a new line
-            docFragment.appendChild(document.createTextNode('\n'));
 
             // add the br
             var newEl = document.createElement('br');
@@ -51,7 +45,7 @@ function normaliseNewLine(elem) {
 }
 
 function splitContentAtCaret(elem, cb) {
-    var sel = window.getSelection();
+    // var sel = window.getSelection();
 
     var firstParagraph = '';
     var secondParagraph = '';
@@ -86,4 +80,3 @@ module.exports = {
     normaliseNewLine: normaliseNewLine,
     splitContentAtCaret: splitContentAtCaret
 };
-

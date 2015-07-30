@@ -26,8 +26,6 @@ BasicSubBlock.prototype = {
 
         this.$elem.on('click', function() {
             if (this.renderedAs === 'small') {
-                this.activeFormat = this.$elem.find('select').val() || this.content.formats[0].label;
-
                 EventBus.trigger('sub-block-action:selected', this);
             }
         }.bind(this));

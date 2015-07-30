@@ -1,16 +1,11 @@
-'use strict';
-
 /*
   Framed
 */
 
-var $               = require('jquery');
-var _               = require('../lodash.js');
 var Block           = require('../block');
 var ImageInserter   = require('../helpers/image-inserter.class.js');
 var stToHTML        = require('../to-html');
 var subBlockManager = require('../sub_blocks/sub-block-manager.js');
-var xhr             = require('etudiant-mod-xhr');
 
 module.exports = Block.extend({
     type: 'framed',

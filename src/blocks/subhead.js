@@ -1,5 +1,3 @@
-'use strict';
-
 /*
   subhead Block
 */
@@ -8,9 +6,9 @@ var stToHTML = require('../to-html');
 var utils    = require('../utils.js');
 
 function stripHeaderTags(string) {
-    return string.replace(/<h1>(.*?)<\/h1>/g,'$1')
-                 .replace(/<h2>(.*?)<\/h2>/g,'$1')
-                 .replace(/<h3>(.*?)<\/h3>/g,'$1');
+    return string.replace(/<h1>(.*?)<\/h1>/g, '$1')
+                 .replace(/<h2>(.*?)<\/h2>/g, '$1')
+                 .replace(/<h3>(.*?)<\/h3>/g, '$1');
 }
 
 function changeHeaderLevel(block, level) {
@@ -95,9 +93,9 @@ module.exports = Block.extend({
     toMarkdown: function(markdown) {
         var stToMarkdown = require('../to-markdown');
 
-        markdown = markdown.replace(/<h1>(.*?)<\/h1>/g,'#$1')
-                       .replace(/<h2>(.*?)<\/h2>/g,'##$1')
-                       .replace(/<h3>(.*?)<\/h3>/g,'###$1');
+        markdown = markdown.replace(/<h1>(.*?)<\/h1>/g, '#$1')
+                       .replace(/<h2>(.*?)<\/h2>/g, '##$1')
+                       .replace(/<h3>(.*?)<\/h3>/g, '###$1');
 
         return stToMarkdown(markdown);
     },
@@ -106,6 +104,5 @@ module.exports = Block.extend({
         return markdown.replace(/###(.*)/g, '<h3>$1</h3>')
                        .replace(/##(.*)/g, '<h2>$1</h2>')
                        .replace(/#(.*)/g, '<h1>$1</h1>');
-
     }
 });
