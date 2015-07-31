@@ -270,42 +270,43 @@ ImageInserter.saveDynamicImage = function(store, dynamicImage) {
     };
 };
 
-ImageInserter.checkForDynamicImageStrings = function(textContent, blockStore) {
-    var dynamicImageStrings = textContent.match(/<figure\b[^>]*>([\s\S]*?)<\/figure>/gm);
+ImageInserter.extractContent = function(textContent, storedDynamicImages) {
+    var newDynamicImages;
+    var imageMarkup = textContent.match(/<figure\b[^>]*>([\s\S]*?)<\/figure>/gm);
 
-    if (dynamicImageStrings) {
-        var dynamicImagesInHTML = [];
-
+    if (imageMarkup) {
         // get the ids of the dynamic images in the HTML
-        dynamicImageStrings.forEach(function(dynamicImageString) {
-            var dynamicImageID = dynamicImageString.match(/data-sub-block-in-block="([0-9]+)"/)[1];
-
-            dynamicImagesInHTML.push(dynamicImageID);
+        var imagesIDsInHTML = imageMarkup.map(function(imageMarkupItem) {
+            var dynamicImageID = imageMarkupItem.match(/data-sub-block-in-block="([0-9]+)"/)[1];
 
             // replace each dynamic image string with a custom placeholder eg. @{204520}@
-            textContent = textContent.replace(dynamicImageString, '@{' + dynamicImageID + '}@');
+            textContent = textContent.replace(imageMarkupItem, '@{' + dynamicImageID + '}@');
+
+            return dynamicImageID;
         });
 
-        if (dynamicImagesInHTML.length > 0) {
+
+        if (imagesIDsInHTML.length > 0) {
             // if there are dynamic images, they are obligatorily in the block data store - let's get an array of their ids
-            var storedDynamicImages = Object.keys(blockStore.dynamicImages);
+            var storedImageIDs = Object.keys(storedDynamicImages);
 
-            // get any dynamic images that are in the store but not in the html (i.e images that have been deleted in the editor since they were added)
-            var absentDynamicImages = _.difference(storedDynamicImages, dynamicImagesInHTML);
+            // get remaining image IDs - i.e ones that are both in the store AND in the HTML
+            var remainingImageIDs = _.intersection(storedImageIDs, imagesIDsInHTML);
 
-            // we delete these references from the dynamicImages store of the block
-            absentDynamicImages.forEach(function(absentDynamicImage) {
-                delete blockStore.dynamicImages[absentDynamicImage];
+            newDynamicImages = {};
+
+            remainingImageIDs.forEach(function(remainingImageID) {
+                newDynamicImages[remainingImageID] = storedDynamicImages[remainingImageID];
             });
         }
 
-        return {
-            textContent: textContent,
-            blockStore: blockStore
-        };
     }
 
-    return false;
+    return {
+        textContent: textContent,
+        dynamicImages: newDynamicImages
+    };
+
 };
 
 ImageInserter.init = function(block) {

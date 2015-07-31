@@ -21,6 +21,7 @@
     "lodash.debounce": "^2.4.1",
     "lodash.difference": "^3.2.2",
     "lodash.foreach": "^3.0.3",
+    "lodash.intersection": "^3.2.0",
     "lodash.isempty": "^2.4.1",
     "lodash.isfunction": "^2.4.1",
     "lodash.isobject": "^2.4.1",

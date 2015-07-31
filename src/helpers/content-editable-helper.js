@@ -18,6 +18,9 @@ function normaliseNewLine(elem) {
         if (event.keyCode === 13) {
             var docFragment = document.createDocumentFragment();
 
+            // add a new line
+            docFragment.appendChild(document.createTextNode('\n'));
+
             // add the br
             var newEl = document.createElement('br');
 

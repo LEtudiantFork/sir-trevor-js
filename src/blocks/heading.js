@@ -1,5 +1,5 @@
 /*
-  subhead Block
+  Heading Block
 */
 var Block    = require('../block');
 var stToHTML = require('../to-html');

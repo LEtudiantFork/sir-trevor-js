@@ -95,15 +95,11 @@ module.exports = Block.extend({
 
         if (textContent.length > 0) {
 
-            var parsedBlockContent = ImageInserter.checkForDynamicImageStrings(textContent, self.blockStorage.data)
+            var extractedContent = ImageInserter.extractContent(textContent, self.blockStorage.data.dynamicImages);
 
-            data.text = stToMarkdown(parsedBlockContent.textContent, this.type);
-            self.blockStorage.data = parsedBlockContent.blockStore;
+            data.text = stToMarkdown(extractedContent.textContent, this.type);
+            data.dynamicImages = extractedContent.dynamicImages;
 
-            if (!parsedBlockContent) {
-                delete self.blockStorage.data.dynamicImages;
-                data.text = stToMarkdown(textContent, this.type);
-            }
         }
 
         return data;
