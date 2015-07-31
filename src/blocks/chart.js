@@ -3,8 +3,9 @@
 */
 
 var Block        = require('../block');
-var TableBuilder = require('../helpers/tableBuilder.class.js');
-var ChartBuilder = require('../helpers/chartBuilder.class.js');
+var TableBuilder = require('../helpers/table-builder.class.js');
+var ChartBuilder = require('../helpers/chart-builder.class.js');
+
 var chartBuilder;
 var chartBuilderDisplay;
 
@@ -47,6 +48,7 @@ function tableUpdated(tableBuilder, block) {
             columnsHeaderValues: this.columnsHeaderValues,
             rowsHeaderValues: this.rowsHeaderValues
         };
+
         Object.assign(this.block.blockStorage.data, toSave);
         chartBuilder.render();
     });
