@@ -67,9 +67,6 @@ var Locales = {
         heading: {
             title: 'Titre'
         },
-        subhead: {
-            title: 'Inter-titre'
-        },
         table: {
             title: 'Tableaux',
             default: 'Defaut',
@@ -96,10 +93,6 @@ var Locales = {
                 next: 'Next'
             }
 
-        },
-        framed: {
-            title: 'Encadré',
-            placeholder: 'Glissez votre image ici'
         }
     },
     slider: {

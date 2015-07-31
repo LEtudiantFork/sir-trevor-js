@@ -95,6 +95,7 @@ BasicMediaSubBlock.prototype = Object.assign(BasicMediaSubBlock.prototype, {
 
         this.trigger('save', this.toSave);
     },
+
     // bindToRenderedHTML: function() {
     //     this.$elem = $('[data-sub-block-id="' + this.id + '"]');
 

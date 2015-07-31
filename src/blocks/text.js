@@ -20,7 +20,7 @@ module.exports = Block.extend({
 
     controllable: true,
     formattable: true,
-    paragraphable: true,
+    // paragraphable: true,
 
     editorHTML: '<div class="st-required text-block st-text-block" contenteditable="true"></div>',
 
