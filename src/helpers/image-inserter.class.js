@@ -218,7 +218,6 @@ ImageInserter.prototype = Object.assign(ImageInserter.prototype, {
             console.error(err);
         });
     }
-
 }, eventablejs);
 
 // Static classes
@@ -254,7 +253,7 @@ ImageInserter.prepareParams = function(params) {
     });
 };
 
-ImageInserter.saveDynamicImage = function(store, dynamicImage) {
+ImageInserter.saveImage = function(store, dynamicImage) {
     // create dynamic images object if missing
     if (!store.dynamicImages) {
         store.dynamicImages = {};

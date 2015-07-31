@@ -5,6 +5,7 @@
 var Block                 = require('../block');
 var contentEditableHelper = require('../helpers/content-editable-helper.js');
 var EventBus              = require('../event-bus.js');
+var FramedHelper          = require('../helpers/framed.js');
 var ImageInserter         = require('../helpers/image-inserter.class.js');
 var stToHTML              = require('../to-html');
 var utils                 = require('../utils.js');
@@ -40,9 +41,9 @@ module.exports = Block.extend({
                 ImageInserter.awaitClick(self.getTextBlock(), function(insertionPoint) {
                     ImageInserter.init(self)
                         .then(function() {
+                            // here we know that the imageinserter is initialised
                             self.imageInserter.openSearch();
 
-                            // here we know that the imageinserter is initialised
                             EventBus.on('editImage', function(dynamicImage) {
                                 if (dynamicImage.parentID === self.imageInserter.subBlockSearch.id) {
                                     var shouldReplace = true;
@@ -51,13 +52,35 @@ module.exports = Block.extend({
                             });
 
                             self.imageInserter.once('selected', function(dynamicImage) {
-                                ImageInserter.saveDynamicImage(self.blockStorage.data, dynamicImage);
+                                ImageInserter.saveImage(self.blockStorage.data, dynamicImage);
 
                                 // static method to insert the element at the insertionPoint
                                 ImageInserter.insertImage(insertionPoint, dynamicImage.renderInBlock());
                             });
                         });
                 });
+            }
+        },
+        {
+            slug: 'framed',
+            icon: 'framed',
+            sleep: true,
+            eventTrigger: 'click',
+            fn: function() {
+                var self = this;
+
+                FramedHelper.getInstance()
+                    .then(function(framedHelper) {
+                        return framedHelper.open();
+                    })
+                    .then(function(framedHelperResult) {
+                        self.setData({
+                            framed: framedHelperResult
+                        });
+                    })
+                    .catch(function() {
+
+                    });
             }
         }
         // @todo repair this functionality
@@ -90,7 +113,6 @@ module.exports = Block.extend({
 
         utils.log('toData for ' + self.blockID);
 
-        // get contents of block
         var textContent = self.getTextBlock().html();
 
         if (textContent.length > 0) {
@@ -99,7 +121,6 @@ module.exports = Block.extend({
 
             data.text = stToMarkdown(extractedContent.textContent, this.type);
             data.dynamicImages = extractedContent.dynamicImages;
-
         }
 
         return data;
