@@ -3,7 +3,7 @@ var d3           = require('d3');
 var d3plus       = require('d3plus');
 var eventablejs  = require('eventablejs');
 
-var TableBuilder = require('./table-builder.class.js');
+var buildTable = require('./table-builder.class.js');
 
 /* * /
 var visualization = d3plus.viz()
@@ -56,31 +56,7 @@ var barData = [
     { year: 1993, name:'gamma', value: 20 }
 ];
 
-function createBar(chartBuilder, chartData) {
-    // register trigger of show
-    var table;
-
-    table = new TableBuilder();
-
-    chartBuilder.$tableArea.append(table.$elem);
-
-    table.generate(barData);
-
-    table.on('change:cell', function(e) {
-        console.log(e);
-    });
-
-    table.on('change:header:row', function(e) {
-        console.log(e);
-    });
-
-    table.on('change:header:column', function(e) {
-        console.log(e);
-    });
-}
-
-/* * /
-var data = [
+var pieData = [
     { value: 100, name: "alpha" },
     { value: 70, name: "beta" },
     { value: 40, name: "gamma" },
@@ -88,6 +64,58 @@ var data = [
     { value: 5, name: "epsilon" },
     { value: 1, name: "zeta "}
 ];
+
+function createBar(chartBuilder, chartData) {
+    // register trigger of show
+    debugger;
+
+    var table = buildTable({
+        tableType: '2D',
+        tableData: barData,
+        columnKey: 'year',
+        rowKey: 'name',
+        valueKey: 'value'
+    });
+
+    var table2 = buildTable({
+        tableType: '1D',
+        tableData: pieData,
+        columnKey: 'value',
+        rowKey: 'name',
+        valueKey: 'value'
+    });
+
+    chartBuilder.$tableArea.append(table.$elem);
+    chartBuilder.$tableArea.append(table2.$elem);
+
+    table.generate(barData);
+
+    table.on('change:cell', function(e) {
+        console.log(e, table.tableType);
+    });
+
+    table2.on('change:cell', function(e) {
+        console.log(e, table2.tableType);
+    });
+
+    table.on('change:header:row', function(e) {
+        console.log(e, table.tableType);
+    });
+
+    table2.on('change:header:row', function(e) {
+        console.log(e, table2.tableType);
+    });
+
+    table.on('change:header:column', function(e) {
+        console.log(e, table.tableType);
+    });
+
+    table2.on('change:header:column', function(e) {
+        console.log(e, table2.tableType);
+    });
+}
+
+/* * /
 
 d3plus.viz()
 .container('#viz')
@@ -97,7 +125,6 @@ d3plus.viz()
 .size('value')
 .draw();
 /**/
-
 
 function createPie(chartBuilder) {
 

@@ -9,7 +9,7 @@ var columnHeaderCellTpl = '<th><input type="text" value="<%= cellContent %>" dat
 var rowHeaderCellTpl    = '<td><input type="text" value="<%= cellContent %>" data-old-value="<%= cellContent %>" data-cell-type="row-header" /></th>';
 var cellTpl             = '<td><input type="text" value="<%= cellContent %>" data-cell-type="standard" data-coord="<%= cellCoord %>" /></td>';
 
-function getValueInRawData(params) {
+function getValueInTwoDimensionalTable(params) {
     var result = params.rawData.filter(function(rawDataItem) {
         return rawDataItem[params.rowKey] === params.rowProp && rawDataItem[params.columnKey] === params.columnProp;
     })[0];
@@ -17,26 +17,32 @@ function getValueInRawData(params) {
     return result[params.valueKey];
 }
 
-function prepareData(params) {
-    var prepared;
+function prepareOneDimensionalData(params) {
+    var prepared = params.rowNames.map(function(rowName, index) {
+        return [
+            rowName,
+            {
+                coord: rowName,
+                value: params.tableData[index][params.valueKey]
+            }
+        ];
+    });
 
-    var rowNames = _.uniq(params.tableData.map(function(tableDataItem) {
-        return tableDataItem[params.rowKey];
-    }));
+    prepared.unshift(params.columnNames);
 
-    var columnNames = _.uniq(params.tableData.map(function(tableDataItem) {
-        return tableDataItem[params.columnKey];
-    }));
+    return prepared;
+}
 
-    prepared = rowNames.map(function(rowName) {
+function prepareTwoDimensionalData(params) {
+    var prepared = params.rowNames.map(function(rowName) {
         var preparedRow = [];
 
         preparedRow.push(rowName);
 
-        columnNames.forEach(function(columnName) {
+        params.columnNames.forEach(function(columnName) {
             preparedRow.push({
                 coord: rowName + '$' + columnName,
-                value: getValueInRawData({
+                value: getValueInTwoDimensionalTable({
                     rawData: params.tableData,
                     rowKey: params.rowKey,
                     rowProp: rowName,
@@ -50,31 +56,31 @@ function prepareData(params) {
         return preparedRow;
     });
 
-    prepared.unshift(columnNames);
+    prepared.unshift(params.columnNames);
 
     return prepared;
 }
 
-function createTableCell(cellData) {
+function renderTableCell(cellData) {
     return _.template(cellTpl, {
         cellContent: cellData.value,
         cellCoord: cellData.coord
     });
 }
 
-function createHeaderCell(cellData) {
+function renderHeaderCell(cellData) {
     return _.template(columnHeaderCellTpl, {
         cellContent: cellData
     });
 }
 
-function createRowHeaderCell(cellData) {
+function renderRowHeaderCell(cellData) {
     return _.template(rowHeaderCellTpl, {
         cellContent: cellData
     });
 }
 
-function createTableRow(rawRowData, isHeader) {
+function renderTableRow(rawRowData, isHeader) {
     var tableRowMarkup = '';
 
     rawRowData.forEach(function(cellData, index) {
@@ -82,13 +88,13 @@ function createTableRow(rawRowData, isHeader) {
             tableRowMarkup += '<th></th>';
         }
         else if (index > 0 && isHeader) {
-            tableRowMarkup += createHeaderCell(cellData);
+            tableRowMarkup += renderHeaderCell(cellData);
         }
         else if (index === 0) {
-            tableRowMarkup += createRowHeaderCell(cellData);
+            tableRowMarkup += renderRowHeaderCell(cellData);
         }
         else {
-            tableRowMarkup += createTableCell(cellData);
+            tableRowMarkup += renderTableCell(cellData);
         }
     });
 
@@ -97,27 +103,27 @@ function createTableRow(rawRowData, isHeader) {
     });
 }
 
-function createTableHeader(rawHeaderData) {
+function renderTableHeader(rawHeaderData) {
     var isHeader = true;
 
     rawHeaderData.unshift('');
 
     return _.template(headerTpl, {
-        tableHeaderMarkup: createTableRow(rawHeaderData, isHeader)
+        tableHeaderMarkup: renderTableRow(rawHeaderData, isHeader)
     });
 }
 
-function createTable(rawTableData) {
+function renderTable(rawTableData) {
     var tableMarkup = '';
 
     rawTableData.forEach(function(rawRowData, index) {
         if (index === 0) {
-            tableMarkup += createTableHeader(rawRowData);
+            tableMarkup += renderTableHeader(rawRowData);
 
             tableMarkup += '<tbody>';
         }
         else {
-            tableMarkup += createTableRow(rawRowData);
+            tableMarkup += renderTableRow(rawRowData);
         }
     });
 
@@ -128,54 +134,98 @@ function createTable(rawTableData) {
     });
 }
 
-var TableBuilder = function(tableType) {
-    var type = tableType;
-    var self = this;
-
-    this.$elem = $('<div class="st-table"></div>');
-
-    this.$elem.on('keyup', _.debounce(function(e) {
+function registerKeyUpListener(table) {
+    table.$elem.on('keyup', _.debounce(function(e) {
         var $srcElement = $(e.originalEvent.srcElement);
 
         var cellType = $srcElement.data('cellType');
 
         if (cellType === 'row-header') {
-            self.trigger('change:header:row', {
+            table.trigger('change:header:row', {
                 value: $srcElement.val(),
                 oldValue: $srcElement.data('oldValue')
             });
         }
         else if (cellType === 'column-header') {
-            self.trigger('change:header:column', {
+            table.trigger('change:header:column', {
                 value: $srcElement.val(),
                 oldValue: $srcElement.data('oldValue')
             });
         }
         else {
-            self.trigger('change:cell', {
+            table.trigger('change:cell', {
                 value: $srcElement.val(),
                 row: $srcElement.data('coord').split('$')[0],
                 column: $srcElement.data('coord').split('$')[1]
             });
         }
     }, 400));
-};
+}
 
-TableBuilder.prototype = Object.assign({
+var tablePrototype = {
+    update: function(newData) {
+        // var newDataKeys = Object.keys(newData);
 
-    generate: function(data) {
+        Object.assign(this, newData);
+
+        this.trigger('update');
+
+        // if (newDataKeys.) {
+        // }
+    },
+
+    generate: function() {
+        var self = this;
+        var preparedData;
+        var columnNames;
+
+        var rowNames = _.uniq(
+            this.tableData.map(function(tableDataItem) {
+                return tableDataItem[self.rowKey];
+            })
+        );
+
         this.$elem.empty();
 
-        var preparedData = prepareData({
-            tableData: data,
-            columnKey: 'year',
-            rowKey: 'name',
-            valueKey: 'value'
-        });
+        if (this.tableType === '1D') {
+            columnNames = [this.columnKey];
 
-        this.$elem.append(createTable(preparedData));
+            preparedData = prepareOneDimensionalData({
+                tableData: this.tableData,
+                columnNames: columnNames,
+                rowNames: rowNames,
+                valueKey: this.valueKey
+            });
+        }
+        else {
+            columnNames = _.uniq(
+                this.tableData.map(function(tableDataItem) {
+                    return tableDataItem[self.columnKey];
+                })
+            );
+
+            preparedData = prepareTwoDimensionalData({
+                tableData: this.tableData,
+                columnNames: columnNames,
+                rowNames: rowNames,
+                rowKey: this.rowKey,
+                columnKey: this.columnKey,
+                valueKey: this.valueKey
+            });
+        }
+
+        this.$elem.append(renderTable(preparedData));
     }
+};
 
-}, eventablejs);
+module.exports = function(options) {
+    var instance = Object.assign(Object.create(tablePrototype), eventablejs, options);
 
-module.exports = TableBuilder;
+    instance.$elem = $('<div class="st-table"></div>');
+
+    registerKeyUpListener(instance);
+
+    instance.generate();
+
+    return instance;
+};
