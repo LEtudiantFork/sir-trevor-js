@@ -1,12 +1,6 @@
-"use strict";
-
 var _ = require('./lodash');
 
-// ES6 shims
-require('object.assign').shim();
-require('array.prototype.find');
-require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
-
+require('babel/polyfill');
 require('./helpers/event'); // extends jQuery itself
 
 var SirTrevor = {
@@ -82,10 +76,11 @@ var SirTrevor = {
       Array.prototype.forEach.call(SirTrevor.config.instances, function(i) {
         i[method].apply(null, methodArgs);
       });
-    } else {
-      SirTrevor.log("method doesn't exist");
     }
-  },
+    else {
+      SirTrevor.log('method doesn\'t exist');
+    }
+  }
 
 };
 
