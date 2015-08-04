@@ -46,6 +46,27 @@ function bindEventsOnScriptSubBlock(block, scriptSubBlock) {
     });
 }
 
+function getThematics(params) {
+    return xhr.get(thematicOptionsUrl, {
+        data: {
+            access_token: block.globalConfig.accessToken
+        }
+    })
+    .then(function(result) {
+        var filterOptions = result.content.map(function(filterOption) {
+            return {
+                value: filterOption.id,
+                label: filterOption.label
+            };
+        });
+
+        return fieldHelper.addNullOptionToArray(filterOptions, 'Aucune Thematique');
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
+}
+
 function getPath(subBlockType) {
     var result;
 
@@ -85,50 +106,6 @@ function onChoose(choices) {
     else {
         var thematicOptionsUrl = block.globalConfig.apiUrl + '/jcs/thematics/list/' + getPath(choices.subBlockType);
 
-        var thematicOptionsPromise = xhr.get(thematicOptionsUrl, {
-            data: {
-                access_token: block.globalConfig.accessToken
-            }
-        })
-        .then(function(result) {
-            var filterOptions = result.content.map(function(filterOption) {
-                return {
-                    value: filterOption.id,
-                    label: filterOption.label
-                };
-            });
-
-            return fieldHelper.addNullOptionToArray(filterOptions, 'Aucune Thematique');
-        })
-        .catch(function(err) {
-            console.error(err);
-        })
-        .then(function(formatedFilterOptions) {
-            return {
-                name: 'thematic',
-                options: formatedFilterOptions
-            };
-        });
-
-        var filterConfig = {
-            url: block.globalConfig.apiUrl + '/jcs/' + getPath(choices.subBlockType) + '/search',
-            accessToken: block.globalConfig.accessToken,
-            fields: [
-                {
-                    type: 'search',
-                    name: 'query',
-                    placeholder: 'Rechercher'
-                }, {
-                    type: 'select',
-                    name: 'thematic',
-                    placeholder: 'Thematique',
-                    options: thematicOptionsPromise
-                }
-            ],
-            limit: 20,
-            application: block.globalConfig.application
-        };
-
         var sliderConfig = {
             controls: {
                 next: 'Next',
@@ -138,8 +115,27 @@ function onChoose(choices) {
             increment: 2
         };
 
-        SubBlockSearch.prepareParams(filterConfig)
-            .then(function(preparedFilterConfig) {
+        getThematics()
+            .then(function(thematics) {
+                var filterConfig = {
+                    url: block.globalConfig.apiUrl + '/jcs/' + getPath(choices.subBlockType) + '/search',
+                    accessToken: block.globalConfig.accessToken,
+                    fields: [
+                        {
+                            type: 'search',
+                            name: 'query',
+                            placeholder: 'Rechercher'
+                        }, {
+                            type: 'select',
+                            name: 'thematic',
+                            placeholder: 'Thematique',
+                            options: thematics
+                        }
+                    ],
+                    limit: 20,
+                    application: block.globalConfig.application
+                };
+
                 block.subBlockSearch = new SubBlockSearch({
                     application: block.globalConfig.application,
                     accessToken: block.globalConfig.accessToken,

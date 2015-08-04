@@ -73,37 +73,6 @@ function filterOptionsIncomplete(filterConfig) {
     });
 }
 
-function prepareFilterConfig(filterConfig) {
-
-    // if the filter's options fields are already present, resolve immediately
-    if (!filterOptionsIncomplete(filterConfig)) {
-        return Promise.resolve(filterConfig);
-    }
-
-    var promises = [];
-
-    filterConfig.fields.forEach(function(field) {
-        // if field.options is promisey
-        if (field.options && 'then' in field.options) {
-            promises.push(field.options);
-        }
-    });
-
-    // otherwise we need to loop through and complete all the async operations
-    return Promise.all(promises)
-            .then(function(fetchedOptions) {
-                fetchedOptions.forEach(function(fetchedOption) {
-                    filterConfig.fields.forEach(function(filterField) {
-                        if (filterField.name === fetchedOption.name) {
-                            filterField.options = fetchedOption.options;
-                        }
-                    });
-                });
-
-                return Promise.resolve(filterConfig);
-            });
-}
-
 var SubBlockSearch = function(params) {
     this.id = Date.now();
 
@@ -151,9 +120,5 @@ var prototype = {
 };
 
 SubBlockSearch.prototype = Object.assign({}, prototype, eventablejs);
-
-SubBlockSearch.prepareParams = function(filterConfig) {
-    return prepareFilterConfig(filterConfig);
-};
 
 module.exports = SubBlockSearch;

@@ -14,6 +14,8 @@ var fieldHelper = require('../helpers/field.js');
 var SubBlockSearch = require('../helpers/sub-block-search.class.js');
 var subBlockManager = require('../sub_blocks/sub-block-manager.js');
 
+var imageFilterHelper = require('../helpers/image-filter.js');
+
 var chooseableConfig = {
     name: 'subBlockType',
     options: [
@@ -45,57 +47,10 @@ function prepareCategories(categories) {
     });
 }
 
-function getCategoryOptionsPromise(block) {
-    var categoryOptionsUrl = block.globalConfig.apiUrl + '/edt/' + block.type + '/filters/' + block.globalConfig.application;
-
-    return xhr.get(categoryOptionsUrl, {
-        data: {
-            access_token: block.globalConfig.accessToken
-        }
-    })
-    .then(function(result) {
-        block.copyrights = prepareCopyrights(result.content.copyrights);
-        block.categories = prepareCategories(result.content.categories);
-
-        return fieldHelper.addNullOptionToArray(block.categories, 'Aucune categorie');
-    })
-    .catch(function(err) {
-        console.error(err);
-    })
-    .then(function(formattedCategories) {
-        return {
-            name: 'category',
-            options: formattedCategories
-        };
-    });
-}
-
 function onChoose(choices) {
     var block = this;
 
     block.subBlockType = choices.subBlockType;
-
-    var categoryOptionsPromise = getCategoryOptionsPromise(block);
-
-    var filterConfig = {
-        url: block.globalConfig.apiUrl + '/edt/' + block.type,
-        accessToken: block.globalConfig.accessToken,
-        fields: [
-            {
-                type: 'search',
-                name: 'query',
-                placeholder: 'Rechercher'
-            }, {
-                type: 'select',
-                name: 'category',
-                placeholder: 'Categorie',
-                options: categoryOptionsPromise
-            }
-        ],
-        limit: 20,
-        application: block.globalConfig.application,
-        subType: block.subBlockType
-    };
 
     var sliderConfig = {
         controls: {
@@ -106,41 +61,66 @@ function onChoose(choices) {
         increment: 2
     };
 
-    SubBlockSearch.prepareParams(filterConfig)
-        .then(function(preparedFilterConfig) {
-            block.subBlockSearch = new SubBlockSearch({
-                application: block.globalConfig.application,
-                accessToken: block.globalConfig.accessToken,
-                apiUrl: block.globalConfig.apiUrl,
-                $container: block.$editor,
-                filterConfig: preparedFilterConfig,
-                sliderConfig: sliderConfig,
-                subBlockType: block.subBlockType
-            });
+    imageFilterHelper.fetch({
+        apiUrl: block.globalConfig.apiUrl,
+        application: block.globalConfig.application,
+        accessToken: block.globalConfig.accessToken
+    })
+    .then(function(filterData) {
 
-            block.$editor.show();
+        var filterConfig = {
+            url: block.globalConfig.apiUrl + '/edt/' + block.type,
+            accessToken: block.globalConfig.accessToken,
+            fields: [
+                {
+                    type: 'search',
+                    name: 'query',
+                    placeholder: 'Rechercher'
+                }, {
+                    type: 'select',
+                    name: 'category',
+                    placeholder: 'Categorie',
+                    options: fieldHelper.addNullOptionToArray(filterData.categories, 'Aucune categorie')
+                }
+            ],
+            limit: 20,
+            application: block.globalConfig.application,
+            subType: block.subBlockType
+        };
 
-            block.subBlockSearch.on('ready', function() {
-                block.$inner.prepend(block.$inputs);
-            });
-
-            block.subBlockSearch.on('selected', function(selectedSubBlock) {
-                block.setData({
-                    id: selectedSubBlock.id,
-                    type: selectedSubBlock.type
-                });
-
-                block.subBlockSearch.destroy();
-
-                block.$editor.append(selectedSubBlock.renderLarge());
-
-                block.$inputs.hide();
-                block.$editor.show();
-            });
-        })
-        .catch(function(err) {
-            console.error(err);
+        block.subBlockSearch = new SubBlockSearch({
+            application: block.globalConfig.application,
+            accessToken: block.globalConfig.accessToken,
+            apiUrl: block.globalConfig.apiUrl,
+            $container: block.$editor,
+            filterConfig: filterConfig,
+            sliderConfig: sliderConfig,
+            subBlockType: block.subBlockType
         });
+
+        block.$editor.show();
+
+        block.subBlockSearch.on('ready', function() {
+            block.$inner.prepend(block.$inputs);
+        });
+
+        block.subBlockSearch.on('selected', function(selectedSubBlock) {
+            block.setData({
+                id: selectedSubBlock.id,
+                type: selectedSubBlock.type
+            });
+
+            block.subBlockSearch.destroy();
+
+            block.$editor.append(selectedSubBlock.renderLarge());
+
+            block.$inputs.hide();
+            block.$editor.show();
+        });
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
 }
 
 module.exports = Block.extend({

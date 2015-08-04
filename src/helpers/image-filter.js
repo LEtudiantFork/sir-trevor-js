@@ -1,3 +1,4 @@
+var _   = require('../lodash.js');
 var xhr = require('etudiant-mod-xhr');
 
 // prepares data for a template like '<option value="<%= value %>"><%= label %></option>'
@@ -10,6 +11,12 @@ function prepareForSelect(array, valueKeyName, labelKeyName) {
     });
 }
 
+function alphabetise(array, sortKey) {
+    return _.sortBy(array, function(arrayItem) {
+        return _.camelCase(arrayItem[sortKey]);
+    });
+}
+
 function fetch(params) {
     return xhr.get(params.apiUrl + '/edt/media/filters/' + params.application, {
         data: {
@@ -19,10 +26,15 @@ function fetch(params) {
     .then(function(fetchedData) {
         if (fetchedData && fetchedData.content) {
             // homogenise the data into label,value pairs for the filterbar's select
+
+            var categories = alphabetise(fetchedData.content.categories, 'label');
+            var copyrights = alphabetise(fetchedData.content.copyrights, 'name');
+            var formats = alphabetise(fetchedData.content.formats, 'label');
+
             return {
-                categories: prepareForSelect(fetchedData.content.categories, 'id', 'label'),
-                copyrights: prepareForSelect(fetchedData.content.copyrights, 'id', 'name'),
-                formats: prepareForSelect(fetchedData.content.formats, 'id', 'label')
+                categories: prepareForSelect(categories, 'id', 'label'),
+                copyrights: prepareForSelect(copyrights, 'id', 'name'),
+                formats: prepareForSelect(formats, 'id', 'label')
             };
         }
         else {
