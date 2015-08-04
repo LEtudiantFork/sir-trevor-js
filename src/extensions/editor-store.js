@@ -1,5 +1,3 @@
-"use strict";
-
 /*
  * Sir Trevor Editor Store
  * By default we store the complete data on the instances $el
@@ -8,7 +6,6 @@
 
 var _ = require('../lodash');
 var utils = require('../utils');
-
 
 var EditorStore = function(data, mediator) {
   this.mediator = mediator;
@@ -30,7 +27,7 @@ Object.assign(EditorStore.prototype, {
   },
 
   reset: function() {
-    utils.log("Resetting the EditorStore");
+    utils.log('Resetting the EditorStore');
     this.store = { data: [] };
   },
 
@@ -51,9 +48,7 @@ Object.assign(EditorStore.prototype, {
         result = jsonStr;
       }
     } catch(e) {
-      this.mediator.trigger(
-        'errors:add',
-        { text: i18n.t("errors:load_fail") });
+      this.mediator.trigger('errors:add', { text: i18n.t('errors:load_fail') });
 
       this.mediator.trigger('errors:render');
 

@@ -1,5 +1,3 @@
-'use strict';
-
 var $           = require('jquery');
 var eventablejs = require('eventablejs');
 var _           = require('../lodash.js');

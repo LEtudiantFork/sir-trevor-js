@@ -1,5 +1,3 @@
-"use strict";
-
 /*
    SirTrevor Floating Block Controls
    --

@@ -1,5 +1,3 @@
-"use strict";
-
 var BlockDeletion = function() {
   this._ensureElement();
   this._bindFunctions();

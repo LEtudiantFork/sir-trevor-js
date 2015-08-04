@@ -1,5 +1,3 @@
-'use strict';
-
 var $ = require('jquery');
 var _ = require('../lodash');
 var animate = require('velocity-commonjs/velocity.ui');

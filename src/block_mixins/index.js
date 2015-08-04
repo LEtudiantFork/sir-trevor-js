@@ -1,5 +1,3 @@
-"use strict";
-
 module.exports = {
   Ajaxable: require('./ajaxable.js'),
   Chooseable: require('./chooseable.js'),

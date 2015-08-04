@@ -1,7 +1,5 @@
-"use strict";
-
 /*
-  Backbone Inheritence 
+  Backbone Inheritence
   --
   From: https://github.com/documentcloud/backbone/blob/master/backbone.js
   Backbone.js 0.9.2

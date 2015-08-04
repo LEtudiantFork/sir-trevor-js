@@ -1,5 +1,3 @@
-"use strict";
-
 var _ = require('./lodash');
 var $ = require('jquery');
 
@@ -298,7 +296,6 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     onContentPasted: function(event, target) {
         target.html(this.pastedMarkdownToHTML(target[0].innerHTML));
-        this.getTextBlock().caretToEnd();
     },
 
     beforeLoadingData: function() {

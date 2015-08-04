@@ -1,5 +1,3 @@
-"use strict";
-
 var template = [
   "<div class='st-block-positioner__inner'>",
   "<span class='st-block-positioner__selected-value'></span>",

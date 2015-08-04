@@ -1,5 +1,3 @@
-"use strict";
-
 /*
  * Drop Area Plugin from @maccman
  * http://blog.alexmaccaw.com/svbtle-image-uploading
@@ -37,18 +35,3 @@ $.fn.noDropArea = function(){
     unbind("dragleave");
   return this;
 };
-
-$.fn.caretToEnd = function(){
-  var range,selection;
-
-  range = document.createRange();
-  range.selectNodeContents(this[0]);
-  range.collapse(false);
-
-  selection = window.getSelection();
-  selection.removeAllRanges();
-  selection.addRange(range);
-
-  return this;
-};
-

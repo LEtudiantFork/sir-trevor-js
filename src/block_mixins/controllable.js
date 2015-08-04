@@ -1,5 +1,5 @@
-var $ = require('jquery')
-  , _ = require('lodash');
+var $ = require('jquery');
+var _ = require('lodash');
 
 var utils = require('../utils');
 
