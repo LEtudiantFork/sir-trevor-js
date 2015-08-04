@@ -5,7 +5,7 @@ var Modal           = require('etudiant-mod-modal');
 var xhr             = require('etudiant-mod-xhr');
 var Slider          = require('./slider.class.js');
 var FileUploader    = require('../extensions/file-uploader.js');
-var CopyrightPicker = require('./copyrightPicker.class.js');
+var CopyrightPicker = require('./copyright-picker.class.js');
 
 var iconPickerHtml = [
 '<div class="icon-picker"><div class="droppable st-block__upload-container">',

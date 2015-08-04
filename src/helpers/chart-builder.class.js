@@ -1,5 +1,84 @@
-var d3     = require('d3');
-var d3plus = require('d3plus');
+var $            = require('jquery');
+var d3           = require('d3');
+var d3plus       = require('d3plus');
+var eventablejs  = require('eventablejs');
+
+var tableBuilder = require('./table-builder.class.js');
+
+/* * /
+var visualization = d3plus.viz()
+.container('#viz')
+.data(data)
+.type('bar')
+.id('name')
+.x('year')
+.y('value')
+.draw();
+/**/
+
+var barHeaderTemplate = [
+    '<header>',
+        '<div>',
+            '<label>X-axis</label>',
+            '<input type="text" name="x-axis-title" value="" />',
+        '</div>',
+        '<div>',
+            '<label>Y-axis</label>',
+            '<input type="text" name=y-axis-title" value="" />',
+        '</div>',
+    '</header>'
+].join('\n');
+
+function createBarHeader(chartBuilder) {
+    var $elem = $(barHeaderTemplate);
+
+    $elem.on('change', 'input[name="x-axis-title"]', function(e) {
+        chartBuilder.setData({
+            xAxisTitle: e.currentTarget.value
+        });
+    });
+
+    $elem.on('change', 'input[name="y-axis-title"]', function(e) {
+        chartBuilder.setData({
+            yAxisTitle: e.currentTarget.value
+        });
+    });
+}
+
+var barData = [
+    { year: 1991, name:"cake", value: 15 },
+    { year: 1991, name:"fruit", value: 10 },
+    { year: 1991, name:"gamma", value: 5 },
+    { year: 1992, name:"cake", value: 20 },
+    { year: 1992, name:"fruit", value: 10 },
+    { year: 1992, name:"gamma", value: undefined },
+    { year: 1993, name:"cake", value: 30 },
+    { year: 1993, name:"fruit", value: 40 },
+    { year: 1993, name:"gamma", value: 20 }
+];
+
+function createBar(chartBuilder, chartData) {
+    // register trigger of show
+    var table;
+
+    table = new tableBuilder();
+
+    chartBuilder.$tableArea.append(table.$elem);
+
+    table.generate(barData);
+
+    table.on('change:cell', function(e) {
+        console.log(e);
+    });
+
+    table.on('change:header:row', function(e) {
+        console.log(e);
+    });
+
+    table.on('change:header:column', function(e) {
+        console.log(e);
+    });
+}
 
 /* * /
 var data = [
@@ -20,40 +99,47 @@ d3plus.viz()
 .draw();
 /**/
 
-/* * /
-var data = [
-    { year: 1991, name:"alpha", value: 15 },
-    { year: 1991, name:"beta", value: 10 },
-    { year: 1991, name:"gamma", value: 5 },
-    { year: 1991, name:"delta", value: 50 },
-    { year: 1992, name:"alpha", value: 20 },
-    { year: 1992, name:"beta", value: 10 },
-    { year: 1992, name:"gamma", value: 10 },
-    { year: 1992, name:"delta", value: 43 },
-    { year: 1993, name:"alpha", value: 30 },
-    { year: 1993, name:"beta", value: 40 },
-    { year: 1993, name:"gamma", value: 20 },
-    { year: 1993, name:"delta", value: 17 },
-    { year: 1994, name:"alpha", value: 60 },
-    { year: 1994, name:"beta", value: 60 },
-    { year: 1994, name:"gamma", value: 25 },
-    { year: 1994, name:"delta", value: 3 2}
-];
 
-var visualization = d3plus.viz()
-.container('#viz')
-.data(data)
-.type('bar')
-.id('name')
-.x('year')
-.y('value')
-.draw();
-/**/
+function createPie(chartBuilder) {
+
+}
 
 var ChartBuilder = function(params) {
+    var self = this;
+    this.id = Date.now();
+    this.data = params.chartData;
 
+    this.$elem = $('<div class="chart-builder"></div>');
+    this.$chartArea = $('<div id="' + this.id + '" class="chart-area"></div>');
+    this.$tableArea = $('<div class="table-area"></div>');
+
+    this.$elem.append(this.$chartArea);
+    this.$elem.append(this.$tableArea);
+
+    if (params.chartType === 'pie') {
+        createPie(this);
+    }
+    else if (params.chartType === 'bar') {
+        createBar(this);
+    }
+
+    this.on('show', function() {
+        self.$chartArea.show();
+    });
+
+    this.on('hide', function() {
+        self.$chartArea.hide();
+    });
 };
 
-ChartBuilder.prototype = {};
+ChartBuilder.prototype = Object.assign({
+    setData: function(newData) {
+        this.data = Object.assign(this.data, newData);
+
+        var changedKeys = Object.keys(newData);
+
+        this.trigger('update', changedKeys);
+    }
+}, eventablejs);
 
 module.exports = ChartBuilder;
