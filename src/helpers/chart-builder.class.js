@@ -3,7 +3,7 @@ var d3           = require('d3');
 var d3plus       = require('d3plus');
 var eventablejs  = require('eventablejs');
 
-var tableBuilder = require('./table-builder.class.js');
+var TableBuilder = require('./table-builder.class.js');
 
 /* * /
 var visualization = d3plus.viz()
@@ -16,18 +16,17 @@ var visualization = d3plus.viz()
 .draw();
 /**/
 
-var barHeaderTemplate = [
-    '<header>',
-        '<div>',
-            '<label>X-axis</label>',
-            '<input type="text" name="x-axis-title" value="" />',
-        '</div>',
-        '<div>',
-            '<label>Y-axis</label>',
-            '<input type="text" name=y-axis-title" value="" />',
-        '</div>',
-    '</header>'
-].join('\n');
+var barHeaderTemplate =
+    `<header>
+        <div>
+            <label>X-axis</label>
+            <input type="text" name="x-axis-title" value="" />
+        </div>
+        <div>
+            <label>Y-axis</label>
+            <input type="text" name=y-axis-title" value="" />
+        </div>
+    </header>`;
 
 function createBarHeader(chartBuilder) {
     var $elem = $(barHeaderTemplate);
@@ -46,22 +45,22 @@ function createBarHeader(chartBuilder) {
 }
 
 var barData = [
-    { year: 1991, name:"cake", value: 15 },
-    { year: 1991, name:"fruit", value: 10 },
-    { year: 1991, name:"gamma", value: 5 },
-    { year: 1992, name:"cake", value: 20 },
-    { year: 1992, name:"fruit", value: 10 },
-    { year: 1992, name:"gamma", value: undefined },
-    { year: 1993, name:"cake", value: 30 },
-    { year: 1993, name:"fruit", value: 40 },
-    { year: 1993, name:"gamma", value: 20 }
+    { year: 1991, name:'cake', value: 15 },
+    { year: 1991, name:'fruit', value: 10 },
+    { year: 1991, name:'gamma', value: 5 },
+    { year: 1992, name:'cake', value: 20 },
+    { year: 1992, name:'fruit', value: 10 },
+    { year: 1992, name:'gamma', value: undefined },
+    { year: 1993, name:'cake', value: 30 },
+    { year: 1993, name:'fruit', value: 40 },
+    { year: 1993, name:'gamma', value: 20 }
 ];
 
 function createBar(chartBuilder, chartData) {
     // register trigger of show
     var table;
 
-    table = new tableBuilder();
+    table = new TableBuilder();
 
     chartBuilder.$tableArea.append(table.$elem);
 

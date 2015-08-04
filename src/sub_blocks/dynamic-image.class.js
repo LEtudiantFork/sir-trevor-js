@@ -4,39 +4,36 @@ var BasicSubBlock = require('./basic.class.js');
 var EventBus      = require('../event-bus.js');
 var fieldHelper   = require('../helpers/field.js');
 
-var smallTemplate = [
-    '<figure class="st-sub-block-image" data-etu-zoom="">',
-        '<img src="<%= thumbnail %>" />',
-    '</figure>',
-    '<%= select %>',
-    '<span>légende : <%= legend %></span>',
-    '<span>&copy; <%= copyright %></span>'
-].join('\n');
+var smallTemplate =
+    `<figure class="st-sub-block-image" data-etu-zoom="">
+        <img src="<%= thumbnail %>" />
+    </figure>
+    <%= select %>
+    <span>légende : <%= legend %></span>
+    <span>&copy; <%= copyright %></span>`;
 
-var largeTemplate = [
-    '<figure class="st-sub-block-image" data-etu-zoom="">',
-        '<img src="<%= thumbnail %>" />',
-    '</figure>',
-    '<span>Format :</span>',
-    '<%= formats %>',
-    '<span>&copy; <%= copyright %></span>',
-    '<span>légende :</span>',
-    '<input type="text" name="legend" value="<%= legend %>" />',
-    '<span>url :</span>',
-    '<input type="url" name="link" value="<%= link %>" placeholder="entrez un lien" />',
-    '<span>Position :</span>',
-    '<select name="align">',
-        '<option <%= isLeft %> value="left">A gauche du texte</option>',
-        '<option <%= isRight %> value="right">A droite du texte</option>',
-    '</select>'
-].join('\n');
+var largeTemplate =
+    `<figure class="st-sub-block-image" data-etu-zoom="">
+        <img src="<%= thumbnail %>" />
+    </figure>
+    <span>Format :</span>
+    <%= formats %>
+    <span>&copy; <%= copyright %></span>
+    <span>légende :</span>
+    <input type="text" name="legend" value="<%= legend %>" />
+    <span>url :</span>
+    <input type="url" name="link" value="<%= link %>" placeholder="entrez un lien" />
+    <span>Position :</span>
+    <select name="align">
+        <option <%= isLeft %> value="left">A gauche du texte</option>
+        <option <%= isRight %> value="right">A droite du texte</option>
+    </select>`;
 
-var inBlockTemplate = [
-    '<%= img %>',
-    '<span>légende : <%= legend %></span>',
-    '<button data-edit>éditer</button>',
-    '<button data-delete>supprimer</button>'
-].join('\n');
+var inBlockTemplate =
+    `<%= img %>
+    <span>légende : <%= legend %></span>
+    <button data-edit>éditer</button>
+    <button data-delete>supprimer</button>`;
 
 function hasFormatString(formatString, formats) {
     return formats.some(function(formatItem) {
@@ -194,14 +191,12 @@ var prototype = {
         var img;
 
         if (this.content.link && this.content.link !== '') {
-            img = [
-                '<a href="' + this.content.link + '" target="_blank">',
-                    '<img src="' + this.getFormattedSrc(this.content.activeFormat) + '" />',
-                '</a>'
-            ].join('\n');
+            img = `<a href="${ this.content.link }" target="_blank">
+                      <img src="${ this.getFormattedSrc(this.content.activeFormat) }" />
+                   </a>`;
         }
         else {
-            img = '<img src="' + this.getFormattedSrc(this.content.activeFormat) + '" />';
+            img = `<img src="${ this.getFormattedSrc(this.content.activeFormat) }" />`;
         }
 
         $elem.html(

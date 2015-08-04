@@ -11,18 +11,17 @@ var eventablejs = require('eventablejs');
 
 var outerTemplate = '<div data-sub-block-id="<%= id %>" class="st-sub-block st-sub-block__script"></div>';
 
-var innerTemplate = [
-    '<div data-script-container></div>',
-    '<textarea cols="30" rows="10"></textarea>',
-    '<div class="st-sub-block-footer">',
-        '<button class="st-btn" data-button-type="save" type="button">',
-            '<%= save %>',
-        '</button>',
-        '<button class="st-btn" data-button-type="edit" type="button">',
-            '<%= edit %>',
-        '</button>',
-    '</div>'
-].join('\n');
+var innerTemplate =
+    `<div data-script-container></div>
+    <textarea cols="30" rows="10"></textarea>
+    <div class="st-sub-block-footer">
+        <button class="st-btn" data-button-type="save" type="button">
+            <%= save %>
+        </button>
+        <button class="st-btn" data-button-type="edit" type="button">
+            <%= edit %>
+        </button>
+    </div>`;
 
 function checkHTML(html) {
     var doc = document.createElement('div');

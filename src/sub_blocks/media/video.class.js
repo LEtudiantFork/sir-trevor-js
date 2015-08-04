@@ -1,21 +1,19 @@
 var videojs = require('video.js');
 var BasicMediaSubBlock = require('./basic-media.class.js');
 
-var smallTemplate = [
-    '<figure class="st-sub-block-image">',
-        '<img src="<%= thumbnail %>" />',
-    '</figure>',
-    '<h3><%= legend %></h3>',
-    '<a class="st-sub-block-link st-icon" href="<%= file %>" target="_blank">link</a>'
-].join('\n');
+var smallTemplate =
+    `<figure class="st-sub-block-image">
+        <img src="<%= thumbnail %>" />
+    </figure>
+    <h3><%= legend %></h3>
+    <a class="st-sub-block-link st-icon" href="<%= file %>" target="_blank">link</a>`;
 
-var largeTemplate = [
-    '<div class="st-sub-block-video-wrapper">',
-        '<video class="video-js vjs-default-skin" src="<%= file %>" poster="<%= thumbnail %>" /></video>',
-    '</div>',
-    '<%= editArea %>',
-    '<%= footer %>'
-].join('\n');
+var largeTemplate =
+    `<div class="st-sub-block-video-wrapper">
+        <video class="video-js vjs-default-skin" src="<%= file %>" poster="<%= thumbnail %>" /></video>
+    </div>
+    <%= editArea %>
+    <%= footer %>`;
 
 var VideoSubBlock = function() {
     BasicMediaSubBlock.apply(this, arguments);
