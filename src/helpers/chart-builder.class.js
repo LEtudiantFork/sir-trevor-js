@@ -16,17 +16,18 @@ var visualization = d3plus.viz()
 .draw();
 /**/
 
-var barHeaderTemplate =
-    `<header>
-        <div>
-            <label>X-axis</label>
-            <input type="text" name="x-axis-title" value="" />
-        </div>
-        <div>
-            <label>Y-axis</label>
-            <input type="text" name=y-axis-title" value="" />
-        </div>
-    </header>`;
+var barHeaderTemplate = [
+    '<header>',
+        '<div>',
+            '<label>X-axis</label>',
+            '<input type="text" name="x-axis-title" value="" />',
+        '</div>',
+        '<div>',
+            '<label>Y-axis</label>',
+            '<input type="text" name=y-axis-title" value="" />',
+        '</div>',
+    '</header>'
+].join('\n');
 
 function createBarHeader(chartBuilder) {
     var $elem = $(barHeaderTemplate);

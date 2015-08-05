@@ -4,36 +4,39 @@ var BasicSubBlock = require('./basic.class.js');
 var EventBus      = require('../event-bus.js');
 var fieldHelper   = require('../helpers/field.js');
 
-var smallTemplate =
-    `<figure class="st-sub-block-image" data-etu-zoom="">
-        <img src="<%= thumbnail %>" />
-    </figure>
-    <%= select %>
-    <span>légende : <%= legend %></span>
-    <span>&copy; <%= copyright %></span>`;
+var smallTemplate = [
+    '<figure class="st-sub-block-image" data-etu-zoom="">',
+        '<img src="<%= thumbnail %>" />',
+    '</figure>',
+    '<%= select %>',
+    '<span>légende : <%= legend %></span>',
+    '<span>&copy; <%= copyright %></span>'
+].join('\n');
 
-var largeTemplate =
-    `<figure class="st-sub-block-image" data-etu-zoom="">
-        <img src="<%= thumbnail %>" />
-    </figure>
-    <span>Format :</span>
-    <%= formats %>
-    <span>&copy; <%= copyright %></span>
-    <span>légende :</span>
-    <input type="text" name="legend" value="<%= legend %>" />
-    <span>url :</span>
-    <input type="url" name="link" value="<%= link %>" placeholder="entrez un lien" />
-    <span>Position :</span>
-    <select name="align">
-        <option <%= isLeft %> value="left">A gauche du texte</option>
-        <option <%= isRight %> value="right">A droite du texte</option>
-    </select>`;
+var largeTemplate = [
+    '<figure class="st-sub-block-image" data-etu-zoom="">',
+        '<img src="<%= thumbnail %>" />',
+    '</figure>',
+    '<span>Format :</span>',
+    '<%= formats %>',
+    '<span>&copy; <%= copyright %></span>',
+    '<span>légende :</span>',
+    '<input type="text" name="legend" value="<%= legend %>" />',
+    '<span>url :</span>',
+    '<input type="url" name="link" value="<%= link %>" placeholder="entrez un lien" />',
+    '<span>Position :</span>',
+    '<select name="align">',
+        '<option <%= isLeft %> value="left">A gauche du texte</option>',
+        '<option <%= isRight %> value="right">A droite du texte</option>',
+    '</select>'
+].join('\n');
 
-var inBlockTemplate =
-    `<%= img %>
-    <span>légende : <%= legend %></span>
-    <button data-edit>éditer</button>
-    <button data-delete>supprimer</button>`;
+var inBlockTemplate = [
+    '<%= img %>',
+    '<span>légende : <%= legend %></span>',
+    '<button data-edit>éditer</button>',
+    '<button data-delete>supprimer</button>'
+].join('\n');
 
 function hasFormatString(formatString, formats) {
     return formats.some(function(formatItem) {

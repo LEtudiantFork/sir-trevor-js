@@ -6,21 +6,24 @@ var xhr           = require('etudiant-mod-xhr');
 
 var fieldHelper = require('../../helpers/field.js');
 
-var innerStaticTemplate =
-    `<%= legend %>
-    <label><%= copyrightLabel %>&copy;</label> <span><%= copyright %></span>`;
+var innerStaticTemplate = [
+    '<%= legend %>',
+    '<label><%= copyrightLabel %>&copy;</label> <span><%= copyright %></span>'
+].join('\n');
 
-var innerEditTemplate =
-    `<div class="st-sub-block-edit">
-        <%= fields %>
-    </div>`;
+var innerEditTemplate = [
+    '<div class="st-sub-block-edit">',
+        '<%= fields %>',
+    '</div>'
+].join('\n');
 
-var footerTemplate =
-    `<footer>
-        <button class="st-btn" data-button-type="save" type="button">
-            <%= save %>
-        </button>
-    </footer>`;
+var footerTemplate = [
+    '<footer>',
+        '<button class="st-btn" data-button-type="save" type="button">',
+            '<%= save %>',
+        '</button>',
+    '</footer>'
+].join('\n');
 
 function getFooter() {
     return _.template(footerTemplate, {

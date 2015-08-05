@@ -2,13 +2,14 @@ var _ = require('../../lodash.js');
 
 var BasicSubBlock = require('../basic.class.js');
 
-var smallTemplate =
-    `<figure class="st-sub-block-image">
-        <img src="<%= thumbnail %>" />
-    </figure>
-    <h3><%= title %></h3>
-    <a class="st-sub-block-link st-icon" href="<%= url %>" target="_blank">link</a>
-    <span class="st-sub-block-site"><%= site %></span>`;
+var smallTemplate = [
+    '<figure class="st-sub-block-image">',
+        '<img src="<%= thumbnail %>" />',
+    '</figure>',
+    '<h3><%= title %></h3>',
+    '<a class="st-sub-block-link st-icon" href="<%= url %>" target="_blank">link</a>',
+    '<span class="st-sub-block-site"><%= site %></span>'
+].join('\n');
 
 var JcsSubBlock = function() {
     BasicSubBlock.apply(this, arguments);

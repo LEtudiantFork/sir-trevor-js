@@ -17,12 +17,13 @@ var searchBuilder = function($elem) {
     return search;
 };
 
-var filterBarTemplate =
-    `<div class="st-block__filter-wrapper">
-        <form name="" class="st-block__filter">
-            <%= fields %>
-        </form>
-    </div>`;
+var filterBarTemplate = [
+    '<div class="st-block__filter-wrapper">',
+        '<form name="" class="st-block__filter">',
+            '<%= fields %>',
+        '</form>',
+    '</div>'
+].join('\n');
 
 var FilterBar = function(params) {
     this.accessToken = params.accessToken;

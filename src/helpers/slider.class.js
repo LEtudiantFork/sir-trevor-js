@@ -89,29 +89,30 @@ function registerButtons() {
     });
 }
 
-var sliderTemplate =
-    `<div class="st-block__slider">
-        <div class="st-slider">
-            <div class="st-slider-container">
-                <%= content %>
-            </div>
-        </div>
-        <% if (controls) { %>
-            <div class="st-slider-controls">
-                <% _.forEach(controls function(control, key) { %>
-                    <button class="st-btn" data-direction="<%= key %>">
-                        <span><%= control %></span>
-                    </button>
-                <% }); %>
-            </div>
-        <% } %>
-    </div>`;
+var sliderTemplate = [
+    '<div class="st-block__slider">',
+        '<div class="st-slider">',
+            '<div class="st-slider-container">',
+                '<%= content %>',
+            '</div>',
+        '</div>',
+        '<% if (controls) { %>',
+            '<div class="st-slider-controls">',
+                '<% _.forEach(controls, function(control, key) { %>',
+                    '<button class="st-btn" data-direction="<%= key %>">',
+                        '<span><%= control %></span>',
+                    '</button>',
+                '<% }); %>',
+            '</div>',
+        '<% } %>',
+    '</div>'
+].join('\n');
 
-// @todo: i18n
-var noSlidesTemplate =
-    `<span class="st-slider-no-slides">
-        Il n\'y a pas de resultats
-    </span>`;
+var noSlidesTemplate = [
+    '<span class="st-slider-no-slides">',
+        'Il n\'y a pas de resultats', // @todo: i18n
+    '</span>'
+].join('\n');
 
 // PUBLIC
 
