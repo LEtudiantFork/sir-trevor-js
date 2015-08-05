@@ -2,10 +2,9 @@
   Chart Block
 */
 
-var _            = require('../lodash.js');
-var Block        = require('../block');
-var TableBuilder = require('../helpers/table-builder.class.js');
-var ChartBuilder = require('../helpers/chart-builder.class.js');
+var _     = require('../lodash.js');
+var Block = require('../block');
+var Chart = require('../helpers/chart/index.js');
 
 var chooseableConfig = {
     'name': 'chartType',
@@ -23,13 +22,49 @@ var chooseableConfig = {
     ]
 };
 
+var barData = [
+    { year: '1991', name:'cake', value: 15 },
+    { year: '1991', name:'fruit', value: 10 },
+    { year: '1991', name:'gamma', value: 5 },
+    { year: '1992', name:'cake', value: 20 },
+    { year: '1992', name:'fruit', value: 10 },
+    { year: '1992', name:'gamma', value: undefined },
+    { year: '1993', name:'cake', value: 30 },
+    { year: '1993', name:'fruit', value: 40 },
+    { year: '1993', name:'gamma', value: 20 }
+];
+
+var pieData = [
+    { value: 100, name: 'alpha' },
+    { value: 70, name: 'beta' },
+    { value: 40, name: 'gamma' },
+    { value: 15, name: 'delta' },
+    { value: 5, name: 'epsilon' },
+    { value: 1, name: 'zeta' }
+];
+
 function onChoose(choices) {
     var block = this;
     var chartType = choices.chartType;
 
-    block.chartBuilder = new ChartBuilder({
-        chartType: chartType
-    });
+    if (chartType === 'pie') {
+        block.chartBuilder = Chart.create({
+            type: chartType,
+            data: pieData,
+            rowKey: 'name',
+            valueKey: 'value',
+            columnKey: 'value'
+        });
+    }
+    else {
+        block.chartBuilder = Chart.create({
+            type: chartType,
+            data: barData,
+            rowKey: 'name',
+            valueKey: 'value',
+            columnKey: 'year'
+        });
+    }
 
     block.$editor.append(block.chartBuilder.$elem);
 }
