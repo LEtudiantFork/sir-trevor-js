@@ -2,48 +2,51 @@ var d3     = require('d3');
 var d3plus = require('d3plus');
 var Table  = require('../table/index.js');
 
-function drawChart(pieChart) {
-    d3plus.viz()
-    .container('#' + pieChart.id)
-    .data(pieChart.data)
-    .type('pie')
-    .id(pieChart.rowKey)
-    .size(pieChart.valueKey)
-    .draw();
-}
-
-function generateWithData(pieChart) {
-    pieChart.table = Table.create({
-        tableType: '1D',
-        tableData: pieChart.data,
-        columnKey: pieChart.columnKey,
-        rowKey: pieChart.rowKey,
-        valueKey: pieChart.valueKey
-    });
-
-    pieChart.$tableArea.append(pieChart.table.$elem);
-
-    pieChart.d3chart = drawChart(pieChart);
-
-    pieChart.table.on('update', function(newData) {
-        pieChart.data = newData;
-
-        drawChart(pieChart);
-    });
-}
-
-function generateWithoutData(pieChart) {
-    // @todo implement
-}
+var mockData = [
+    { valeur: 10, section: 'Section 1' },
+    { valeur: 20, section: 'Section 2' },
+    { valeur: 30, section: 'Section 3' }
+];
 
 var pieChartPrototype = {
+    drawChart: function() {
+        d3plus.viz()
+        .container('#' + this.id)
+        .data(this.data)
+        .type('pie')
+        .id(this.rowKey)
+        .margin('10px 20px')
+        .size(this.valueKey)
+        .draw();
+    },
+
     generate: function() {
-        if (this.data) {
-            generateWithData(this);
+        if (!this.data) {
+            this.data = mockData;
+            this.rowKey = 'section';
+            this.valueKey = 'valeur';
         }
-        else {
-            generateWithoutData(this);
-        }
+
+        this.table = Table.create({
+            tableType: '1D',
+            tableData: this.data,
+            rowKey: this.rowKey,
+            valueKey: this.valueKey
+        });
+
+        this.$tableArea.append(this.table.$elem);
+
+        setTimeout(() => { this.drawChart() }, 0);
+
+        this.table.on('update:key', newData => {
+            this[newData.type] = newData.value;
+        });
+
+        this.table.on('update', newData => {
+            this.data = newData;
+
+            this.drawChart();
+        });
     }
 };
 

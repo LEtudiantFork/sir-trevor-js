@@ -1,103 +1,185 @@
 var _ = require('../../lodash.js');
 
-var tableTpl            = '<table><%= tableMarkup %></table>';
-var headerTpl           = '<thead><tr><th></th><%= tableHeaderMarkup %><th></th></tr></thead>';
-var rowTpl              = '<tr><%= tableRowMarkup %></tr>';
-var columnHeaderCellTpl = '<th><input type="text" value="<%= cellContent %>" data-old-value="<%= cellContent %>" data-cell-type="column-header" /></th>';
-var rowHeaderCellTpl    = '<td><input type="text" value="<%= cellContent %>" data-old-value="<%= cellContent %>" data-cell-type="row-header" /></td>';
-var cellTpl             = '<td><input type="text" value="<%= cellContent %>" data-cell-type="standard" data-coord="<%= cellCoord %>" /></td>';
-var deleteCell          = '<td><button data-key="<%= keyName %>" type="button"><%= deleteText %></td>'
-var footerTpl           = '<tfoot><tr><td></td><%= tableFooterMarkup %></tr></tfoot>';
+var templates = {
+    table: '<table><%= content %></table>',
+    thead: '<thead><%= content %></thead>',
+    tbody: '<tbody><%= content %></tbody>',
+    tfoot: '<tfoot><%= content %></tfoot>',
+    tr: '<tr><%= content %></tr>',
+    th: '<th><%= content %></th>',
+    td: '<td><%= content %></td>',
+    delete: '<button class="st-icon" data-icon="bin" data-type="<%= type %>" data-key="<%= key %>" type="button"></button>',
+    inner: '<input type="text" value="<%= value %>" data-old-value="<%= value %>" data-cell-type="<%= type %>" data-coord="<%= coord %>" />'
+};
 
-function renderTableCell(cellData) {
-    return _.template(cellTpl, {
-        cellContent: cellData.value,
-        cellCoord: cellData.coord
+function renderDelete(params) {
+    return _.template(templates.delete, {
+        key: params.key,
+        text: params.text,
+        type: params.type
     });
 }
 
-function renderHeaderCell(cellData) {
-    return _.template(columnHeaderCellTpl, {
-        cellContent: cellData
+function renderInner(params) {
+    return _.template(templates.inner, {
+        value: params.value,
+        type: params.type,
+        coord: params.coord || ''
     });
 }
 
-function renderRowHeaderCell(cellData) {
-    return _.template(rowHeaderCellTpl, {
-        cellContent: cellData
+function renderElement(params) {
+    return _.template(templates[params.type], { content: params.content });
+}
+
+function renderTHEAD(content) {
+    return renderElement({
+        type: 'thead',
+        content: content
     });
 }
 
-function renderTableRow(rawRowData) {
-    var tableRowMarkup = '';
-
-    rawRowData.forEach(function(cellData, index) {
-        if (index === 0) {
-            tableRowMarkup += renderRowHeaderCell(cellData);
-        }
-        else {
-            tableRowMarkup += renderTableCell(cellData);
-        }
-    });
-
-    tableRowMarkup += _.template(deleteCell, {
-        keyName: rawRowData[0],
-        deleteText: 'supprimer' // @todo i18n
-    });
-
-    return _.template(rowTpl, {
-        tableRowMarkup: tableRowMarkup
+function renderTBODY(content) {
+    return renderElement({
+        type: 'tbody',
+        content: content
     });
 }
 
-function renderTableHeader(rawHeaderData) {
-    var tableHeaderMarkup = '';
-
-    rawHeaderData.forEach(function(headerCellDataItem) {
-        tableHeaderMarkup += renderHeaderCell(headerCellDataItem);
-    });
-
-    return _.template(headerTpl, {
-        tableHeaderMarkup: tableHeaderMarkup
+function renderTFOOT(content) {
+    return renderElement({
+        type: 'tfoot',
+        content: content
     });
 }
 
-function renderTableFooter(rawFooterData) {
-    var tableFooterMarkup = '';
-
-    rawFooterData.forEach(function(cellData) {
-        tableFooterMarkup += _.template(deleteCell, {
-            keyName: cellData,
-            deleteText: 'supprimer' // @todo i18n
-        });
-    });
-
-    return _.template(footerTpl, {
-        tableFooterMarkup: tableFooterMarkup
+function renderTH(content) {
+    return renderElement({
+        type: 'th',
+        content: content
     });
 }
 
-function renderTable(rawTableData) {
-    var tableMarkup = '';
-
-    var headerRow = rawTableData.shift();
-
-    tableMarkup += renderTableHeader(headerRow);
-
-    tableMarkup += '<tbody>';
-
-    rawTableData.forEach(function(rawRowData, index) {
-        tableMarkup += renderTableRow(rawRowData);
-    });
-
-    tableMarkup += '</tbody>';
-
-    tableMarkup += renderTableFooter(headerRow);
-
-    return _.template(tableTpl, {
-        tableMarkup: tableMarkup
+function renderTR(content) {
+    return renderElement({
+        type: 'tr',
+        content: content
     });
 }
 
-exports.renderTable = renderTable;
-exports.renderTableFooter = renderTableFooter;
+function renderTD(content) {
+    return renderElement({
+        type: 'td',
+        content: content
+    })
+}
+
+function render1DTable(tableData) {
+    var headerData = tableData.shift();
+
+    var table = renderTHEAD(renderTR(renderTH('') + renderTH(renderInner({ value: headerData[0], type: 'column-header' })) +  renderTH('')));
+
+    var rows = tableData.map(function(rowData, rowIndex) {
+        return renderTR(
+            rowData.reduce(function(rowHeader, rowItem, innerIndex) {
+                var markup = renderTD(renderInner({ value: rowHeader, type: 'row-header' }));
+
+                markup += renderTD(renderInner({ value: rowItem.value, type: 'standard', coord: rowItem.coord }));
+
+                if (rowIndex === 0) {
+                    markup += renderTD('');
+                }
+                else {
+                    markup += renderTD(renderDelete({ key: rowHeader, text: 'supprimer', type: 'row' }));
+                }
+
+                return markup;
+            })
+        );
+    });
+
+    table += renderTBODY(rows.reduce((previousRow, currentRow) => { return previousRow += currentRow; }));
+
+    return renderElement({
+        type: 'table',
+        content: table
+    });
+}
+
+function render2DTable(tableData) {
+    var headerData = tableData.shift();
+
+    var table;
+
+    if (headerData.length === 1) {
+        table = renderTHEAD(renderTR(renderTH('') + renderTH(renderInner({ value: headerData[0], type: 'column-header' })) +  renderTH('')));
+    }
+    else {
+        table = renderTHEAD(renderTR(
+            headerData.reduce(function(previousItem, currentItem, index) {
+                if (index === 1) {
+                    previousItem = renderTH('') + renderTH(renderInner({ value: previousItem, type: 'column-header' }));
+                }
+
+                var markup = previousItem + renderTH(renderInner({ value: currentItem, type: 'column-header' }));
+
+                if (index === headerData.length - 1) {
+                    markup += renderTH('');
+                }
+
+                return markup;
+            })
+        ));
+    }
+
+    var rows = tableData.map(function(rowData, rowIndex) {
+        return renderTR(
+            rowData.reduce(function(previousItem, currentItem, innerIndex) {
+                if (innerIndex === 1) {
+                    previousItem = renderTD(renderInner({ value: previousItem, type: 'row-header' }));
+                }
+
+                var markup = previousItem += renderTD(renderInner({ value: currentItem.value, type: 'standard', coord: currentItem.coord }));
+
+                if (rowIndex === 0 && innerIndex === rowData.length - 1) {
+                    markup += renderTD('');
+                }
+                else if (innerIndex === rowData.length - 1) {
+                    markup += renderTD(renderDelete({ key: rowData[0], text: 'supprimer', type: 'row' }));
+                }
+
+                return markup;
+            })
+        );
+    });
+
+    if (headerData.length > 1) {
+        rows.push(
+            renderTFOOT(renderTR(
+                headerData.reduce(function(previousItem, currentItem, index) {
+                    if (index === 1) {
+                        previousItem = renderTD('') + renderTD('');
+                    }
+
+                    var markup = previousItem + renderTD(renderDelete({ key: currentItem, text: 'supprimer', type: 'column' }));
+
+                    if (index === headerData.length - 1) {
+                        markup += renderTD('');
+                    }
+
+                    return markup;
+                })
+            ))
+        );
+    }
+
+    table += renderTBODY(rows.reduce((previousRow, currentRow) => { return previousRow += currentRow; }));
+
+    return renderElement({
+        type: 'table',
+        content: table
+    });
+}
+
+exports.render1DTable = render1DTable;
+exports.render2DTable = render2DTable;

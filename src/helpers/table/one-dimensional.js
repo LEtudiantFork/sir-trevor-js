@@ -1,6 +1,16 @@
-var renderTable       = require('./render.js').renderTable;
+var $                 = require('jquery');
+var _                 = require('../../lodash.js');
+var renderTable       = require('./render.js').render1DTable;
 var renderTableFooter = require('./render.js').renderTableFooter;
 var getHeaderNames    = require('./lib.js').getHeaderNames;
+
+function renderTableControls() {
+    return [
+        '<div>',
+            '<button data-action="add-row">Ajouter une rangée</button>',
+        '</div>'
+    ].join('\n');
+}
 
 function prepareData(params) {
     var prepared = params.rowNames.map(function(rowName, index) {
@@ -13,7 +23,7 @@ function prepareData(params) {
         ];
     });
 
-    prepared.unshift(params.columnNames);
+    prepared.unshift([params.valueKey]);
 
     return prepared;
 }
@@ -22,8 +32,16 @@ var oneDimensionalTablePrototype = {
     addRow: function() {
         var newRow = {};
 
-        newRow[this.valueKey] = '';
-        newRow[this.rowKey] = '';
+        if (this._newRowName) {
+            this._newRowCount++;
+        }
+        else {
+            this._newRowName = 'Nouvelle Section'; // @todo i18n
+            this._newRowCount = 1;
+        }
+
+        newRow[this.valueKey] = 0;
+        newRow[this.rowKey] = this._newRowName + ' ' + this._newRowCount;
 
         this.tableData.push(newRow);
 
@@ -32,36 +50,69 @@ var oneDimensionalTablePrototype = {
     },
 
     deleteRow: function(rowName) {
-        if (this.tableData.length > 2) {
-            this.tableData = this.tableData.filter(function(tableDataItem) {
-                if (tableDataItem[this.rowKey] === rowName) {
-                    return false;
-                }
-                else {
-                    return true;
-                }
-            }.bind(this));
+        this.tableData = this.tableData.filter(function(tableDataItem) {
+            if (tableDataItem[this.rowKey] === rowName) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }.bind(this));
 
-            this.trigger('update', this.tableData);
-            this.render();
-        }
+        this.trigger('update', this.tableData);
+        this.render();
     },
 
     render: function() {
-        var columnNames = [this.columnKey];
         var rowNames = getHeaderNames(this.tableData, this.rowKey);
 
         this.$elem.empty();
 
         var preparedData = prepareData({
             tableData: this.tableData,
-            columnNames: columnNames,
             rowNames: rowNames,
             valueKey: this.valueKey
         });
 
+        this.$elem.append(renderTableControls());
+
         this.$elem.append(renderTable(preparedData));
-        this.$elem.find('th input').attr('disabled', true);
+    },
+
+    registerKeyUpListeners: function() {
+        if (this.hasRegisteredKeyUp) {
+            return false;
+        }
+
+        this.hasRegisteredKeyUp = true;
+
+        this.$elem.on('keyup', _.debounce(e => {
+            var $srcElement = $(e.originalEvent.srcElement);
+
+            var cellType = $srcElement.data('cellType');
+
+            if (cellType === 'row-header') {
+                this.updateHeader({
+                    headerKey: this.rowKey,
+                    newValue: $srcElement.val().toString(),
+                    oldValue: $srcElement.data('oldValue').toString()
+                });
+            }
+            else if (cellType === 'column-header') {
+                this.updateDataKey({
+                    type: 'valueKey',
+                    newKey: $srcElement.val(),
+                    oldKey: $srcElement.data('oldValue').toString()
+                });
+            }
+            else {
+                this.updateCell({
+                    newValue: parseInt($srcElement.val()),
+                    row: $srcElement.data('coord').split('$')[0].toString(),
+                    column: $srcElement.data('coord').split('$')[1].toString()
+                });
+            }
+        }, 400));
     },
 
     updateCell: function(params) {

@@ -6,46 +6,6 @@ var genericTablePrototype = require('./generic.js');
 var oneDimensionalTablePrototype = require('./one-dimensional.js');
 var twoDimensionalTablePrototype = require('./two-dimensional.js');
 
-function registerKeyUpListener(table) {
-    table.$elem.on('keyup', _.debounce(function keyUpListener(e) {
-        var $srcElement = $(e.originalEvent.srcElement);
-
-        var cellType = $srcElement.data('cellType');
-
-        if (cellType === 'row-header') {
-            table.updateHeader({
-                headerKey: table.rowKey,
-                newValue: $srcElement.val(),
-                oldValue: $srcElement.data('oldValue')
-            });
-        }
-        else if (cellType === 'column-header') {
-            table.updateHeader({
-                headerKey: table.columnKey,
-                newValue: $srcElement.val(),
-                oldValue: $srcElement.data('oldValue')
-            });
-        }
-        else {
-            table.updateCell({
-                newValue: parseInt($srcElement.val()),
-                row: $srcElement.data('coord').split('$')[0].toString(),
-                column: $srcElement.data('coord').split('$')[1].toString()
-            });
-        }
-    }, 400));
-}
-
-function clickListener(table) {
-    table.$elem.on('click', 'tbody button[type="button"]', function(e) {
-        table.deleteRow($(e.currentTarget).data('key'));
-    });
-
-    table.$elem.on('click', 'tfoot button[type="button"]', function(e) {
-        table.deleteColumn($(e.currentTarget).data('key'));
-    });
-}
-
 module.exports = {
     create: function(options) {
         var instance;
@@ -75,9 +35,8 @@ module.exports = {
             console.error(error);
         });
 
-        registerKeyUpListener(instance);
-
-        clickListener(instance);
+        instance.registerKeyUpListeners();
+        instance.registerClickListeners();
 
         instance.render();
 

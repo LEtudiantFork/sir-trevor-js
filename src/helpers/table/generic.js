@@ -1,21 +1,41 @@
+var $                   = require('jquery');
 var dataKeyIsUnique     = require('./lib.js').dataKeyIsUnique;
 var headerValueIsUnique = require('./lib.js').headerValueIsUnique;
 
 var genericTablePrototype = {
+    registerClickListeners: function() {
+        if (this.hasRegisteredClick) {
+            return false;
+        }
+
+        this.hasRegisteredClick = true;
+
+        this.$elem.on('click', 'button[data-action="add-column"]', e => {
+            this.addColumn();
+        });
+
+        this.$elem.on('click', 'button[data-action="add-row"]', e => {
+            this.addRow();
+        });
+
+        this.$elem.on('click', 'button[data-type="row"]', e => {
+            this.deleteRow($(e.currentTarget).data('key').toString());
+        });
+
+        this.$elem.on('click', 'button[data-type="column"]', e => {
+            this.deleteColumn($(e.currentTarget).data('key').toString());
+        });
+    },
+
     updateDataKey: function(params) {
         if (dataKeyIsUnique(params.newKey, this.tableData)) {
 
-            if (this.columnKey === params.oldKey) {
-                this.columnKey = params.newKey;
-            }
+            this[params.type] = params.newKey;
 
-            if (this.rowKey === params.oldKey) {
-                this.rowKey = params.newKey;
-            }
-
-            if (this.valueKey === params.oldKey) {
-                this.valueKey = params.newKey;
-            }
+            this.trigger('update:key', {
+                type: params.type,
+                value: this[params.type]
+            });
 
             this.tableData = this.tableData.map(function(tableDataItem) {
                 var newTableDataItem = Object.assign({}, tableDataItem);
@@ -26,6 +46,9 @@ var genericTablePrototype = {
 
                 return newTableDataItem;
             });
+
+            this.trigger('update', this.tableData);
+            this.render();
         }
         else {
             this.trigger('error', 'unique');

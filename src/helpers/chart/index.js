@@ -6,8 +6,6 @@ var chartPrototype    = require('./generic.js');
 var barChartPrototype = require('./bar.js');
 var pieChartPrototype = require('./pie.js');
 
-var registerShowHide  = require('./lib.js').registerShowHide;
-
 module.exports = {
     create: function(params) {
         var instance;
@@ -41,8 +39,6 @@ module.exports = {
 
         instance.$elem.append(instance.$chartArea);
         instance.$elem.append(instance.$tableArea);
-
-        registerShowHide(instance);
 
         instance.generate();
 
