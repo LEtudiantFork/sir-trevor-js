@@ -27,7 +27,7 @@ var chooseableConfig = {
             value: 'video'
         }, {
             title: i18n.t('sub_blocks:media:diapo:title'),
-            value: 'diapo'
+            value: 'diaporama'
         }
     ]
 };

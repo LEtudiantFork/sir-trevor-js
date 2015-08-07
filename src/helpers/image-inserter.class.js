@@ -237,96 +237,95 @@ ImageInserter.insertImage = function(insertionPoint, elem) {
     contentEditableHelper.insertElementAtRange(insertionPoint, elem);
 };
 
-ImageInserter.prepareParams = function(params) {
-    // make a first request to get all filter information
-    return imageFilterHelper.fetch({
-        apiUrl: params.apiUrl,
-        application: params.application,
-        accessToken: params.accessToken
-    })
-    // @todo is filterData still the best name for this return variable?
-    .then(function(filterData) {
+module.exports = {
+    create: function(block) {
 
-        params.filterData = filterData;
-
-        return params;
-    });
-};
-
-ImageInserter.saveImage = function(store, dynamicImage) {
-    // create dynamic images object if missing
-    if (!store.dynamicImages) {
-        store.dynamicImages = {};
-    }
-
-    // store dynamicImage on block
-    store.dynamicImages[dynamicImage.id] = {
-        activeFormat: dynamicImage.content.activeFormat,
-        align: dynamicImage.content.align,
-        id: dynamicImage.id,
-        legend: dynamicImage.content.legend,
-        link: dynamicImage.content.link
-    };
-};
-
-ImageInserter.extractContent = function(textContent, storedDynamicImages) {
-    var newDynamicImages;
-    var imageMarkup = textContent.match(/<figure\b[^>]*>([\s\S]*?)<\/figure>/gm);
-
-    if (imageMarkup) {
-        // get the ids of the dynamic images in the HTML
-        var imagesIDsInHTML = imageMarkup.map(function(imageMarkupItem) {
-            var dynamicImageID = imageMarkupItem.match(/data-sub-block-in-block="([0-9]+)"/)[1];
-
-            // replace each dynamic image string with a custom placeholder eg. @{204520}@
-            textContent = textContent.replace(imageMarkupItem, '@{' + dynamicImageID + '}@');
-
-            return dynamicImageID;
-        });
-
-
-        if (imagesIDsInHTML.length > 0) {
-            // if there are dynamic images, they are obligatorily in the block data store - let's get an array of their ids
-            var storedImageIDs = Object.keys(storedDynamicImages);
-
-            // get remaining image IDs - i.e ones that are both in the store AND in the HTML
-            var remainingImageIDs = _.intersection(storedImageIDs, imagesIDsInHTML);
-
-            newDynamicImages = {};
-
-            remainingImageIDs.forEach(function(remainingImageID) {
-                newDynamicImages[remainingImageID] = storedDynamicImages[remainingImageID];
+        if (!block.imageInserter) {
+            // return promise to initialise
+            return ImageInserter.prepareParams({
+                accessToken: block.globalConfig.accessToken,
+                apiUrl: block.globalConfig.apiUrl,
+                application: block.globalConfig.application,
+                blockRef: block,
+                subBlockType: 'dynamicImage'
+            })
+            .then(function(preparedParams) {
+                block.imageInserter = new ImageInserter(preparedParams);
             });
         }
 
-    }
+        block.imageInserter.clearOnSelected();
 
-    return {
-        textContent: textContent,
-        dynamicImages: newDynamicImages
-    };
+        return Promise.resolve();
+    },
 
-};
-
-ImageInserter.init = function(block) {
-
-    if (!block.imageInserter) {
-        // return promise to initialise
-        return ImageInserter.prepareParams({
-            accessToken: block.globalConfig.accessToken,
-            apiUrl: block.globalConfig.apiUrl,
-            application: block.globalConfig.application,
-            blockRef: block,
-            subBlockType: 'dynamicImage'
+    prepareParams: function(params) {
+        // make a first request to get all filter information
+        return imageFilterHelper.fetch({
+            apiUrl: params.apiUrl,
+            application: params.application,
+            accessToken: params.accessToken
         })
-        .then(function(preparedParams) {
-            block.imageInserter = new ImageInserter(preparedParams);
+        // @todo is filterData still the best name for this return variable?
+        .then(function(filterData) {
+
+            params.filterData = filterData;
+
+            return params;
         });
+    },
+
+    saveImage: function(store, dynamicImage) {
+        // create dynamic images object if missing
+        if (!store.dynamicImages) {
+            store.dynamicImages = {};
+        }
+
+        // store dynamicImage on block
+        store.dynamicImages[dynamicImage.id] = {
+            activeFormat: dynamicImage.content.activeFormat,
+            align: dynamicImage.content.align,
+            id: dynamicImage.id,
+            legend: dynamicImage.content.legend,
+            link: dynamicImage.content.link
+        };
+    },
+
+    extractContent: function(textContent, storedDynamicImages) {
+        var newDynamicImages;
+        var imageMarkup = textContent.match(/<figure\b[^>]*>([\s\S]*?)<\/figure>/gm);
+
+        if (imageMarkup) {
+            // get the ids of the dynamic images in the HTML
+            var imagesIDsInHTML = imageMarkup.map(function(imageMarkupItem) {
+                var dynamicImageID = imageMarkupItem.match(/data-sub-block-in-block="([0-9]+)"/)[1];
+
+                // replace each dynamic image string with a custom placeholder eg. @{204520}@
+                textContent = textContent.replace(imageMarkupItem, '@{' + dynamicImageID + '}@');
+
+                return dynamicImageID;
+            });
+
+
+            if (imagesIDsInHTML.length > 0) {
+                // if there are dynamic images, they are obligatorily in the block data store - let's get an array of their ids
+                var storedImageIDs = Object.keys(storedDynamicImages);
+
+                // get remaining image IDs - i.e ones that are both in the store AND in the HTML
+                var remainingImageIDs = _.intersection(storedImageIDs, imagesIDsInHTML);
+
+                newDynamicImages = {};
+
+                remainingImageIDs.forEach(function(remainingImageID) {
+                    newDynamicImages[remainingImageID] = storedDynamicImages[remainingImageID];
+                });
+            }
+
+        }
+
+        return {
+            textContent: textContent,
+            dynamicImages: newDynamicImages
+        };
     }
-
-    block.imageInserter.clearOnSelected();
-
-    return Promise.resolve();
 };
-
-module.exports = ImageInserter;

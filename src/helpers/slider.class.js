@@ -51,17 +51,13 @@ function checkProgress() {
 }
 
 function prepareSlides(slideContents, itemsPerSlide, indexModifier) {
-    var prepared = [];
-
-    _.chunk(slideContents, itemsPerSlide).forEach(function(slideContentItem, index) {
-        prepared.push(new Slide(
+    return _.chunk(slideContents, itemsPerSlide).map(function(slideContentItem, index) {
+        return new Slide(
             indexModifier ? indexModifier + index : index,
             slideContentItem,
             itemsPerSlide
-        ));
+        );
     });
-
-    return prepared;
 }
 
 function registerButtons() {

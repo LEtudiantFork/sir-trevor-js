@@ -29,7 +29,7 @@ module.exports = {
             Basic.init.call(instance, params);
             Video.init.call(instance);
             break;
-        case 'diapo':
+        case 'diaporama':
             instance = Object.assign(instance, Basic.prototype, BasicMedia.prototype, Diaporama.prototype, eventablejs);
 
             Basic.init.call(instance, params);
