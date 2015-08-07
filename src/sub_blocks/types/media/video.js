@@ -1,5 +1,4 @@
 var videojs = require('video.js');
-var BasicMediaSubBlock = require('./basic-media.class.js');
 
 var smallTemplate = [
     '<figure class="st-sub-block-image">',
@@ -17,21 +16,13 @@ var largeTemplate = [
     '<%= footer %>'
 ].join('\n');
 
-var VideoSubBlock = function() {
-    BasicMediaSubBlock.apply(this, arguments);
-
+function init() {
     this.smallTemplate = smallTemplate;
     this.largeTemplate = largeTemplate;
-};
+}
 
-VideoSubBlock.prototype = Object.create(BasicMediaSubBlock.prototype);
-
-VideoSubBlock.prototype.constructor = BasicMediaSubBlock;
-
-VideoSubBlock.prototype = Object.assign(VideoSubBlock.prototype, {
+var videoPrototype = {
     postRenderLarge: function() {
-        BasicMediaSubBlock.prototype.postRenderLarge.call(this);
-
         var $video = this.$elem.find('video');
 
         videojs($video[0], {
@@ -43,6 +34,8 @@ VideoSubBlock.prototype = Object.assign(VideoSubBlock.prototype, {
                   .css('width', '100%');
         });
     }
-});
-
-module.exports = VideoSubBlock;
+}
+module.exports = {
+    init: init,
+    prototype: videoPrototype
+};

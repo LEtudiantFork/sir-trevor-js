@@ -1,5 +1,3 @@
-var BasicMediaSubBlock = require('./basic-media.class.js');
-
 var smallTemplate = [
     '<figure class="st-sub-block-image">',
         '<img src="<%= file %>" />',
@@ -16,19 +14,11 @@ var largeTemplate = [
     '<%= footer %>'
 ].join('\n');
 
-var ImageSubBlock = function() {
-    BasicMediaSubBlock.apply(this, arguments);
-
+function init() {
     this.smallTemplate = smallTemplate;
     this.largeTemplate = largeTemplate;
+}
+
+module.exports = {
+    init: init
 };
-
-ImageSubBlock.prototype = Object.create(BasicMediaSubBlock.prototype);
-
-ImageSubBlock.prototype.constructor = BasicMediaSubBlock;
-
-ImageSubBlock.prototype = Object.assign(ImageSubBlock.prototype, {
-
-});
-
-module.exports = ImageSubBlock;

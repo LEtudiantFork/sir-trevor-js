@@ -1,36 +1,32 @@
 var $ = require('jquery');
 
-var EventBus = require('../event-bus.js');
+var EventBus = require('../../event-bus.js');
 
 var wrapperTemplate = '<div class="st-sub-block"></div>';
 
-var BasicSubBlock = function() {
-    this.init.apply(this, arguments);
-};
+function init(params) {
+    this.id = params.content.id;
 
-BasicSubBlock.prototype = {
-    init: function(params) {
-        this.id = params.content.id;
+    this.accessToken = params.accessToken;
+    this.apiUrl = params.apiUrl;
+    this.application = params.application;
+    this.content = params.content;
+    this.parentID = params.parentID;
+    this.type = params.type;
 
-        this.accessToken = params.accessToken;
-        this.apiUrl = params.apiUrl;
-        this.application = params.application;
-        this.content = params.content;
-        this.parentID = params.parentID;
-        this.type = params.type;
+    this.$elem = $(wrapperTemplate);
 
-        this.$elem = $(wrapperTemplate);
+    this.$elem.attr('data-sub-block-id', this.id);
+    this.$elem.addClass('st-sub-block-' + this.type);
 
-        this.$elem.attr('data-sub-block-id', this.id);
-        this.$elem.addClass('st-sub-block-' + this.type);
+    this.$elem.on('click', function() {
+        if (this.renderedAs === 'small') {
+            EventBus.trigger('sub-block-action:selected', this);
+        }
+    }.bind(this));
+}
 
-        this.$elem.on('click', function() {
-            if (this.renderedAs === 'small') {
-                EventBus.trigger('sub-block-action:selected', this);
-            }
-        }.bind(this));
-    },
-
+var basicPrototype = {
     prepareForRender: function() {
         this.$elem.empty();
 
@@ -72,4 +68,7 @@ BasicSubBlock.prototype = {
     }
 };
 
-module.exports = BasicSubBlock;
+module.exports = {
+    init: init,
+    prototype: basicPrototype
+};

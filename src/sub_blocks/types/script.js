@@ -1,5 +1,5 @@
 var $ = require('jquery');
-var _ = require('../lodash.js');
+var _ = require('../../lodash.js');
 var eventablejs = require('eventablejs');
 
 // N.B
@@ -61,27 +61,23 @@ function bindEventsOnButtons(subBlock) {
     subBlock.$editButton.on('click', subBlock.edit.bind(subBlock));
 }
 
-var ScriptBlock = function() {
-    this.init.apply(this, arguments);
-};
+function init(params) {
+    this.contents = params.contents || {};
 
-var prototype = {
-    init: function(params) {
-        this.contents = params.contents || {};
+    this.id = Date.now();
 
-        this.id = Date.now();
+    this.$elem = createBlock(this.id);
 
-        this.$elem = createBlock(this.id);
+    createJqueryObjects(this);
 
-        createJqueryObjects(this);
+    bindEventsOnButtons(this);
 
-        bindEventsOnButtons(this);
+    if (!_.isEmpty(this.contents)) {
+        this.hydrateScriptContainer();
+    }
+}
 
-        if (!_.isEmpty(this.contents)) {
-            this.hydrateScriptContainer();
-        }
-    },
-
+var scriptPrototype = {
     hydrateScriptContainer: function() {
         this.$textarea.hide();
 
@@ -126,6 +122,7 @@ var prototype = {
     }
 };
 
-ScriptBlock.prototype = Object.assign(prototype, eventablejs);
-
-module.exports = ScriptBlock;
+module.exports = {
+    init: init,
+    prototype: scriptPrototype
+};

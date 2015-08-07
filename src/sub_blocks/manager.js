@@ -5,15 +5,7 @@ var _ = require('../lodash.js');
     This file provides helper functions for creating and manipulating multiple 'sub blocks'
  */
 
-var subBlockTypes = {
-    personality: require('./jcs/personality.class.js'),
-    poll: require('./jcs/poll.class.js'),
-    quiz: require('./jcs/quiz.class.js'),
-    script: require('./script.class.js'),
-    video: require('./media/video.class.js'),
-    image: require('./media/image.class.js'),
-    dynamicImage: require('./dynamic-image.class.js')
-};
+var SubBlockClass = require('./class.js');
 
 var SubBlockManager = {
 
@@ -46,12 +38,7 @@ var SubBlockManager = {
 
     // build a single sub block
     buildSingle: function(params) {
-        if (subBlockTypes[params.type]) {
-            return new subBlockTypes[params.type](params);
-        }
-        else {
-          throw new Error('No matching type found for ' + params.type);
-        }
+        return SubBlockClass.create(params);
     }
 
 };

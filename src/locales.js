@@ -33,10 +33,8 @@ var Locales = {
         },
         chart: {
             title: 'Graphique',
-            selectedTitle: 'Votre Titre',
             width: 'Largeur',
             height: 'Hauteur',
-            value: 'Valeur',
             mode: 'Mode d\'affichage',
             col: 'Ajouter une colonne',
             row: 'Ajouter une ligne',
@@ -122,12 +120,13 @@ var Locales = {
             image: {
                 title: 'Image'
             },
+            diapo: {
+                title: 'Diaporama'
+            },
             video: {
                 title: 'Vidéo'
             }
-        },
-        image: 'Image',
-        video: 'Video'
+        }
     }
   }
 };

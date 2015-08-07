@@ -4,7 +4,7 @@ var eventablejs = require('eventablejs');
 var EventBus        = require('../event-bus.js');
 var FilterBar       = require('./filterbar.class.js');
 var Slider          = require('./slider.class.js');
-var subBlockManager = require('../sub_blocks/sub-block-manager.js');
+var subBlockManager = require('../sub_blocks/manager.js');
 
 function registerSelectSubBlock(subBlockSearch) {
     EventBus.on('sub-block-action:selected', function(subBlock) {

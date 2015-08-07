@@ -9,7 +9,7 @@ var Block = require('../block');
 
 var fieldHelper = require('../helpers/field.js');
 var SubBlockSearch  = require('../helpers/sub-block-search.class.js');
-var subBlockManager = require('../sub_blocks/sub-block-manager.js');
+var subBlockManager = require('../sub_blocks/manager.js');
 
 var chooseableConfig = {
     name: 'subBlockType',
@@ -46,10 +46,10 @@ function bindEventsOnScriptSubBlock(block, scriptSubBlock) {
     });
 }
 
-function getThematics(params) {
+function getThematics(thematicOptionsUrl, accessToken) {
     return xhr.get(thematicOptionsUrl, {
         data: {
-            access_token: block.globalConfig.accessToken
+            access_token: accessToken
         }
     })
     .then(function(result) {
@@ -115,7 +115,7 @@ function onChoose(choices) {
             increment: 2
         };
 
-        getThematics()
+        getThematics(thematicOptionsUrl, block.globalConfig.accessToken)
             .then(function(thematics) {
                 var filterConfig = {
                     url: block.globalConfig.apiUrl + '/jcs/' + getPath(choices.subBlockType) + '/search',
@@ -141,7 +141,7 @@ function onChoose(choices) {
                     accessToken: block.globalConfig.accessToken,
                     apiUrl: block.globalConfig.apiUrl,
                     $container: block.$editor,
-                    filterConfig: preparedFilterConfig,
+                    filterConfig: filterConfig,
                     sliderConfig: sliderConfig,
                     subBlockType: block.subBlockType
                 });

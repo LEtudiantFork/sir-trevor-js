@@ -1,8 +1,7 @@
-var _             = require('../lodash.js');
+var _             = require('../../../lodash.js');
 var $             = require('jquery');
-var BasicSubBlock = require('./basic.class.js');
-var EventBus      = require('../event-bus.js');
-var fieldHelper   = require('../helpers/field.js');
+var EventBus      = require('../../../event-bus.js');
+var fieldHelper   = require('../../../helpers/field.js');
 
 var smallTemplate = [
     '<figure class="st-sub-block-image" data-etu-zoom="">',
@@ -44,28 +43,18 @@ function hasFormatString(formatString, formats) {
     });
 }
 
-var DynamicImage = function() {
-    BasicSubBlock.prototype.init.apply(this, arguments);
+function init() {
+    this.smallTemplate = smallTemplate;
+    this.largeTemplate = largeTemplate;
 
-    this.init();
-};
+    this.content.align = this.content.align || 'right';
 
-DynamicImage.prototype = Object.create(BasicSubBlock.prototype);
+    if (this.content.formats.length === 1) {
+        this.content.activeFormat = this.content.formats[0];
+    }
+}
 
-DynamicImage.prototype.constructor = BasicSubBlock;
-
-var prototype = {
-
-    init: function() {
-        this.smallTemplate = smallTemplate;
-        this.largeTemplate = largeTemplate;
-
-        this.content.align = this.content.align || 'right';
-
-        if (this.content.formats.length === 1) {
-            this.content.activeFormat = this.content.formats[0];
-        }
-    },
+var dynamicImagePrototype = {
 
     getData: function() {
         return { prop: 'hi there kids' };
@@ -227,6 +216,7 @@ var prototype = {
     }
 };
 
-Object.assign(DynamicImage.prototype, prototype);
-
-module.exports = DynamicImage;
+module.exports = {
+    init: init,
+    prototype: dynamicImagePrototype
+};

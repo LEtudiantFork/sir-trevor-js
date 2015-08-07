@@ -1,6 +1,4 @@
-var _ = require('../../lodash.js');
-
-var BasicJcsSubBlock = require('./basic-jcs.class.js');
+var _ = require('../../../lodash.js');
 
 var smallTemplate = [
     '<h3><%= title %></h3>',
@@ -28,15 +26,7 @@ var largeTemplate = [
     '<a class="st-sub-block-link st-icon" href="<%= url %>" target="_blank">link</a>'
 ].join('\n');
 
-var PollJcsSubBlock = function() {
-    BasicJcsSubBlock.apply(this, arguments);
-};
-
-PollJcsSubBlock.prototype = Object.create(BasicJcsSubBlock.prototype);
-
-PollJcsSubBlock.prototype.constructor = BasicJcsSubBlock;
-
-PollJcsSubBlock.prototype = Object.assign(PollJcsSubBlock.prototype, {
+var pollPrototype = {
     prepareSmallMarkup: function() {
         return _.template(smallTemplate, this.content, { imports: { '_': _ } });
     },
@@ -44,6 +34,8 @@ PollJcsSubBlock.prototype = Object.assign(PollJcsSubBlock.prototype, {
     prepareLargeMarkup: function() {
         return _.template(largeTemplate, this.content, { imports: { '_': _ } });
     }
-});
+};
 
-module.exports = PollJcsSubBlock;
+module.exports = {
+    prototype: pollPrototype
+};

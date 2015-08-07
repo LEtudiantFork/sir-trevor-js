@@ -12,7 +12,7 @@ var utils = require('../utils');
 var fieldHelper = require('../helpers/field.js');
 
 var SubBlockSearch = require('../helpers/sub-block-search.class.js');
-var subBlockManager = require('../sub_blocks/sub-block-manager.js');
+var subBlockManager = require('../sub_blocks/manager.js');
 
 var imageFilterHelper = require('../helpers/image-filter.js');
 
@@ -20,11 +20,14 @@ var chooseableConfig = {
     name: 'subBlockType',
     options: [
         {
-            title: i18n.t('sub_blocks:image'),
+            title: i18n.t('sub_blocks:media:image:title'),
             value: 'image'
         }, {
-            title: i18n.t('sub_blocks:video'),
+            title: i18n.t('sub_blocks:media:video:title'),
             value: 'video'
+        }, {
+            title: i18n.t('sub_blocks:media:diapo:title'),
+            value: 'diapo'
         }
     ]
 };

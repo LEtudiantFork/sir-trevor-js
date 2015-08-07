@@ -6,7 +6,7 @@ var fieldHelper           = require('./field.js');
 var imageFilterHelper     = require('./image-filter.js');
 var Modal                 = require('etudiant-mod-modal');
 var SubBlockSearch        = require('./sub-block-search.class.js');
-var subBlockManager       = require('../sub_blocks/sub-block-manager.js');
+var subBlockManager       = require('../sub_blocks/manager.js');
 var xhr                   = require('etudiant-mod-xhr');
 
 var ImageInserter = function(params) {
