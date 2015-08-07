@@ -23,24 +23,6 @@ var chooseableConfig = {
     ]
 };
 
-function onChoose(choices) {
-    var block = this;
-    var chartType = choices.chartType;
-
-    if (chartType === 'pie') {
-        block.chart = Chart.create({
-            type: chartType
-        });
-    }
-    else {
-        block.chart = Chart.create({
-            type: chartType
-        });
-    }
-
-    block.$editor.append(block.chart.$elem);
-}
-
 module.exports = Block.extend({
 
     chooseable: true,
@@ -58,6 +40,8 @@ module.exports = Block.extend({
     loadData: function(data) {
         if (!_.isEmpty(data)) {
             this.chart = Chart.create(data);
+
+            this.$editor.append(this.chart.$elem);
         }
     },
 
@@ -73,7 +57,22 @@ module.exports = Block.extend({
 
     onBlockRender: function() {
         if (_.isEmpty(this.blockStorage.data)) {
-            this.createChoices(chooseableConfig, onChoose.bind(this));
+            this.createChoices(chooseableConfig, function(choices) {
+                var chartType = choices.chartType;
+
+                if (chartType === 'pie') {
+                    this.chart = Chart.create({
+                        type: chartType
+                    });
+                }
+                else {
+                    this.chart = Chart.create({
+                        type: chartType
+                    });
+                }
+
+                this.$editor.append(this.chart.$elem);
+            }.bind(this));
         }
     }
 });

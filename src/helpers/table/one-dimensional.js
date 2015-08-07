@@ -86,7 +86,7 @@ var oneDimensionalTablePrototype = {
 
         this.hasRegisteredKeyUp = true;
 
-        this.$elem.on('keyup', _.debounce(e => {
+        this.$elem.on('keyup', _.debounce(function(e) {
             var $srcElement = $(e.originalEvent.srcElement);
 
             var cellType = $srcElement.data('cellType');
@@ -112,7 +112,7 @@ var oneDimensionalTablePrototype = {
                     column: $srcElement.data('coord').split('$')[1].toString()
                 });
             }
-        }, 400));
+        }.bind(this), 400));
     },
 
     updateCell: function(params) {

@@ -98,7 +98,9 @@ function render1DTable(tableData) {
         );
     });
 
-    table += renderTBODY(rows.reduce((previousRow, currentRow) => { return previousRow += currentRow; }));
+    table += renderTBODY(rows.reduce(function(previousRow, currentRow) {
+        return previousRow += currentRow;
+    }.bind(this)));
 
     return renderElement({
         type: 'table',
@@ -173,7 +175,9 @@ function render2DTable(tableData) {
         );
     }
 
-    table += renderTBODY(rows.reduce((previousRow, currentRow) => { return previousRow += currentRow; }));
+    table += renderTBODY(rows.reduce(function(previousRow, currentRow) {
+        return previousRow += currentRow;
+    }.bind(this)));
 
     return renderElement({
         type: 'table',

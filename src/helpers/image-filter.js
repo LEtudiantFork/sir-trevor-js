@@ -18,7 +18,7 @@ function alphabetise(array, sortKey) {
 }
 
 function fetch(params) {
-    return xhr.get(`${params.apiUrl}/edt/media/filters/${params.application}`, {
+    return xhr.get(params.apiUrl + '/edt/media/filters/' + params.application, {
         data: {
             access_token: params.accessToken
         }

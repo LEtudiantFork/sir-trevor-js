@@ -194,12 +194,14 @@ var prototype = {
         var img;
 
         if (this.content.link && this.content.link !== '') {
-            img = `<a href="${ this.content.link }" target="_blank">
-                      <img src="${ this.getFormattedSrc(this.content.activeFormat) }" />
-                   </a>`;
+            img = [
+                    '<a href="' + this.content.link + '" target="_blank">',
+                      '<img src="' + this.getFormattedSrc(this.content.activeFormat) + '" />',
+                    '</a>'
+                   ].join('\n');
         }
         else {
-            img = `<img src="${ this.getFormattedSrc(this.content.activeFormat) }" />`;
+            img = '<img src="' + this.getFormattedSrc(this.content.activeFormat) + '" />';
         }
 
         $elem.html(

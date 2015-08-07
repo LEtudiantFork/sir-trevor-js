@@ -76,16 +76,15 @@ var twoDimensionalTablePrototype = {
             this._newColumnCount = 1;
         }
 
-        var newColumn = rowNames.map(rowName => {
-            var newItem = {
-                value: 0
-            };
+        var newColumn = rowNames.map(function(rowName) {
+            var newItem = {};
 
+            newItem[this.valueKey] = 0;
             newItem[this.rowKey] = rowName;
             newItem[this.columnKey] = this._newColumnName + ' ' + this._newColumnCount;
 
             return newItem;
-        });
+        }.bind(this));
 
         this.tableData = [].concat(this.tableData, newColumn);
 
@@ -104,17 +103,15 @@ var twoDimensionalTablePrototype = {
             this._newRowCount = 1;
         }
 
-        var newRow = columnNames.map(columnName => {
-            var newItem = {
-                value: 0
-            };
+        var newRow = columnNames.map(function(columnName) {
+            var newItem = {};
 
+            newItem[this.valueKey] = 0;
             newItem[this.columnKey] = columnName;
-
             newItem[this.rowKey] = this._newRowName + ' ' + this._newRowCount;
 
             return newItem;
-        });
+        }.bind(this));
 
         this.tableData = [].concat(this.tableData, newRow);
 
@@ -126,9 +123,9 @@ var twoDimensionalTablePrototype = {
         var columnNames = getHeaderNames(this.tableData, this.columnKey);
 
         if (columnNames.length > 1) {
-            this.tableData = this.tableData.filter(tableDataItem => {
+            this.tableData = this.tableData.filter(function(tableDataItem) {
                 return tableDataItem[this.columnKey] !== columnName;
-            });
+            }.bind(this));
 
             this.trigger('update', this.tableData);
             this.render();
@@ -139,9 +136,9 @@ var twoDimensionalTablePrototype = {
         var rowNames = getHeaderNames(this.tableData, this.rowKey);
 
         if (rowNames.length > 1) {
-            this.tableData = this.tableData.filter(tableDataItem => {
+            this.tableData = this.tableData.filter(function(tableDataItem) {
                 return tableDataItem[this.rowKey] !== rowName;
-            });
+            }.bind(this));
 
             this.trigger('update', this.tableData);
             this.render();
@@ -178,7 +175,7 @@ var twoDimensionalTablePrototype = {
 
         this.hasRegisteredKeyUp = true;
 
-        this.$elem.on('keyup', _.debounce(e => {
+        this.$elem.on('keyup', _.debounce(function(e) {
             var $srcElement = $(e.originalEvent.srcElement);
 
             var cellType = $srcElement.data('cellType');
@@ -220,7 +217,7 @@ var twoDimensionalTablePrototype = {
                     column: $srcElement.data('coord').split('$')[1].toString()
                 });
             }
-        }, 400));
+        }.bind(this), 400));
     },
 
     updateCell: function(params) {
@@ -233,13 +230,13 @@ var twoDimensionalTablePrototype = {
             this.render();
         }
         else {
-            this.tableData = this.tableData.map(tableDataItem => {
+            this.tableData = this.tableData.map(function(tableDataItem) {
                 if (tableDataItem[this.rowKey] === params.row && tableDataItem[this.columnKey] === params.column) {
                     tableDataItem[this.valueKey] = params.newValue;
                 }
 
                 return tableDataItem;
-            });
+            }.bind(this));
 
             this.trigger('update', this.tableData);
         }

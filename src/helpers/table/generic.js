@@ -10,21 +10,21 @@ var genericTablePrototype = {
 
         this.hasRegisteredClick = true;
 
-        this.$elem.on('click', 'button[data-action="add-column"]', e => {
+        this.$elem.on('click', 'button[data-action="add-column"]', function(e) {
             this.addColumn();
-        });
+        }.bind(this));
 
-        this.$elem.on('click', 'button[data-action="add-row"]', e => {
+        this.$elem.on('click', 'button[data-action="add-row"]', function(e) {
             this.addRow();
-        });
+        }.bind(this));
 
-        this.$elem.on('click', 'button[data-type="row"]', e => {
+        this.$elem.on('click', 'button[data-type="row"]', function(e) {
             this.deleteRow($(e.currentTarget).data('key').toString());
-        });
+        }.bind(this));
 
-        this.$elem.on('click', 'button[data-type="column"]', e => {
+        this.$elem.on('click', 'button[data-type="column"]', function(e) {
             this.deleteColumn($(e.currentTarget).data('key').toString());
-        });
+        }.bind(this));
     },
 
     updateDataKey: function(params) {

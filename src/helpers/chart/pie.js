@@ -21,6 +21,8 @@ var pieChartPrototype = {
     },
 
     generate: function() {
+        this.type = 'pie';
+
         if (!this.data) {
             this.data = mockData;
             this.rowKey = 'section';
@@ -36,17 +38,25 @@ var pieChartPrototype = {
 
         this.$tableArea.append(this.table.$elem);
 
-        setTimeout(() => { this.drawChart() }, 0);
+        // need to wait for redraw otherwise d3plus doesn't find element
+        setTimeout(function() { this.drawChart() }.bind(this), 0);
 
-        this.table.on('update:key', newData => {
-            this[newData.type] = newData.value;
-        });
+        this.table.on('update:key', function(newData) { this[newData.type] = newData.value; }.bind(this));
 
-        this.table.on('update', newData => {
+        this.table.on('update', function(newData) {
             this.data = newData;
 
             this.drawChart();
-        });
+        }.bind(this));
+    },
+
+    getData: function() {
+        return {
+            valueKey: this.valueKey,
+            data: this.data,
+            rowKey: this.rowKey,
+            type: this.type
+        }
     }
 };
 

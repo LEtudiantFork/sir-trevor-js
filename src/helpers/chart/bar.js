@@ -25,6 +25,8 @@ var barChartPrototype = {
     },
 
     generate: function() {
+        this.type = 'bar';
+
         if (!this.data) {
             this.data = mockData;
             this.columnKey = 'colonne';
@@ -42,19 +44,28 @@ var barChartPrototype = {
 
         this.$tableArea.append(this.table.$elem);
 
-        setTimeout(() => { this.drawChart() }, 0);
+        // need to wait for redraw otherwise d3plus doesn't find element
+        setTimeout(function() { this.drawChart() }.bind(this), 0);
 
-        this.table.on('update:key', newData => {
-            this[newData.type] = newData.value;
-        });
+        this.table.on('update:key', function(newData) { this[newData.type] = newData.value; }.bind(this));
 
-        this.table.on('update', newData => {
+        this.table.on('update', function(newData) {
             this.data = newData;
 
             this.drawChart();
-        });
+        }.bind(this));
+    },
 
+    getData: function() {
+        return {
+            columnKey: this.columnKey,
+            valueKey: this.valueKey,
+            data: this.data,
+            rowKey: this.rowKey,
+            type: this.type
+        }
     }
+
 };
 
 module.exports = barChartPrototype;
