@@ -51,11 +51,17 @@ module.exports = Block.extend({
                                 }
                             });
 
-                            self.imageInserter.once('selected', function(dynamicImage) {
+                            self.imageInserter.on('selected', function(dynamicImage) {
                                 ImageInserter.saveImage(self.blockStorage.data, dynamicImage);
 
                                 // static method to insert the element at the insertionPoint
                                 ImageInserter.insertImage(insertionPoint, dynamicImage.renderInBlock());
+                            });
+
+                            self.imageInserter.on('replace', function(dynamicImage) {
+                                ImageInserter.saveImage(self.blockStorage.data, dynamicImage);
+
+                                dynamicImage.replaceRenderedInBlock();
                             });
                         });
                 });
@@ -164,7 +170,7 @@ module.exports = Block.extend({
 
                     // prepare behaviour for an image that has already been added but is then altered
                     self.imageInserter.on('replace', function(dynamicImage) {
-                        ImageInserter.saveDynamicImage(self.blockStorage.data, dynamicImage);
+                        ImageInserter.saveImage(self.blockStorage.data, dynamicImage);
 
                         dynamicImage.replaceRenderedInBlock();
                     });

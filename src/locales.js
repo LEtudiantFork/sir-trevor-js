@@ -92,7 +92,7 @@ var Locales = {
         }
     },
     slider: {
-        no_results: 'No results'
+        no_results: 'Il n\'y a pas de resultats'
     },
     sub_blocks: {
         embed: {

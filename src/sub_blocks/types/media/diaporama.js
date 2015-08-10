@@ -1,5 +1,5 @@
-var _      = require('../../../lodash.js');
-var Slider = require('../../../helpers/slider.class.js');
+var _         = require('../../../lodash.js');
+var Diaporama = require('../../../helpers/diaporama.class.js');
 
 var smallTemplate = [
     '<figure class="st-sub-block-diaporama">',
@@ -9,46 +9,16 @@ var smallTemplate = [
     '<a class="st-sub-block-link st-icon" href="<%= file %>" target="_blank">link</a>'
 ].join('\n');
 
-var largeTemplate = [
-    '<div class="st-sub-block-diaporama">',
-        '<div class="st-sub-block-diaporama_slides">',
-            '<%= slides %>',
-        '</div>',
-        '<div class="st-sub-block-diaporama_thumbs">',
-            '<%= thumbs %>',
-        '</div>',
-    '</div>'
-].join('\n');
+function renderImage(src) {
+    var img = document.createElement('img');
 
-var slideTemplate = [
-    '<figure data-index="<%= index %>" class="st-sub-block-diaporama_slide">',
-        '<img src="<%= file %>" />',
-    '</figure>'
-].join('\n');
+    img.src = src;
 
-var thumbTemplate = [
-    '<a href="#" data-index="<%= index %>" class="st-sub-block-diaporama_thumb">',
-        '<img src="<%= file %>" />',
-    '</a>'
-].join('\n');
+    return img;
+}
 
 function init() {
     this.smallTemplate = smallTemplate;
-    this.largeTemplate = largeTemplate;
-}
-
-function renderSlide(file, index) {
-    return _.template(slideTemplate, {
-        file: file,
-        index: index
-    });
-}
-
-function renderThumb(file, index) {
-    return _.template(thumbTemplate, {
-        file: file,
-        index: index
-    });
 }
 
 var diaporamaPrototype = {
@@ -56,35 +26,24 @@ var diaporamaPrototype = {
         return _.template(smallTemplate, this.content, { imports: { '_': _ } });
     },
 
-    prepareLargeMarkup: function() {
-        var thumbs = this.content.images.reduce(function(previous, current, index) {
-            if (index === 1) {
-                previous = renderThumb(previous.thumbnail, 0);
-            }
-
-            return previous += renderThumb(current.thumbnail, index);
-        });
-
-        var slides = this.content.images.reduce(function(previous, current, index) {
-            if (index === 1) {
-                previous = renderSlide(previous.file, 0);
-            }
-
-            return previous += renderSlide(current.file, index);
-        });
-
-        var toRender = {
-            slides: slides,
-            thumbs: thumbs
-        };
-
-        return _.template(largeTemplate, toRender);
-    },
-
     renderLarge: function() {
         this.prepareForRender();
 
-        this.$elem.append(this.prepareLargeMarkup());
+        var slides = [];
+        var thumbs = [];
+
+        this.content.images.forEach(function(image) {
+            slides.push(renderImage(image.file));
+
+            thumbs.push(renderImage(image.thumbnail));
+        });
+
+        var diaporama = Diaporama.create({
+            slides: slides,
+            thumbs: thumbs
+        });
+
+        this.$elem.append(diaporama.$elem);
 
         this.$elem.addClass('st-sub-block-size-large');
 

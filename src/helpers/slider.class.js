@@ -4,6 +4,30 @@ var animate     = require('velocity-commonjs/velocity.ui');
 var eventablejs = require('eventablejs');
 var Slide       = require('./slide.class.js');
 
+var sliderTemplate = [
+    '<div class="st-block__slider">',
+        '<div class="st-slider">',
+            '<div class="st-slider-container">',
+            '</div>',
+        '</div>',
+        '<% if (controls) { %>',
+            '<div class="st-slider-controls">',
+                '<% _.forEach(controls, function(control, key) { %>',
+                    '<button class="st-btn" data-direction="<%= key %>">',
+                        '<span><%= control %></span>',
+                    '</button>',
+                '<% }); %>',
+            '</div>',
+        '<% } %>',
+    '</div>'
+].join('\n');
+
+var noSlidesTemplate = [
+    '<span class="st-slider-no-slides">',
+        i18n.t('slider:no_results'),
+    '</span>'
+].join('\n');
+
 function canGoTo(index) {
     return !(index < 0 || index > this.slides.length - 1);
 }
@@ -85,32 +109,13 @@ function registerButtons() {
     });
 }
 
-var sliderTemplate = [
-    '<div class="st-block__slider">',
-        '<div class="st-slider">',
-            '<div class="st-slider-container">',
-                '<%= content %>',
-            '</div>',
-        '</div>',
-        '<% if (controls) { %>',
-            '<div class="st-slider-controls">',
-                '<% _.forEach(controls, function(control, key) { %>',
-                    '<button class="st-btn" data-direction="<%= key %>">',
-                        '<span><%= control %></span>',
-                    '</button>',
-                '<% }); %>',
-            '</div>',
-        '<% } %>',
-    '</div>'
-].join('\n');
-
-var noSlidesTemplate = [
-    '<span class="st-slider-no-slides">',
-        'Il n\'y a pas de resultats', // @todo: i18n
-    '</span>'
-].join('\n');
-
-// PUBLIC
+function createElement(controls) {
+    return $(
+        _.template(sliderTemplate, {
+            controls: controls
+        }, { imports: { '_': _ } })
+    );
+}
 
 var Slider = function(params) {
     this.slides = [];
@@ -122,33 +127,16 @@ var Slider = function(params) {
         controls: params.controls
     };
 
-    if (params.contents) {
-        this.slides = prepareSlides(params.contents, this.config.itemsPerSlide);
-    }
+    this.slides = prepareSlides(params.contents, this.config.itemsPerSlide);
+
+    this.render();
 
     if (params.container) {
-        params.container.append(this.render());
-        this.appendToDOM(params.container);
+        params.container.append(this.$elem);
     }
 };
 
 Slider.prototype = Object.assign(Slider.prototype, {
-    appendToDOM: function(container) {
-        this.$elem = container.find('.st-block__slider');
-        this.$slideContainer = this.$elem.find('.st-slider-container');
-
-        if (!this.isBoundToDOM) {
-
-            if (this.config.controls) {
-                registerButtons.call(this);
-            }
-
-            this.refreshDimensions(true);
-
-            this.isBoundToDOM = true;
-        }
-    },
-
     destroy: function() {
         this.$elem.remove();
     },
@@ -196,16 +184,26 @@ Slider.prototype = Object.assign(Slider.prototype, {
     },
 
     render: function() {
-        var slidesMarkup = '';
+        this.$elem = createElement(this.config.controls);
+
+        this.$slideContainer = this.$elem.find('.st-slider-container');
 
         this.slides.forEach(function(slide) {
-            slidesMarkup += slide.render();
-        });
+            this.$slideContainer.append(slide.render());
+        }.bind(this));
 
-        return _.template(sliderTemplate, {
-            content: slidesMarkup,
-            controls: this.config.controls
-        }, { imports: { '_': _ } });
+        if (!this.isBoundToDOM) {
+
+            if (this.config.controls) {
+                registerButtons.call(this);
+            }
+
+            this.refreshDimensions(true);
+
+            this.isBoundToDOM = true;
+        }
+
+        return this.$elem;
     },
 
     reset: function(newSlides) {
@@ -257,7 +255,6 @@ Slider.prototype = Object.assign(Slider.prototype, {
         this.refreshDimensions(false);
         this.hasEmitted = false;
     }
-
 }, eventablejs);
 
 module.exports = Slider;

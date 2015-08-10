@@ -200,8 +200,7 @@ var prototype = {
 
         this.modal = new Modal({
             slug: 'icons-modal',
-            animation: 'fade',
-            theme: 'media'
+            animation: 'fade'
         });
 
         this.modal.render({
@@ -214,16 +213,16 @@ var prototype = {
             }
         });
 
-        this.modalTriggerElement.on('click', function(ev) {
-            ev.stopPropagation();
+        this.modalTriggerElement.on('click', function(e) {
+            e.stopPropagation();
 
             if ($(this).children().length < 2) {
                 getIcons(self);
             }
         });
 
-        this.modalTriggerElement.on('click', 'img', function(ev) {
-            ev.stopPropagation();
+        this.modalTriggerElement.on('click', 'img', function(e) {
+            e.stopPropagation();
             getIcons(self);
         });
     },

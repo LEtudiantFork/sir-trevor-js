@@ -9,89 +9,33 @@ var SubBlockSearch        = require('./sub-block-search.class.js');
 var subBlockManager       = require('../sub_blocks/manager.js');
 var xhr                   = require('etudiant-mod-xhr');
 
-var ImageInserter = function(params) {
-    this.id = Date.now();
+function prepareParams(params) {
+    // make a first request to get all filter information
+    return imageFilterHelper.fetch({
+        apiUrl: params.apiUrl,
+        application: params.application,
+        accessToken: params.accessToken
+    })
+    // @todo is filterData still the best name for this return variable?
+    .then(function(filterData) {
 
-    this.apiUrl = params.apiUrl;
-    this.accessToken = params.accessToken;
-    this.application = params.application;
-    this.filterData = params.filterData;
-    this.subBlockType = params.subBlockType;
+        params.filterData = filterData;
 
-    // initialise the modal
-    this.modal = new Modal({
-        slug: 'image-inserter',
-        animation: 'fade',
-        theme: 'plain',
-        cssClasses: 'pandora'
+        return params;
     });
+}
 
-    // create a wrapper element for our filterbar and slider
-    this.$imageSearchContainer = $('<div class="image-inserter image-inserter-search"></div>');
+var imageInserterPrototype = {
+    clearOnSelected: function() {
+        if (this._events) {
+            this._events.selected = undefined;
+        }
+    },
 
-    // @todo: need to put this in i18n
-    var filterConfig = {
-        accessToken: this.accessToken,
-        application: this.application,
-        container: this.$imageSearchContainer,
-        fields: [
-            {
-                type: 'search',
-                name: 'query',
-                placeholder: 'Rechercher'
-            }, {
-                type: 'select',
-                name: 'category',
-                label: 'Catégories',
-                placeholder: 'Sélectionnez une catégorie',
-                options: fieldHelper.addNullOptionToArray(this.filterData.categories, 'Aucune catégorie')
-            }, {
-                type: 'select',
-                name: 'format',
-                label: 'Formats',
-                placeholder: 'Sélectionnez un format',
-                options: fieldHelper.addNullOptionToArray(this.filterData.formats, 'Aucun format')
-            }
-        ],
-        limit: 20,
-        type: 'image',
-        url: this.apiUrl + '/edt/media'
-    };
+    close: function() {
+        this.modal.close();
+    },
 
-    var sliderConfig = {
-        controls: {
-            next: 'Next',
-            prev: 'Prev'
-        },
-        itemsPerSlide: 3,
-        increment: 1,
-        container: this.$imageSearchContainer
-    };
-
-    this.subBlockSearch = new SubBlockSearch({
-        application: this.application,
-        accessToken: this.accessToken,
-        apiUrl: this.apiUrl,
-        $container: this.$imageSearchContainer,
-        filterConfig: filterConfig,
-        sliderConfig: sliderConfig,
-        subBlockType: this.subBlockType,
-        subBlockPreProcess: function(subBlockData) {
-            return imageFilterHelper.prepareImageFormats(subBlockData, this.filterData.formats);
-        }.bind(this)
-    });
-
-    this.subBlockSearch.on('ready', function() {
-        this.trigger('ready');
-    }.bind(this));
-
-    // once an image has been selected from search, we can go to editImage state
-    this.subBlockSearch.on('selected', function(selectedDynamicImage) {
-        this.editImage(selectedDynamicImage);
-    }.bind(this));
-};
-
-ImageInserter.prototype = Object.assign(ImageInserter.prototype, {
     editImage: function(dynamicImage, shouldReplace) {
         // create a container for the second 'view' of the image inserter - the image editor
         this.$imageEditor = $('<div class="image-inserter image-inserter-edit"></div>');
@@ -123,16 +67,6 @@ ImageInserter.prototype = Object.assign(ImageInserter.prototype, {
         this.modal.open();
 
         this.subBlockSearch.refreshDimensions();
-    },
-
-    close: function() {
-        this.modal.close();
-    },
-
-    clearOnSelected: function() {
-        if (this._events) {
-            this._events.selected = undefined;
-        }
     },
 
     reinitialiseImages: function(params) {
@@ -218,31 +152,24 @@ ImageInserter.prototype = Object.assign(ImageInserter.prototype, {
             console.error(err);
         });
     }
-}, eventablejs);
-
-// Static classes
-
-// use static class method to return callback with insertion point on click in editable area of block
-ImageInserter.awaitClick = function($elem, cb) {
-    $elem.css('cursor', 'copy');
-
-    $elem.one('click', function() {
-        $elem.css('cursor', '');
-
-        cb(contentEditableHelper.getRange());
-    });
-};
-
-ImageInserter.insertImage = function(insertionPoint, elem) {
-    contentEditableHelper.insertElementAtRange(insertionPoint, elem);
 };
 
 module.exports = {
-    create: function(block) {
+    awaitClick: function($elem, cb) {
+        $elem.css('cursor', 'copy');
+
+        $elem.one('click', function() {
+            $elem.css('cursor', '');
+
+            cb(contentEditableHelper.getRange());
+        });
+    },
+
+    init: function(block) {
 
         if (!block.imageInserter) {
             // return promise to initialise
-            return ImageInserter.prepareParams({
+            return prepareParams({
                 accessToken: block.globalConfig.accessToken,
                 apiUrl: block.globalConfig.apiUrl,
                 application: block.globalConfig.application,
@@ -250,7 +177,87 @@ module.exports = {
                 subBlockType: 'dynamicImage'
             })
             .then(function(preparedParams) {
-                block.imageInserter = new ImageInserter(preparedParams);
+                block.imageInserter = Object.assign({}, imageInserterPrototype, eventablejs);
+
+                block.imageInserter.id = Date.now();
+
+                block.imageInserter.apiUrl = preparedParams.apiUrl;
+                block.imageInserter.accessToken = preparedParams.accessToken;
+                block.imageInserter.application = preparedParams.application;
+                block.imageInserter.filterData = preparedParams.filterData;
+                block.imageInserter.subBlockType = preparedParams.subBlockType;
+
+                // initialise the modal
+                block.imageInserter.modal = new Modal({
+                    slug: 'image-inserter',
+                    animation: 'fade',
+                    theme: 'plain',
+                    cssClasses: 'pandora'
+                });
+
+                // create a wrapper element for our filterbar and slider
+                block.imageInserter.$imageSearchContainer = $('<div class="image-inserter image-inserter-search"></div>');
+
+                // @todo: need to put this in i18n
+                var filterConfig = {
+                    accessToken: block.imageInserter.accessToken,
+                    application: block.imageInserter.application,
+                    container: block.imageInserter.$imageSearchContainer,
+                    fields: [
+                        {
+                            type: 'search',
+                            name: 'query',
+                            placeholder: 'Rechercher'
+                        }, {
+                            type: 'select',
+                            name: 'category',
+                            label: 'Catégories',
+                            placeholder: 'Sélectionnez une catégorie',
+                            options: fieldHelper.addNullOptionToArray(block.imageInserter.filterData.categories, 'Aucune catégorie')
+                        }, {
+                            type: 'select',
+                            name: 'format',
+                            label: 'Formats',
+                            placeholder: 'Sélectionnez un format',
+                            options: fieldHelper.addNullOptionToArray(block.imageInserter.filterData.formats, 'Aucun format')
+                        }
+                    ],
+                    limit: 20,
+                    type: 'image',
+                    url: block.imageInserter.apiUrl + '/edt/media'
+                };
+
+                var sliderConfig = {
+                    controls: {
+                        next: 'Next',
+                        prev: 'Prev'
+                    },
+                    itemsPerSlide: 3,
+                    increment: 1,
+                    container: block.imageInserter.$imageSearchContainer
+                };
+
+                block.imageInserter.subBlockSearch = new SubBlockSearch({
+                    application: block.imageInserter.application,
+                    accessToken: block.imageInserter.accessToken,
+                    apiUrl: block.imageInserter.apiUrl,
+                    $container: block.imageInserter.$imageSearchContainer,
+                    filterConfig: filterConfig,
+                    sliderConfig: sliderConfig,
+                    subBlockType: block.imageInserter.subBlockType,
+                    subBlockPreProcess: function(subBlockData) {
+                        return imageFilterHelper.prepareImageFormats(subBlockData, block.imageInserter.filterData.formats);
+                    }
+                });
+
+                block.imageInserter.subBlockSearch.on('ready', function() {
+                    block.imageInserter.trigger('ready');
+                });
+
+                // once an image has been selected from search, we can go to editImage state
+                block.imageInserter.subBlockSearch.on('selected', function(selectedDynamicImage) {
+                    block.imageInserter.editImage(selectedDynamicImage);
+                });
             });
         }
 
@@ -259,20 +266,8 @@ module.exports = {
         return Promise.resolve();
     },
 
-    prepareParams: function(params) {
-        // make a first request to get all filter information
-        return imageFilterHelper.fetch({
-            apiUrl: params.apiUrl,
-            application: params.application,
-            accessToken: params.accessToken
-        })
-        // @todo is filterData still the best name for this return variable?
-        .then(function(filterData) {
-
-            params.filterData = filterData;
-
-            return params;
-        });
+    insertImage: function(insertionPoint, elem) {
+        contentEditableHelper.insertElementAtRange(insertionPoint, elem);
     },
 
     saveImage: function(store, dynamicImage) {
