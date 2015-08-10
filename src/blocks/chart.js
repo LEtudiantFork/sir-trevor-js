@@ -30,7 +30,7 @@ module.exports = Block.extend({
     type: 'Chart',
 
     title: function() {
-        return 'Chart';
+        return i18n.t('blocks:chart:title');
     },
 
     editorHTML: '<div class="st-block__chart"></div>',

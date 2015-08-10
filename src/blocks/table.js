@@ -226,7 +226,9 @@ function changeTheme(ev, block) {
 module.exports = Block.extend({
     type: 'table',
 
-    title: i18n.t('blocks:table:title'),
+    title: function() {
+        return i18n.t('blocks:table:title');
+    },
 
     icon_name: 'table',
 

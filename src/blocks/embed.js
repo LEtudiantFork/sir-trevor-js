@@ -171,7 +171,9 @@ module.exports = Block.extend({
 
     type: 'embed',
 
-    title: i18n.t('blocks:embed:title'),
+    title: function() {
+        return i18n.t('blocks:embed:title');
+    },
 
     editorHTML: '<div class="st-embed-block"></div>',
 

@@ -24,7 +24,9 @@ module.exports = Block.extend({
 
     type: 'Illustrated',
 
-    title: i18n.t('blocks:illustrated:title'),
+    title: function() {
+        return i18n.t('blocks:illustrated:title');
+    },
 
     ajaxable: true,
     controllable: true,

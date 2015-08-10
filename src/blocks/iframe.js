@@ -20,7 +20,9 @@ var getTemplate = function(params) {
 };
 
 module.exports = Block.extend({
-    title: i18n.t('blocks:iframe:title'),
+    title: function() {
+        return i18n.t('blocks:iframe:title');
+    },
 
     type: 'iframe',
 

@@ -24,7 +24,9 @@ function changeHeaderLevel(block, level) {
 module.exports = Block.extend({
     type: 'heading',
 
-    title: i18n.t('blocks:heading:title'),
+    title: function() {
+        return i18n.t('blocks:heading:title');
+    },
 
     icon_name: 'heading',
 
