@@ -103,10 +103,6 @@ function onChoose(choices) {
 
         block.$editor.show();
 
-        block.subBlockSearch.on('ready', function() {
-            block.$inner.prepend(block.$inputs);
-        });
-
         block.subBlockSearch.on('selected', function(selectedSubBlock) {
             block.setData({
                 id: selectedSubBlock.id,
@@ -117,7 +113,6 @@ function onChoose(choices) {
 
             block.$editor.append(selectedSubBlock.renderLarge());
 
-            block.$inputs.hide();
             block.$editor.show();
         });
     })
@@ -134,8 +129,6 @@ module.exports = Block.extend({
     },
 
     chooseable: true,
-    droppable: true,
-    uploadable: true,
 
     icon_name: 'image',
 
@@ -176,80 +169,7 @@ module.exports = Block.extend({
 
     onBlockRender: function() {
         if (_.isEmpty(this.blockStorage.data)) {
-            this.$inputs.detach();
-
-            this.$inputs.find('input').on('change', function(e) {
-                this.onDrop(e.currentTarget);
-            }.bind(this));
-
             this.createChoices(chooseableConfig, onChoose.bind(this));
-        }
-    },
-
-    onDrop: function(transferData) {
-        var self = this;
-
-        var file = transferData.files[0];
-        var urlAPI = (typeof window.URL !== 'undefined') ? window.URL : (typeof window.webkitURL !== 'undefined') ? window.webkitURL : null;
-
-        if (/image|video/.test(file.type)) {
-            self.loading();
-
-            self.$dropzone.html($('<img>', {
-                'class': 'placeholder-image',
-                src: urlAPI.createObjectURL(file)
-            }));
-
-            self.$uploader.hide();
-
-            self.subBlockSearch.destroy();
-            self.subBlockSearch = null;
-
-            self.uploader.upload(file)
-                .then(function(uploadData) {
-                    var retrieveUrl = self.globalConfig.apiUrl + '/edt/' + self.type + '/' + uploadData.idMedia;
-
-                    self.setData({
-                        id: uploadData.idMedia
-                    });
-
-                    return xhr.get(retrieveUrl, {
-                        data: {
-                            access_token: self.globalConfig.accessToken
-                        }
-                    })
-                    .then(function(subBlockData) {
-                        self.$inputs.hide();
-
-                        subBlockData.content.copyrights = self.copyrights;
-                        subBlockData.content.categories = self.categories;
-
-                        var mediaSubBlock = subBlockManager.buildSingle({
-                            accessToken: self.globalConfig.accessToken,
-                            apiUrl: self.globalConfig.apiUrl,
-                            application: self.globalConfig.application,
-                            content: subBlockData.content,
-                            parentId: self.blockID,
-                            type: data.type
-                        });
-
-                        self.$editor.empty();
-
-                        self.$editor.append(mediaSubBlock.renderLarge());
-
-                        self.$editor.show();
-
-                        self.ready();
-                    })
-                    .catch(function(err) {
-                        throw new Error('No block returned for id:' + uploadData.idMedia + ' ' + err);
-                    });
-                })
-                .catch(function(error) {
-                    console.error(error);
-                    self.addMessage(i18n.t('blocks:image:upload_error'));
-                    self.ready();
-                });
         }
     }
 });
