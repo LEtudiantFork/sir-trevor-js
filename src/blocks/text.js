@@ -3,13 +3,28 @@
 */
 
 var Block                 = require('../block');
-var contentEditableHelper = require('../helpers/content-editable-helper.js');
+var contentEditableHelper = require('../helpers/content-editable.js');
 var EventBus              = require('../event-bus.js');
 var FramedHelper          = require('../helpers/framed.js');
 var ImageInserter         = require('../helpers/image-inserter.class.js');
 var stToHTML              = require('../to-html');
 var utils                 = require('../utils.js');
 var stToMarkdown          = require('../to-markdown.js');
+
+var framedConfig = {
+    blue: {
+        label: 'bleu',
+        value: 'blue'
+    },
+    red: {
+        label: 'rouge',
+        value: 'red'
+    },
+    green: {
+        label: 'vert',
+        value: 'green'
+    }
+}
 
 module.exports = Block.extend({
 
@@ -21,7 +36,6 @@ module.exports = Block.extend({
 
     controllable: true,
     formattable: true,
-    // paragraphable: true,
 
     editorHTML: '<div class="st-required text-block st-text-block" contenteditable="true"></div>',
 
@@ -69,44 +83,34 @@ module.exports = Block.extend({
         },
         {
             slug: 'framed',
-            icon: 'framed',
-            sleep: true,
-            eventTrigger: 'click',
-            fn: function() {
-                var self = this;
+            eventTrigger: 'change',
+            fn: function(e) {
+                e.preventDefault();
 
-                FramedHelper.getInstance()
-                    .then(function(framedHelper) {
-                        return framedHelper.open();
-                    })
-                    .then(function(framedHelperResult) {
-                        self.setData({
-                            framed: framedHelperResult
-                        });
-                    })
-                    .catch(function() {
+                var result = e.target.value;
 
-                    });
-            }
+                this.getTextBlock().removeClass (function (index, css) {
+                    return (css.match (/(^|\s)st-framed-\S+/g) || []).join(' ');
+                });
+
+                if (result !== 'false') {
+                    this.getTextBlock().addClass('st-framed-' + result);
+                }
+
+                this.setData({
+                    framed: result
+                });
+            },
+            html: [
+                '<select>',
+                    '<option selected disabled value"">Choisissez un style d\'encadrement</option>',
+                    '<option value="false">Aucun style</option>',
+                    '<option value="' + framedConfig.blue.value + '">' + framedConfig.blue.label + '</option>',
+                    '<option value="' + framedConfig.red.value + '">' + framedConfig.red.label + '</option>',
+                    '<option value="' + framedConfig.green.value + '">' + framedConfig.green.label + '</option>',
+                '</select>'
+            ].join('\n')
         }
-        // @todo repair this functionality
-        // {
-        //     slug: 'add-paragraph',
-        //     icon: 'Paragraph', // @todo find a proper icon for this
-        //     sleep: true,
-        //     eventTrigger: 'click',
-        //     fn: function() {
-        //         contentEditableHelper.splitContentAtCaret(this.getTextBlock(), function(firstParagraph, secondParagraph) {
-        //             // @todo: as this creates just a 'string', we need to go back through the method
-        //             this.getTextBlock().html(firstParagraph);
-
-        //             // create a second block with the same content as the last
-        //             this.mediator.trigger('block:create', 'text', {
-        //                 text: secondParagraph
-        //             });
-        //         }.bind(this));
-        //     }
-        // }
     ],
 
     onBlockRender: function() {
@@ -180,7 +184,11 @@ module.exports = Block.extend({
                 });
         }
         else {
-            self.getTextBlock().html(stToHTML(data.text));
+            this.getTextBlock().html(stToHTML(data.text));
+        }
+
+        if (data.framed) {
+            this.getTextBlock().addClass('st-framed-' + data.framed);
         }
     }
 });

@@ -1,6 +1,6 @@
 var $                     = require('jquery');
 var _                     = require('../lodash.js');
-var contentEditableHelper = require('./content-editable-helper.js');
+var contentEditableHelper = require('./content-editable.js');
 var eventablejs           = require('eventablejs');
 var fieldHelper           = require('./field.js');
 var imageFilterHelper     = require('./image-filter.js');
