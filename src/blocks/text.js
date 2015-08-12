@@ -5,7 +5,6 @@
 var Block                 = require('../block');
 var contentEditableHelper = require('../helpers/content-editable.js');
 var EventBus              = require('../event-bus.js');
-var FramedHelper          = require('../helpers/framed.js');
 var ImageInserter         = require('../helpers/image-inserter.class.js');
 var stToHTML              = require('../to-html');
 var utils                 = require('../utils.js');
@@ -89,8 +88,8 @@ module.exports = Block.extend({
 
                 var result = e.target.value;
 
-                this.getTextBlock().removeClass (function (index, css) {
-                    return (css.match (/(^|\s)st-framed-\S+/g) || []).join(' ');
+                this.getTextBlock().removeClass(function (index, css) {
+                    return (css.match(/(^|\s)st-framed-\S+/g) || []).join(' ');
                 });
 
                 if (result !== 'false') {

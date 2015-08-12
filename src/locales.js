@@ -27,6 +27,10 @@ var Locales = {
         text: {
             title: 'Paragraphe'
         },
+        service: {
+            title: 'Service',
+            instruction: 'Choissisez un service'
+        },
         quote: {
             title: 'Citation',
             credit_field: 'Auteur'
@@ -135,6 +139,7 @@ var Locales = {
   }
 };
 
+// @todo why does this have to be global ?
 if (window.i18n === undefined) {
   // Minimal i18n stub that only reads the English strings
   utils.log('Using i18n stub');

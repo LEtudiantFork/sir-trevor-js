@@ -14,6 +14,7 @@
     "core-js": "^1.0.1",
     "d3": "^3.5.6",
     "d3plus": "git://github.com/LEtudiantFork/d3plus.git#browserify-compatability",
+    "etudiant-mod-modal": "^1.0.0",
     "etudiant-mod-xhr": "^1.1.4",
     "eventablejs": "^1.0.5",
     "lodash.camelcase": "^3.0.1",
@@ -38,9 +39,12 @@
   },
   "devDependencies": {
     "browserify-shim": "^3.8.1",
+    "deamdify": "^0.1.1",
     "jquery": "^2.1.1",
     "lodash": "^2.4.1",
     "mversion": "^1.9.0"
+  },
+  "browserify": {
   },
   "browserify-shim": {
     "jquery": "global:$"
