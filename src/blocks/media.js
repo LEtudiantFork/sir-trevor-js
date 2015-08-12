@@ -113,6 +113,8 @@ function onChoose(choices) {
 
             block.$editor.append(selectedSubBlock.renderLarge());
 
+            selectedSubBlock.on('save', function(newData) { block.setData(newData); });
+
             block.$editor.show();
         });
     })
@@ -156,6 +158,8 @@ module.exports = Block.extend({
                     parentID: this.blockID,
                     type: data.type
                 });
+
+                mediaSubBlock.on('save', function(newData) { this.setData(newData); });
 
                 this.$editor.append(mediaSubBlock.renderLarge());
 

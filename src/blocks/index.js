@@ -1,6 +1,5 @@
 module.exports = {
   Text: require('./text'),
-  Service: require('./service'),
   Heading: require('./heading'),
   Quote: require('./quote'),
   Media: require('./media'),

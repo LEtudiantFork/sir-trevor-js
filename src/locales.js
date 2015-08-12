@@ -27,10 +27,6 @@ var Locales = {
         text: {
             title: 'Paragraphe'
         },
-        service: {
-            title: 'Service',
-            instruction: 'Choissisez un service'
-        },
         quote: {
             title: 'Citation',
             credit_field: 'Auteur'
@@ -76,7 +72,7 @@ var Locales = {
             helper_unmerge : 'Cliquez sur une cellule grise pour annuler la fusion'
         },
         illustrated: {
-            title: 'Valeur illustrée',
+            title: 'Valeur\n illustrée',
             button: {
                 color: 'Couleur'
             },
@@ -100,6 +96,10 @@ var Locales = {
     },
     sub_blocks: {
         embed: {
+            service: {
+                title: 'Service',
+                instruction: 'Choissisez un service'
+            },
             personality: {
                 title: 'Test de personnalité'
             },

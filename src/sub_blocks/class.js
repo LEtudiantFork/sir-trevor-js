@@ -18,7 +18,7 @@ module.exports = {
 
         switch (params.type) {
         case 'image':
-            instance = Object.assign(instance, Basic.prototype, BasicMedia.prototype, eventablejs);
+            instance = Object.assign(instance, Basic.prototype, BasicMedia.prototype, Image.prototype, eventablejs);
 
             Basic.init.call(instance, params);
             Image.init.call(instance);

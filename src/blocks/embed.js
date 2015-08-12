@@ -11,6 +11,9 @@ var fieldHelper = require('../helpers/field.js');
 var SubBlockSearch  = require('../helpers/sub-block-search.class.js');
 var subBlockManager = require('../sub_blocks/manager.js');
 
+var ServiceItem   = require('../helpers/service/item.js');
+var ServicePicker = require('../helpers/service/picker.js');
+
 var chooseableConfig = {
     name: 'subBlockType',
     options: [
@@ -23,6 +26,9 @@ var chooseableConfig = {
         }, {
             title: i18n.t('sub_blocks:embed:personality:title'),
             value: 'personality'
+        }, {
+            title: i18n.t('sub_blocks:embed:service:title'),
+            value: 'service'
         }, {
             title: i18n.t('sub_blocks:embed:script:title'),
             value: 'script'
@@ -102,6 +108,25 @@ function onChoose(choices) {
         scriptSubBlock.appendTo(this.$editor);
 
         bindEventsOnScriptSubBlock(this, scriptSubBlock);
+    }
+    else if (block.subBlockType === 'service') {
+        block.servicePicker = ServicePicker.create();
+
+        block.servicePicker.open();
+
+        block.servicePicker.on('selected', function(selectedService) {
+            block.$editor.empty();
+
+            block.$editor.append(selectedService.$elem);
+
+            block.setData({
+                type: block.subBlockType,
+                id: selectedService.id,
+                link: selectedService.link,
+                icon: selectedService.icon,
+                title: selectedService.title
+            });
+        });
     }
     else {
         var thematicOptionsUrl = block.globalConfig.apiUrl + '/jcs/thematics/list/' + getPath(choices.subBlockType);
@@ -191,6 +216,11 @@ module.exports = Block.extend({
                 scriptSubBlock.appendTo(this.$editor);
 
                 bindEventsOnScriptSubBlock(this, scriptSubBlock);
+            }
+            else if (data.type === 'service') {
+                var serviceItem = ServiceItem.create(data);
+
+                serviceItem.$elem.appendTo(this.$editor);
             }
             else {
                 this.loading();
