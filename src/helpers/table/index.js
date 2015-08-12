@@ -27,14 +27,6 @@ module.exports = {
 
         instance.$elem = $('<div class="st-table"></div>');
 
-        instance.on('update', function(newData) {
-            console.table(newData);
-        });
-
-        instance.on('error', function(error) {
-            console.error(error);
-        });
-
         instance.registerKeyUpListeners();
         instance.registerClickListeners();
 

@@ -127,6 +127,10 @@ var Locales = {
                 title: 'Vidéo'
             }
         }
+    },
+    framed: {
+        choose: 'Choisissez un style d\'encadrement',
+        no_style: 'Aucun style'
     }
   }
 };

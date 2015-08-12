@@ -15,7 +15,7 @@ module.exports = {
 
         // Alternative position of control-ui
         if (this.controls_position) {
-            this.$control_ui.addClass(this.controls_position);
+            this.$control_ui.addClass('st-block-control-ui-position__' + this.controls_position);
             this.$inner.addClass('has-control-ui__' + this.controls_position);
         }
 

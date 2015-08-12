@@ -103,8 +103,8 @@ module.exports = Block.extend({
             },
             html: [
                 '<select>',
-                    '<option selected disabled value"">Choisissez un style d\'encadrement</option>',
-                    '<option value="false">Aucun style</option>',
+                    '<option selected disabled value"">' + i18n.t('framed:choose') + '</option>',
+                    '<option value="false">' + i18n.t('framed:no_style') + '</option>',
                     '<option value="' + framedConfig.blue.value + '">' + framedConfig.blue.label + '</option>',
                     '<option value="' + framedConfig.red.value + '">' + framedConfig.red.label + '</option>',
                     '<option value="' + framedConfig.green.value + '">' + framedConfig.green.label + '</option>',

@@ -7,23 +7,23 @@ var $ = require('jquery');
 
 var Block = require('../block');
 
-var template = '' +
-    '<table>' +
-        '<caption contenteditable></caption>' +
-        '<thead>' +
-            '<tr>' +
-                '<th contenteditable></th>' +
-                '<th contenteditable></th>' +
-            '</tr>' +
-        '</thead>' +
-        '<tbody>' +
-            '<tr>' +
-                '<td contenteditable></td>' +
-                '<td contenteditable></td>' +
-            '</tr>' +
-        '</tbody>' +
-    '</table>';
-
+var template = [
+    '<table>',
+        '<caption contenteditable></caption>',
+        '<thead>',
+            '<tr>',
+                '<th contenteditable></th>',
+                '<th contenteditable></th>',
+            '</tr>',
+        '</thead>',
+        '<tbody>',
+            '<tr>',
+                '<td contenteditable></td>',
+                '<td contenteditable></td>',
+            '</tr>',
+        '</tbody>',
+    '</table>'
+].join('\n');
 
 function countLineColspan(scope) {
     var count = 0;
@@ -378,13 +378,16 @@ module.exports = Block.extend({
 
         return data;
     },
+
     loadData: function(data){
         this.getTextBlock().html(this.toHTML(data.text));
     },
+
     setAndLoadData: function(blockData) {
         this.setData(blockData);
         this.beforeLoadingData();
     },
+
     getTextBlock: function() {
         if (_.isUndefined(this.text_block)) {
             this.text_block = this.$('.st-text-block');
