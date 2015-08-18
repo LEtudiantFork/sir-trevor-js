@@ -32,39 +32,39 @@ var imageInserterPrototype = {
         }
     },
 
-    close: function() {
-        this.modal.close();
-    },
-
     editImage: function(dynamicImage, shouldReplace) {
+        if (this.searchModal.isOpened) {
+            this.searchModal.close();
+        }
+
         // create a container for the second 'view' of the image inserter - the image editor
         this.$imageEditor = $('<div class="image-inserter image-inserter-edit"></div>');
 
         // append image and submit button
         this.$imageEditor.append(dynamicImage.renderLarge());
-        this.$imageEditor.append('<button>go</button>');
 
-        this.modal.append(this.$imageEditor);
-        this.modal.open();
+        this.editorModal.open();
 
-        this.$imageEditor.on('click', 'button', function(e) {
-            e.stopPropagation();
+        this.editorModal.appendToContentArea(this.$imageEditor);
 
+        this.editorModal.on('close', function() {
             if (shouldReplace) {
                 this.trigger('replace', dynamicImage);
             }
             else {
                 this.trigger('selected', dynamicImage);
             }
-
-            this.close();
         }.bind(this));
     },
 
     openSearch: function() {
-        this.modal.append(this.$imageSearchContainer);
+        if (this.editorModal.isOpened) {
+            this.editorModal.close();
+        }
 
-        this.modal.open();
+        this.searchModal.open();
+
+        this.searchModal.appendToContentArea(this.$imageSearchContainer);
 
         this.subBlockSearch.refreshDimensions();
     },
@@ -188,11 +188,32 @@ module.exports = {
                 block.imageInserter.subBlockType = preparedParams.subBlockType;
 
                 // initialise the modal
-                block.imageInserter.modal = new Modal({
+                block.imageInserter.searchModal = new Modal({
                     slug: 'image-inserter',
                     animation: 'fade',
-                    theme: 'plain',
-                    cssClasses: 'pandora'
+                    theme: 'pandora'
+                });
+
+                block.imageInserter.searchModal.render({
+                    header: 'Choisissez un service',
+                    content: '',
+                    footer: {
+                        ok: 'OK'
+                    }
+                });
+
+                block.imageInserter.editorModal = new Modal({
+                    slug: 'image-inserter',
+                    animation: 'fade',
+                    theme: 'pandora'
+                });
+
+                block.imageInserter.editorModal.render({
+                    header: 'Editer l\'image',
+                    content: '',
+                    footer: {
+                        ok: 'OK'
+                    }
                 });
 
                 // create a wrapper element for our filterbar and slider

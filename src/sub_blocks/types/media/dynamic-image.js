@@ -7,34 +7,29 @@ var smallTemplate = [
     '<figure class="st-sub-block-image" data-etu-zoom="">',
         '<img src="<%= thumbnail %>" />',
     '</figure>',
-    '<%= select %>',
+    '<%= formatField %>',
     '<span>légende : <%= legend %></span>',
     '<span>&copy; <%= copyright %></span>'
 ].join('\n');
 
 var largeTemplate = [
-    '<figure class="st-sub-block-image" data-etu-zoom="">',
+    '<figure class="st-sub-block-image">',
         '<img src="<%= thumbnail %>" />',
     '</figure>',
-    '<span>Format :</span>',
-    '<%= formats %>',
-    '<span>&copy; <%= copyright %></span>',
-    '<span>légende :</span>',
-    '<input type="text" name="legend" value="<%= legend %>" />',
-    '<span>url :</span>',
-    '<input type="url" name="link" value="<%= link %>" placeholder="entrez un lien" />',
-    '<span>Position :</span>',
-    '<select name="align">',
-        '<option <%= isLeft %> value="left">A gauche du texte</option>',
-        '<option <%= isRight %> value="right">A droite du texte</option>',
-    '</select>'
+    '<%= formatsField %>',
+    '<%= legendField %>',
+    '<%= linkField %>',
+    '<%= alignField %>',
+    '<span>&copy; <%= copyright %></span>'
 ].join('\n');
 
 var inBlockTemplate = [
     '<%= img %>',
-    '<span>légende : <%= legend %></span>',
-    '<button data-edit>éditer</button>',
-    '<button data-delete>supprimer</button>'
+    '<figcaption><%= legend %></figcaption>',
+    '<div class="st-sub-block-dynamic-image-edit-area">',
+        '<button type="button" data-edit class="st-icon" data-icon="image"></button>',
+        '<button type="button" data-delete class="st-icon" data-icon="bin"></button>',
+    '</div>'
 ].join('\n');
 
 function hasFormatString(formatString, formats) {
@@ -69,7 +64,7 @@ var dynamicImagePrototype = {
     },
 
     prepareSmallMarkup: function() {
-        var select = '';
+        var formatField = '';
 
         if (this.content.formats.length > 1) {
             var formats = this.content.formats.map(function(formatItem) {
@@ -79,7 +74,7 @@ var dynamicImagePrototype = {
                 };
             });
 
-            select = fieldHelper.build({
+            formatField = fieldHelper.build({
                 type: 'select',
                 placeholder: 'Sélectionnez un format',
                 name: 'format-' + this.id,
@@ -88,7 +83,7 @@ var dynamicImagePrototype = {
         }
 
         var toRender = Object.assign({}, this.content, {
-            select: select
+            formatField: formatField
         });
 
         return _.template(smallTemplate, toRender, { imports: { '_': _ } });
@@ -123,17 +118,54 @@ var dynamicImagePrototype = {
             };
         }.bind(this));
 
-        var formats = fieldHelper.build({
+        var alignField = fieldHelper.build({
             type: 'select',
+            name: 'align',
+            label: 'Position',
+            options: [
+                {
+                    value: 'left',
+                    label: 'A gauche du texte',
+                    selected: this.content.align === 'left' ? 'selected' : ''
+                },
+                {
+                    value: 'right',
+                    label: 'A droite du texte',
+                    selected: this.content.align === 'right' ? 'selected' : ''
+                }
+            ]
+        });
+
+        var formatsField = fieldHelper.build({
+            type: 'select',
+            label: 'Format',
             name: 'format',
             options: formatOptions
         });
 
+        var legendField = fieldHelper.build({
+            type: 'text',
+            name: 'link',
+            label: 'Legend',
+            value: this.content.legend
+        });
+
+        var linkField = '';
+
+        if (this.content.link) {
+            linkField = fieldHelper.build({
+                type: 'text',
+                name: 'link',
+                label: 'Link',
+                value: this.content.link
+            });
+        }
+
         var toRender = Object.assign({}, this.content, {
-            formats: formats,
-            isLeft: this.content.align === 'left' ? 'selected' : '',
-            isRight: this.content.align === 'right' ? 'selected' : '',
-            link: this.content.link ? this.content.link : '',
+            alignField: alignField,
+            formatsField: formatsField,
+            legendField: legendField,
+            linkField: linkField,
             hasLink: this.content.link === '' ? this.content.link : 'entrez un lien'
         });
 

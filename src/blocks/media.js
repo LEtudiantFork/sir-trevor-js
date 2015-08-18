@@ -159,7 +159,7 @@ module.exports = Block.extend({
                     type: data.type
                 });
 
-                mediaSubBlock.on('save', function(newData) { this.setData(newData); });
+                mediaSubBlock.on('save', function(newData) { this.setData(newData); }.bind(this));
 
                 this.$editor.append(mediaSubBlock.renderLarge());
 

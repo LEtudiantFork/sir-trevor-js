@@ -5,7 +5,7 @@ var smallTemplate = [
         '<img src="<%= thumbnail %>" />',
     '</figure>',
     '<h3><%= title %></h3>',
-    '<a class="st-sub-block-link st-icon" href="<%= url %>" target="_blank">link</a>',
+    '<a class="st-sub-block-link st-icon" href="<%= bo_link %>" target="_blank">link</a>',
     '<span class="st-sub-block-site"><%= site %></span>'
 ].join('\n');
 

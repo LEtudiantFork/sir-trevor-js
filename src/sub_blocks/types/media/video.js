@@ -1,3 +1,4 @@
+var _       = require('../../../lodash.js');
 var videojs = require('video.js');
 
 var smallTemplate = [
@@ -11,9 +12,7 @@ var smallTemplate = [
 var largeTemplate = [
     '<div class="st-sub-block-video-wrapper">',
         '<video class="video-js vjs-default-skin" src="<%= file %>" poster="<%= thumbnail %>" /></video>',
-    '</div>',
-    '<%= editArea %>',
-    '<%= footer %>'
+    '</div>'
 ].join('\n');
 
 function init() {
@@ -22,6 +21,10 @@ function init() {
 }
 
 var videoPrototype = {
+    prepareLargeMarkup: function() {
+        return _.template(this.largeTemplate, this.content, { imports: { '_' : _ } });
+    },
+
     postRenderLarge: function() {
         var $video = this.$elem.find('video');
 

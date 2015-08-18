@@ -10,11 +10,12 @@ var smallTemplate = [
 ].join('\n');
 
 var largeTemplate = [
-    '<figure class="st-sub-block-image">',
+    '<figure>',
         '<img src="<%= file %>" />',
+        '<figcaption>&copy; <%= copyright %></figcaption>',
     '</figure>',
     '<div class="st-sub-block-image__edit-bar">',
-        '<%= fields %>',
+        '<%= legendField %>',
     '</div>'
 ].join('\n');
 
@@ -25,9 +26,9 @@ function init() {
 
 var imagePrototype = {
     prepareLargeMarkup: function() {
-        var fields = '';
+        var legendField = '';
 
-        fields += fieldHelper.build({
+        legendField += fieldHelper.build({
             type: 'text',
             placeholder: 'Saisissez un légende',
             name: 'legend',
@@ -35,10 +36,8 @@ var imagePrototype = {
             value: this.content.legend
         });
 
-        fields += '<span> &copy;' + this.content.copyright + '</span>';
-
         var toRender = Object.assign({}, this.content, {
-            fields: fields
+            legendField: legendField
         });
 
         return _.template(this.largeTemplate, toRender, { imports: { '_' : _ } });
