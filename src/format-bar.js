@@ -1,18 +1,25 @@
-/*
-   Format Bar
-   --
-   Displayed on focus on a text area.
-   Renders with all available options for the editor instance
-   */
+"use strict";
+
+/**
+ * Format Bar
+ * --
+ * Displayed on focus on a text area.
+ * Renders with all available options for the editor instance
+ */
 
 var _ = require('./lodash');
-var $ = require('jquery');
 
 var config = require('./config');
-var Formatters = require('./formatters');
+var utils = require('./utils');
+var Dom = require('./packages/dom');
+var Events = require('./packages/events');
 
-var FormatBar = function(options, mediator) {
+const FORMAT_BUTTON_TEMPLATE = require("./templates/format-button");
+
+var FormatBar = function(options, mediator, editor) {
+  this.editor = editor;
   this.options = Object.assign({}, config.defaults.formatBar, options || {});
+  this.commands = this.options.commands;
   this.mediator = mediator;
 
   this._ensureElement();
@@ -37,82 +44,82 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
   },
 
   initialize: function() {
-    var formatName, format, btn;
-    this.$btns = [];
 
-    for (formatName in Formatters) {
-      if (Formatters.hasOwnProperty(formatName)) {
-        format = Formatters[formatName];
-        btn = $("<button>", {
-          'class': 'st-format-btn st-format-btn--' + formatName + ' ' + (format.iconName ? 'st-icon' : ''),
-          'text': format.text,
-          'data-type': formatName,
-          'data-cmd': format.cmd
-        });
+    var buttons = this.commands.reduce(function(memo, format) {
+      return memo += FORMAT_BUTTON_TEMPLATE(format);
+    }, "");
 
-        this.$btns.push(btn);
-        btn.appendTo(this.$el);
-      }
-    }
+    this.el.insertAdjacentHTML("beforeend", buttons);
 
-    this.$b = $(document);
-    this.$el.bind('click', '.st-format-btn', this.onFormatButtonClick);
+    Events.delegate(this.el, '.st-format-btn', 'click', this.onFormatButtonClick);
   },
 
   hide: function() {
-    this.$el.removeClass('st-format-bar--is-ready');
+    this.el.classList.remove('st-format-bar--is-ready');
+    Dom.remove(this.el);
   },
 
   show: function() {
-    this.$el.addClass('st-format-bar--is-ready');
+    this.hide();
+
+    this.editor.outer.appendChild(this.el);
+    this.el.classList.add('st-format-bar--is-ready');
   },
 
-  remove: function(){ this.$el.remove(); },
+  remove: function(){ Dom.remove(this.el); },
 
   renderBySelection: function() {
-
-    var selection = window.getSelection(),
-    range = selection.getRangeAt(0),
-    boundary = range.getBoundingClientRect(),
-    coords = {};
-
-    coords.top = boundary.top + 20 + window.pageYOffset - this.$el.height() + 'px';
-    coords.left = ((boundary.left + boundary.right) / 2) - (this.$el.width() / 2) + 'px';
-
     this.highlightSelectedButtons();
     this.show();
+    this.calculatePosition();
+  },
 
-    this.$el.css(coords);
+  calculatePosition: function() {
+    var selection = window.getSelection(),
+        range = selection.getRangeAt(0),
+        boundary = range.getBoundingClientRect(),
+        coords = {},
+        outer = this.editor.outer,
+        outerBoundary = outer.getBoundingClientRect();
+
+    coords.top = (boundary.top - outerBoundary.top) + 'px';
+    coords.left = (((boundary.left + boundary.right) / 2) -
+      (this.el.offsetWidth / 2) - outerBoundary.left) + 'px';
+
+    this.el.style.top = coords.top;
+    this.el.style.left = coords.left;
   },
 
   highlightSelectedButtons: function() {
-    var formatter;
-    this.$btns.forEach(function($btn) {
-      formatter = Formatters[$btn.attr('data-type')];
-      $btn.toggleClass("st-format-btn--is-active",
-                       formatter.isActive());
-    }, this);
+    var block = utils.getBlockBySelection();
+    [].forEach.call(this.el.querySelectorAll(".st-format-btn"), function(btn) {
+      var cmd = btn.getAttribute('data-cmd');
+      btn.classList.toggle("st-format-btn--is-active",
+                      block.queryTextBlockCommandState(cmd));
+      btn = null;
+    });
   },
 
-  onFormatButtonClick: function(ev){
+  onFormatButtonClick: function(ev) {
+    ev.preventDefault();
     ev.stopPropagation();
 
-    var btn = $(ev.target),
-    format = Formatters[btn.attr('data-type')];
+    var block = utils.getBlockBySelection();
+    if (_.isUndefined(block)) {
+      throw "Associated block not found";
+    }
 
-    if (_.isUndefined(format)) {
+    var btn = ev.target,
+        cmd = btn.getAttribute('data-cmd');
+
+    if (_.isUndefined(cmd)) {
       return false;
     }
 
-    // Do we have a click function defined on this formatter?
-    if(!_.isUndefined(format.onClick) && _.isFunction(format.onClick)) {
-      format.onClick(); // Delegate
-    } else {
-      // Call default
-      document.execCommand(btn.attr('data-cmd'), false, format.param);
-    }
+    block.execTextBlockCommand(cmd);
 
     this.highlightSelectedButtons();
+
     return false;
   }
 

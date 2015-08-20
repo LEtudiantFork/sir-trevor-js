@@ -1,3 +1,5 @@
+"use strict";
+
 /*
  * Sir Trevor Editor
  * --
@@ -7,16 +9,15 @@
  */
 
 var _ = require('./lodash');
-var $ = require('jquery');
 var config = require('./config');
 var utils = require('./utils');
+var Dom = require('./packages/dom');
 
 var Events = require('./events');
 var EventBus = require('./event-bus');
 var FormEvents = require('./form-events');
 var BlockControls = require('./block-controls');
 var BlockManager = require('./block-manager');
-var FloatingBlockControls = require('./floating-block-controls');
 var FormatBar = require('./format-bar');
 var EditorStore = require('./extensions/editor-store');
 var ErrorHandler = require('./error-handler');
@@ -28,11 +29,11 @@ var Editor = function(options) {
 Object.assign(Editor.prototype, require('./function-bind'), require('./events'), {
 
   bound: ['onFormSubmit', 'hideAllTheThings', 'changeBlockPosition',
-    'removeBlockDragOver', 'renderBlock', 'resetBlockControls',
-    'blockLimitReached'],
+    'removeBlockDragOver', 'blockLimitReached'],
 
   events: {
     'block:reorder:dragend': 'removeBlockDragOver',
+    'block:reorder:dropped': 'removeBlockDragOver',
     'block:content:dropped': 'removeBlockDragOver'
   },
 
@@ -58,7 +59,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.build();
 
-    FormEvents.bindFormSubmit(this.$form);
+    FormEvents.bindFormSubmit(this.form);
   },
 
   /*
@@ -68,32 +69,27 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
    * If we have JSON then we need to build all of our blocks from this.
    */
   build: function() {
-    this.$el.hide();
+    Dom.hide(this.el);
 
-    this.errorHandler = new ErrorHandler(this.$outer, this.mediator, this.options.errorsContainer);
-    this.store = new EditorStore(this.$el.val(), this.mediator);
-    this.block_manager = new BlockManager(this.options, this.ID, this.mediator);
-    this.block_controls = new BlockControls(this.block_manager.blockTypes, this.mediator);
-    this.fl_block_controls = new FloatingBlockControls(this.$wrapper, this.ID, this.mediator);
-    this.formatBar = new FormatBar(this.options.formatBar, this.mediator);
+    this.errorHandler = new ErrorHandler(this.outer, this.mediator, this.options.errorsContainer);
+    this.store = new EditorStore(this.el.value, this.mediator);
+
+    this.blockManager = new BlockManager(this);
+    this.blockControls = BlockControls.create(this);
+
+    this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
 
     this.mediator.on('block:changePosition', this.changeBlockPosition);
-    this.mediator.on('block-controls:reset', this.resetBlockControls);
     this.mediator.on('block:limitReached', this.blockLimitReached);
-    this.mediator.on('block:render', this.renderBlock);
 
     this.dataStore = "Please use store.retrieve();";
 
     this._setEvents();
 
-    this.$wrapper.prepend(this.fl_block_controls.render().$el);
-    $(document.body).append(this.formatBar.render().$el);
-    this.$outer.append(this.block_controls.render().$el);
-
-    $(window).bind('click', this.hideAllTheThings);
+    window.addEventListener('click', this.hideAllTheThings);
 
     this.createBlocks();
-    this.$wrapper.addClass('st-ready');
+    this.wrapper.classList.add('st-ready');
 
     if(!_.isUndefined(this.onEditorRender)) {
       this.onEditorRender();
@@ -115,12 +111,11 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   destroy: function() {
     // Destroy the rendered sub views
     this.formatBar.destroy();
-    this.fl_block_controls.destroy();
-    this.block_controls.destroy();
+    this.blockControls.destroy();
 
     // Destroy all blocks
-    this.blocks.forEach(function(block) {
-      this.mediator.trigger('block:remove', this.block.blockID);
+    this.blockManager.blocks.forEach(function(block) {
+      this.mediator.trigger('block:remove', block.blockID);
     }, this);
 
     // Stop listening to events
@@ -134,7 +129,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     // Clear the store
     this.store.reset();
-    this.$outer.replaceWith(this.$el.detach());
+    Dom.replaceWith(this.outer, this.el);
   },
 
   reinitialize: function(options) {
@@ -142,13 +137,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.initialize(options || this.options);
   },
 
-  resetBlockControls: function() {
-    this.block_controls.renderInContainer(this.$wrapper);
-    this.block_controls.hide();
-  },
-
   blockLimitReached: function(toggle) {
-    this.$wrapper.toggleClass('st--block-limit-reached', toggle);
+    this.wrapper.classList.toggle('st--block-limit-reached', toggle);
   },
 
   _setEvents: function() {
@@ -158,7 +148,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   hideAllTheThings: function(e) {
-    this.block_controls.hide();
+    this.blockControls.hide();
     this.formatBar.hide();
   },
 
@@ -167,42 +157,25 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     return this.store[method].call(this, options || {});
   },
 
-  renderBlock: function(block) {
-    this._renderInPosition(block.render().$el);
-    this.hideAllTheThings();
-    // this.scrollTo(block.$el);
-
-    block.trigger("onRender");
-  },
-
-  scrollTo: function(element) {
-    $('html, body').animate({ scrollTop: element.position().top }, 300, "linear");
-  },
-
   removeBlockDragOver: function() {
-    this.$outer.find('.st-drag-over').removeClass('st-drag-over');
+    var dragOver = this.outer.querySelector('.st-drag-over');
+    if (!dragOver) { return; }
+    dragOver.classList.remove('st-drag-over');
   },
 
-  changeBlockPosition: function($block, selectedPosition) {
+  changeBlockPosition: function(block, selectedPosition) {
     selectedPosition = selectedPosition - 1;
 
-    var blockPosition = this.getBlockPosition($block),
-    $blockBy = this.$wrapper.find('.st-block').eq(selectedPosition);
+    var blockPosition = this.getBlockPosition(block),
+    blockBy = this.wrapper.querySelectorAll('.st-block')[selectedPosition];
 
-    var where = (blockPosition > selectedPosition) ? "Before" : "After";
-
-    if($blockBy && $blockBy.attr('id') !== $block.attr('id')) {
+    if(blockBy && blockBy.getAttribute('id') !== block.getAttribute('id')) {
       this.hideAllTheThings();
-      $block["insert" + where]($blockBy);
-      this.scrollTo($block);
-    }
-  },
-
-  _renderInPosition: function(block) {
-    if (this.block_controls.currentContainer) {
-      this.block_controls.currentContainer.after(block);
-    } else {
-      this.$wrapper.append(block);
+      if (blockPosition > selectedPosition) {
+        blockBy.parentNode.insertBefore(block, blockBy);
+      } else {
+        Dom.insertAfter(block, blockBy);
+      }
     }
   },
 
@@ -233,25 +206,18 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.store.reset();
 
     this.validateBlocks(shouldValidate);
-    this.block_manager.validateBlockTypesExist(shouldValidate);
+    this.blockManager.validateBlockTypesExist(shouldValidate);
 
     this.mediator.trigger('errors:render');
-
-    // If there is nothing in the store, the textarea should be submitted empty
-    if (_.isEmpty(this.store.store.data)) {
-        this.$el.val('');
-    }
-    else {
-        this.$el.val(this.store.toString());
-    }
+    this.el.value = this.store.toString();
 
     return this.errorHandler.errors.length;
   },
 
   validateBlocks: function(shouldValidate) {
     var self = this;
-    this.$wrapper.find('.st-block').each(function(idx, block) {
-      var _block = self.block_manager.findBlockById($(block).attr('id'));
+    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function(block, idx) {
+      var _block = self.blockManager.findBlockById(block.getAttribute('id'));
       if (!_.isUndefined(_block)) {
         self.validateAndSaveBlock(_block, shouldValidate);
       }
@@ -259,39 +225,49 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   findBlockById: function(block_id) {
-    return this.block_manager.findBlockById(block_id);
+    return this.blockManager.findBlockById(block_id);
   },
 
   getBlocksByType: function(block_type) {
-    return this.block_manager.getBlocksByType(block_type);
+    return this.blockManager.getBlocksByType(block_type);
   },
 
   getBlocksByIDs: function(block_ids) {
-    return this.block_manager.getBlocksByIDs(block_ids);
+    return this.blockManager.getBlocksByIDs(block_ids);
   },
 
-  getBlockPosition: function($block) {
-    return this.$wrapper.find('.st-block').index($block);
+  getBlockPosition: function(block) {
+    var index;
+    Array.prototype.forEach.call(this.wrapper.querySelectorAll('.st-block'), function(item, i) {
+      if (block === item) {
+        index = i;
+      }
+    });
+    return index;
   },
 
   _ensureAndSetElements: function() {
-    if(_.isUndefined(this.options.el) || _.isEmpty(this.options.el)) {
+    if(_.isUndefined(this.options.el)) {
       utils.log("You must provide an el");
       return false;
     }
 
-    this.$el = this.options.el;
-    this.el = this.options.el[0];
-    this.$form = this.$el.parents('form');
+    this.el = this.options.el;
+    this.form = Dom.getClosest(this.el, 'form');
 
-    var $outer = $("<div>").attr({ 'id': this.ID, 'class': 'st-outer', 'dropzone': 'copy link move' });
-    var $wrapper = $("<div>").attr({ 'class': 'st-blocks' });
+    var outer = Dom.createElement("div", {
+                  'id': this.ID, 
+                  'class': 'st-outer notranslate', 
+                  'dropzone': 'copy link move'});
+
+    var wrapper = Dom.createElement("div", {'class': 'st-blocks'});
 
     // Wrap our element in lots of containers *eww*
-    this.$el.wrap($outer).wrap($wrapper);
 
-    this.$outer = this.$form.find('#' + this.ID);
-    this.$wrapper = this.$outer.find('.st-blocks');
+    Dom.wrap(Dom.wrap(this.el, outer), wrapper);
+
+    this.outer = this.form.querySelector('#' + this.ID);
+    this.wrapper = this.outer.querySelector('.st-blocks');
 
     return true;
   }

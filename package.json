@@ -1,22 +1,20 @@
 {
   "name": "sir-trevor",
-  "version": "0.4.3",
+  "version": "0.5.1",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git@github.com:madebymany/sir-trevor-js.git"
   },
-  "scripts": {
-    "test": "grunt test",
-    "dist": "grunt",
-    "dev": "grunt dev watch"
-  },
   "dependencies": {
+    "babelify": "6.2.0",
     "core-js": "^1.0.1",
     "d3": "^3.5.6",
-    "d3plus": "git://github.com/LEtudiantFork/d3plus.git#browserify-compatability",
+    "d3plus": "^1.8.0",
     "etudiant-mod-modal": "^1.0.0",
     "etudiant-mod-xhr": "^1.1.4",
     "eventablejs": "^1.0.5",
+    "jsonp-promise": "^0.1.2",
     "lodash.camelcase": "^3.0.1",
     "lodash.chunk": "^3.0.0",
     "lodash.debounce": "^2.4.1",
@@ -33,20 +31,22 @@
     "lodash.template": "^2.4.1",
     "lodash.uniq": "^3.2.2",
     "lodash.uniqueid": "^2.4.1",
+    "mversion": "^1.9.0",
+    "scribe-editor": "git://github.com/LEtudiantFork/scribe.git#es6-modules",
+    "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "git://github.com/LEtudiantFork/scribe-plugin-formatter-plain-text-convert-new-lines-to-html.git#es6-modules",
+    "scribe-plugin-link-prompt-command": "git://github.com/LEtudiantFork/scribe-plugin-link-prompt-command.git#es6-modules",
     "spin.js": "^2.1.2",
     "velocity-commonjs": "^1.0.0",
-    "video.js": "^4.12.10"
+    "video.js": "^4.12.10",
+    "whatwg-fetch": "^0.9.0"
   },
   "devDependencies": {
-    "browserify-shim": "^3.8.1",
-    "deamdify": "^0.1.1",
-    "jquery": "^2.1.1",
-    "lodash": "^2.4.1",
-    "mversion": "^1.9.0"
+    "browserify-shim": "^3.8.1"
   },
   "browserify": {
+    "transform": [
+      "babelify"
+    ]
   },
-  "browserify-shim": {
-    "jquery": "global:$"
-  }
+  "browserify-shim": {}
 }

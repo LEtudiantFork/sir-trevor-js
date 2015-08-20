@@ -1,3 +1,5 @@
+"use strict";
+
 /*
   Block Quote
 */
@@ -16,11 +18,9 @@ var template = _.template([
 
 module.exports = Block.extend({
 
-  type: 'quote',
+  type: "quote",
 
-  title: function() {
-    return i18n.t('blocks:quote:title');
-  },
+  title: function() { return i18n.t('blocks:quote:title'); },
 
   icon_name: 'quote',
 
@@ -29,11 +29,12 @@ module.exports = Block.extend({
   },
 
   loadData: function(data){
-    this.getTextBlock().html(stToHTML(data.text, this.type));
-  },
+    if (this.options.convertFromMarkdown && data.format !== "html") {
+      this.setTextBlockHTML(stToHTML(data.text, this.type));
+    } else {
+      this.setTextBlockHTML(data.text);
+    }
 
-  toMarkdown: function(markdown) {
-    return markdown.replace(/^(.+)$/mg,'$1');
+    this.$('.js-cite-input')[0].value = data.cite;
   }
-
 });

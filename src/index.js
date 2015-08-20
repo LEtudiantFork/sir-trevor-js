@@ -1,4 +1,4 @@
-var _ = require('./lodash');
+"use strict";
 
 // polyfills
 require('core-js/fn/object/assign');
@@ -6,87 +6,68 @@ require('core-js/fn/array/includes');
 require('core-js/fn/array/find');
 require('core-js/fn/promise');
 
-require('./helpers/event'); // extends jQuery itself
+var utils = require('./utils');
 
 var SirTrevor = {
 
-    config: require('./config'),
+  config: require('./config'),
 
-    log: require('./utils').log,
-    Locales: require('./locales'),
+  log: utils.log,
 
-    Events: require('./events'),
-    EventBus: require('./event-bus'),
+  Locales: require('./locales'),
 
-    EditorStore: require('./extensions/editor-store'),
-    Submittable: require('./extensions/submittable'),
-    FileUploader: require('./extensions/file-uploader'),
+  Events: require('./events'),
+  EventBus: require('./event-bus'),
 
-    BlockMixins: require('./block_mixins'),
-    BlockPositioner: require('./block-positioner'),
-    BlockReorder: require('./block-reorder'),
-    BlockDeletion: require('./block-deletion'),
-    BlockValidations: require('./block-validations'),
-    BlockStore: require('./block-store'),
-    BlockManager: require('./block-manager'),
+  EditorStore: require('./extensions/editor-store'),
+  Submittable: require('./extensions/submittable'),
+  FileUploader: require('./extensions/file-uploader'),
 
-    SimpleBlock: require('./simple-block'),
-    Block: require('./block'),
-    Formatter: require('./formatter'),
-    Formatters: require('./formatters'),
+  BlockMixins: require('./block_mixins'),
+  BlockPositioner: require('./block-positioner'),
+  BlockReorder: require('./block-reorder'),
+  BlockDeletion: require('./block-deletion'),
+  BlockValidations: require('./block-validations'),
+  BlockStore: require('./block-store'),
+  BlockManager: require('./block-manager'),
 
-    Blocks: require('./blocks'),
+  SimpleBlock: require('./simple-block'),
+  Block: require('./block'),
 
-    BlockControl: require('./block-control'),
-    BlockControls: require('./block-controls'),
-    FloatingBlockControls: require('./floating-block-controls'),
+  Blocks: require('./blocks'),
 
-    FormatBar: require('./format-bar'),
-    Editor: require('./editor'),
+  FormatBar: require('./format-bar'),
+  Editor: require('./editor'),
 
-    toMarkdown: require('./to-markdown'),
-    toHTML: require('./to-html'),
+  toMarkdown: require('./to-markdown'),
+  toHTML: require('./to-html'),
 
-    setDefaults: function(options) {
-        Object.assign(SirTrevor.config.defaults, options || {});
-    },
+  setDefaults: function(options) {
+    Object.assign(SirTrevor.config.defaults, options || {});
+  },
 
-    getInstance: function(identifier) {
-        if (_.isUndefined(identifier)) {
-            return this.config.instances[0];
-        }
+  getInstance: utils.getInstance,
 
-        if (_.isString(identifier)) {
-            return this.config.instances.find(function(editor) {
-                return editor.ID === identifier;
-            });
-        }
+  setBlockOptions: function(type, options) {
+    var block = SirTrevor.Blocks[type];
 
-        return this.config.instances[identifier];
-    },
-
-    setBlockOptions: function(type, options) {
-        var block = SirTrevor.Blocks[type];
-
-        if (_.isUndefined(block)) {
-            return;
-        }
-
-        Object.assign(block.prototype, options || {});
-    },
-
-    runOnAllInstances: function(method) {
-        if (SirTrevor.Editor.prototype.hasOwnProperty(method)) {
-            var methodArgs = Array.prototype.slice.call(arguments, 1);
-
-            Array.prototype.forEach.call(SirTrevor.config.instances, function(i) {
-                i[method].apply(null, methodArgs);
-            });
-        }
-        else {
-            SirTrevor.log('method doesn\'t exist');
-        }
+    if (typeof block === "undefined") {
+      return;
     }
+
+    Object.assign(block.prototype, options || {});
+  },
+
+  runOnAllInstances: function(method) {
+    if (SirTrevor.Editor.prototype.hasOwnProperty(method)) {
+      var methodArgs = Array.prototype.slice.call(arguments, 1);
+      Array.prototype.forEach.call(SirTrevor.config.instances, function(i) {
+        i[method].apply(null, methodArgs);
+      });
+    } else {
+      SirTrevor.log("method doesn't exist");
+    }
+  },
 
 };
 

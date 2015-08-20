@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require('./lodash');
 var config = require('./config');
 var utils = require('./utils');
@@ -5,144 +7,62 @@ var utils = require('./utils');
 var Locales = {
   en: {
     general: {
-      delete:   'Suppression ?',
-      drop:     'Glissez __block__ ici',
-      paste:    'Ou copiez le lien ici',
-      upload:   '...ou choisissez un fichier',
-      close:    'fermer',
-      position: 'Position',
-      wait:     'Veuillez patienter...',
-      link:     'Entrez un lien',
-      save:     'Le bloc a été sauvegardé'
+      'delete':           'Delete?',
+      'drop':             'Drag __block__ here',
+      'paste':            'Or paste URL here',
+      'upload':           '...or choose a file',
+      'close':            'close',
+      'position':         'Position',
+      'wait':             'Please wait...',
+      'link':             'Enter a link',
+      'yes':              'Yes',
+      'no':               'No'
     },
     errors: {
-      title: 'Vous avez l\'erreur suivante :',
-      validation_fail: 'Bloc __type__ est invalide',
-      block_empty: '__name__ ne doit pas être vide',
-      type_missing: 'Vous devez avoir un bloc de type __type__',
-      required_type_empty: 'Un bloc requis de type __type__ est vide',
-      load_fail: 'Il y a un problème avec le chargement des données du document'
+      'title': "You have the following errors:",
+      'validation_fail': "__type__ block is invalid",
+      'block_empty': "__name__ must not be empty",
+      'type_missing': "You must have a block of type __type__",
+      'required_type_empty': "A required block type __type__ is empty",
+      'load_fail': "There was a problem loading the contents of the document"
     },
     blocks: {
-        text: {
-            title: 'Paragraphe'
-        },
-        quote: {
-            title: 'Citation',
-            credit_field: 'Auteur'
-        },
-        chart: {
-            title: 'Graphique',
-            width: 'Largeur',
-            height: 'Hauteur',
-            mode: 'Mode d\'affichage',
-            col: 'Ajouter une colonne',
-            row: 'Ajouter une ligne',
-            no_deletion_col: 'Impossible de supprimer cette ligne',
-            no_deletion_line: 'Impossible de supprimer cette colonne',
-            xTitle: 'Abscisse',
-            yTitle: 'Ordonnée',
-            bar: {
-                addCol: 'Ajouter une colonne',
-                addRow: 'Ajouter une ligne'
-            },
-            pie: {
-                addSection: 'Ajouter une part'
-            }
-        },
-        medias: {
-            title: 'Medias'
-        },
-        iframe: {
-            title: 'Iframe',
-            placeholder: 'Copie l\'URL du site ici'
-        },
-        embed: {
-            title: 'Embed'
-        },
-        heading: {
-            title: 'Titre'
-        },
-        table: {
-            title: 'Tableaux',
-            default: 'Defaut',
-            blue_theme: 'Theme bleu',
-            red_theme: 'Theme rouge',
-            helper_merge : 'Cliquez sur une cellule grise pour la fusionner avec la cellule de droite',
-            helper_unmerge : 'Cliquez sur une cellule grise pour annuler la fusion'
-        },
-        illustrated: {
-            title: 'Valeur\n illustrée',
-            button: {
-                color: 'Couleur'
-            },
-            placeholder: {
-                text: 'Votre texte',
-                title: 'Votre titre',
-                drop : 'Uploader et associer une nouvelle image',
-                updated : 'Copyright mis à jour'
-            },
-            modal: {
-                close: 'Fermer',
-                header: 'Image',
-                prev: 'Prev',
-                next: 'Next'
-            }
-
-        }
-    },
-    slider: {
-        no_results: 'Il n\'y a pas de resultats'
-    },
-    sub_blocks: {
-        embed: {
-            service: {
-                title: 'Service',
-                instruction: 'Choissisez un service'
-            },
-            personality: {
-                title: 'Test de personnalité'
-            },
-            poll: {
-                title: 'Sondage'
-            },
-            quiz: {
-                title: 'Quiz'
-            },
-            script: {
-                title: 'Script',
-                save: 'Sauvegarder',
-                edit: 'Editer',
-                invalid: 'Veuillez vérifier votre script'
-            }
-        },
-        media: {
-            save: 'Sauvegarder',
-            legend: 'Legende',
-            copyright: 'Copyright',
-            category: 'Categorie',
-            image: {
-                title: 'Image'
-            },
-            diapo: {
-                title: 'Diaporama'
-            },
-            video: {
-                title: 'Vidéo'
-            }
-        }
-    },
-    framed: {
-        choose: 'Choisissez un style d\'encadrement',
-        no_style: 'Aucun style'
+      text: {
+        'title': "Text"
+      },
+      list: {
+        'title': "List"
+      },
+      quote: {
+        'title': "Quote",
+        'credit_field': "Credit"
+      },
+      image: {
+        'title': "Image",
+        'upload_error': "There was a problem with your upload"
+      },
+      video: {
+        'title': "Video"
+      },
+      tweet: {
+        'title': "Tweet",
+        'fetch_error': "There was a problem fetching your tweet"
+      },
+      embedly: {
+        'title': "Embedly",
+        'fetch_error': "There was a problem fetching your embed",
+        'key_missing': "An Embedly API key must be present"
+      },
+      heading: {
+        'title': "Heading"
+      }
     }
   }
 };
 
-// @todo why does this have to be global ?
 if (window.i18n === undefined) {
   // Minimal i18n stub that only reads the English strings
-  utils.log('Using i18n stub');
+  utils.log("Using i18n stub");
   window.i18n = {
     t: function(key, options) {
       var parts = key.split(':'), str, obj, part, i;
@@ -159,7 +79,7 @@ if (window.i18n === undefined) {
 
       str = obj;
 
-      if (!_.isString(str)) { return ''; }
+      if (!_.isString(str)) { return ""; }
 
       if (str.indexOf('__') >= 0) {
         Object.keys(options).forEach(function(opt) {
@@ -171,7 +91,7 @@ if (window.i18n === undefined) {
     }
   };
 } else {
-  utils.log('Using i18next');
+  utils.log("Using i18next");
   // Only use i18next when the library has been loaded by the user, keeps
   // dependencies slim
   i18n.init({ resStore: Locales, fallbackLng: config.language,

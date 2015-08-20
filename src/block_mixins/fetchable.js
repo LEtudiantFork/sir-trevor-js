@@ -1,5 +1,5 @@
 var _ = require('../lodash');
-var $ = require('jquery');
+var Ajax = require('../packages/ajax');
 
 module.exports = {
 
@@ -9,22 +9,26 @@ module.exports = {
     this.withMixin(require('./ajaxable'));
   },
 
-  fetch: function(options, success, failure){
+  fetch: function(url, options, success, failure){
     var uid = _.uniqueId(this.blockID + "_fetch"),
-        xhr = $.ajax(options);
+        xhr = Ajax.fetch(url, options);
 
     this.resetMessages();
     this.addQueuedItem(uid, xhr);
 
+    function alwaysFunc(func, arg) {
+      /*jshint validthis: true */
+      func.call(this, arg);
+      this.removeQueuedItem(uid);
+    }
+
     if(!_.isUndefined(success)) {
-      xhr.done(success.bind(this));
+      xhr.then(alwaysFunc.bind(this, success));
     }
 
     if(!_.isUndefined(failure)) {
-      xhr.fail(failure.bind(this));
+      xhr.catch(alwaysFunc.bind(this, failure));
     }
-
-    xhr.always(this.removeQueuedItem.bind(this, uid));
 
     return xhr;
   }
