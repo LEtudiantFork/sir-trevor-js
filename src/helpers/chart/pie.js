@@ -1,5 +1,3 @@
-var d3     = require('d3');
-var d3plus = require('d3plus');
 var Table  = require('../table/index.js');
 
 var mockData = [
@@ -10,7 +8,7 @@ var mockData = [
 
 var pieChartPrototype = {
     drawChart: function() {
-        d3plus.viz()
+        window.d3plus.viz()
         .container('#' + this.id)
         .data(this.data)
         .type('pie')

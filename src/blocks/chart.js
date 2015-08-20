@@ -2,11 +2,12 @@
   Chart Block
 */
 
-var _     = require('../lodash.js');
-var Block = require('../block');
-var Chart = require('../helpers/chart/index.js');
-var utils = require('../utils.js');
-var i18n  = require('../i18n-stub.js');
+var _             = require('../lodash.js');
+var Block         = require('../block');
+var Chart         = require('../helpers/chart/index.js');
+var ChartLibFetch = require('../helpers/chart/library-fetcher.js');
+var utils         = require('../utils.js');
+var i18n          = require('../i18n-stub.js');
 
 var chooseableConfig = {
     'name': 'chartType',
@@ -40,9 +41,13 @@ module.exports = Block.extend({
 
     loadData: function(data) {
         if (!_.isEmpty(data)) {
-            this.chart = Chart.create(data);
-
-            this.editor.appendChild(this.chart.$elem[0]);
+            ChartLibFetch().then(function() {
+                this.chart = Chart.create(data);
+                this.editor.appendChild(this.chart.$elem[0]);
+            }.bind(this))
+            .catch(function(err) {
+                console.error(err);
+            });
         }
     },
 
@@ -61,18 +66,23 @@ module.exports = Block.extend({
             this.createChoices(chooseableConfig, function(choices) {
                 var chartType = choices.chartType;
 
-                if (chartType === 'pie') {
-                    this.chart = Chart.create({
-                        type: chartType
-                    });
-                }
-                else {
-                    this.chart = Chart.create({
-                        type: chartType
-                    });
-                }
+                ChartLibFetch().then(function() {
+                    if (chartType === 'pie') {
+                        this.chart = Chart.create({
+                            type: chartType
+                        });
+                    }
+                    else {
+                        this.chart = Chart.create({
+                            type: chartType
+                        });
+                    }
 
-                this.editor.appendChild(this.chart.$elem[0]);
+                    this.editor.appendChild(this.chart.$elem[0]);
+                }.bind(this))
+                .catch(function(err) {
+                    console.error(err);
+                });
             }.bind(this));
         }
     }
