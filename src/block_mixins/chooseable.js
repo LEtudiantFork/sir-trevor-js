@@ -1,6 +1,5 @@
-var $ = require('jquery');
+var $ = require('etudiant-mod-dom');
 var _ = require('../lodash');
-var animate = require('velocity-commonjs/velocity.ui');
 
 var choice_container = [
     '<div class="st-block__choices">',

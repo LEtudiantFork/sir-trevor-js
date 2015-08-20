@@ -28,14 +28,17 @@ var Locales = {
     },
     blocks: {
       text: {
-        'title': "Text"
+        'title': "Texte"
       },
       list: {
-        'title': "List"
+        'title': "Liste"
+      },
+      iframe: {
+        'title': "Iframe"
       },
       quote: {
-        'title': "Quote",
-        'credit_field': "Credit"
+        'title': "Citation",
+        'credit_field': "Auteur"
       },
       image: {
         'title': "Image",
@@ -54,7 +57,7 @@ var Locales = {
         'key_missing': "An Embedly API key must be present"
       },
       heading: {
-        'title': "Heading"
+        'title': "Titre"
       }
     }
   }

@@ -32,7 +32,7 @@ module.exports = {
         var eventTrigger = controlConfig.eventTrigger || 'click';
 
         if (this.activable === true) {
-            uiControl = this.getControlTemplate(control, 'hidden');
+            uiControl = this.getControlTemplate(controlConfig, 'hidden');
 
             this.eventBus.bind('button:control-' + index + ':enable', function() {
                 uiControl.removeClass('hidden');
@@ -43,7 +43,7 @@ module.exports = {
             });
         }
         else {
-            uiControl = this.getControlTemplate(control);
+            uiControl = this.getControlTemplate(controlConfig);
         }
 
         this.control_ui.appendChild(uiControl);

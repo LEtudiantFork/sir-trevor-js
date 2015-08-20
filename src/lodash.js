@@ -1,7 +1,6 @@
 exports.camelCase    = require('lodash.camelcase');
 exports.chunk        = require('lodash.chunk');
 exports.debounce     = require('lodash.debounce');
-exports.difference   = require('lodash.difference');
 exports.forEach      = require('lodash.foreach');
 exports.intersection = require('lodash.intersection');
 exports.isEmpty      = require('lodash.isempty');

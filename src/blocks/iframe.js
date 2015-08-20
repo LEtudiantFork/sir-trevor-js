@@ -1,4 +1,4 @@
-var $ = require('jquery');
+var $ = require('etudiant-mod-dom');
 var _ = require('../lodash.js');
 var Block = require('../block');
 
@@ -75,7 +75,7 @@ module.exports = Block.extend({
     editorHTML: '<div class="st-iframe-block"></div>',
 
     onBlockRender: function() {
-        this.$editor.append(this.$iframeWrapper);
+        this.editor.appendChild(this.$iframeWrapper[0]);
     },
 
     beforeBlockRender: function() {
@@ -91,7 +91,7 @@ module.exports = Block.extend({
 
     loadData: function(data) {
         this.$iframe.attr('src', data.src);
-        this.$iframe.show();
+        this.$iframe.css('display', 'block');
     },
 
     onContentPasted: function(event) {
