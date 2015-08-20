@@ -98,10 +98,6 @@ function onChoose(choices) {
             subBlockType: block.subBlockType
         });
 
-        // @todo put this in a class
-        // @todo too - is this even necessary any more ?
-        block.editor.style.display = 'block';
-
         block.subBlockSearch.on('selected', function(selectedSubBlock) {
             block.setData({
                 id: selectedSubBlock.id,
@@ -113,8 +109,6 @@ function onChoose(choices) {
             block.editor.appendChild(selectedSubBlock.renderLarge()[0]);
 
             selectedSubBlock.on('save', function(newData) { block.setData(newData); });
-
-            block.editor.style.display = 'block';
         });
     })
     .catch(function(err) {

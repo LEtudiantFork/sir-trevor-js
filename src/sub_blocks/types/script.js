@@ -33,71 +33,55 @@ function checkHTML(html) {
     return doc.innerHTML === html;
 }
 
-function getInner() {
-    return $(
+function createBlock(subBlock, id) {
+    var $elem = $(_.template(outerTemplate, { id: id }));
+
+    $elem.html(
         _.template(innerTemplate, {
             save: i18n.t('sub_blocks:embed:script:save'),
             edit: i18n.t('sub_blocks:embed:script:edit')
         })
     );
-}
 
-function createBlock(subBlock, id) {
-    var $elem = $(_.template(outerTemplate, { id: id }));
-
-    return $elem.append(getInner());
-}
-
-function createJqueryObjects(subBlock) {
-    subBlock.$textarea = subBlock.$elem.find('textarea');
-
-    subBlock.$scriptContainer = subBlock.$elem.find('div[data-script-container]');
-
-    subBlock.$saveButton = subBlock.$elem.find('button[data-button-type="save"]');
-    subBlock.$editButton = subBlock.$elem.find('button[data-button-type="edit"]');
-}
-
-function bindEventsOnButtons(subBlock) {
-    subBlock.$saveButton.on('click', subBlock.save.bind(subBlock));
-    subBlock.$editButton.on('click', subBlock.edit.bind(subBlock));
+    return $elem;
 }
 
 function init(params) {
-    this.contents = params.contents || {};
+    this.content = params.content || {};
 
     this.id = Date.now();
 
     this.$elem = createBlock(this.id);
 
-    createJqueryObjects(this);
+    this.$textarea = this.$elem.find('textarea');
+    this.$scriptContainer = this.$elem.find('div[data-script-container]');
+    this.$saveButton = this.$elem.find('button[data-button-type="save"]');
+    this.$editButton = this.$elem.find('button[data-button-type="edit"]');
 
-    bindEventsOnButtons(this);
+    this.$saveButton.on('click', this.save.bind(this));
+    this.$editButton.on('click', this.edit.bind(this));
 
-    if (!_.isEmpty(this.contents)) {
+    if (!_.isEmpty(this.content)) {
         this.hydrateScriptContainer();
     }
 }
 
 var scriptPrototype = {
     hydrateScriptContainer: function() {
-        this.$textarea.hide();
+        this.$textarea[0].style.display = 'none';
 
         this.$saveButton.attr('disabled', true);
         this.$editButton.removeAttr('disabled');
 
-        var $generated = $('<div></div>');
-
-        $generated.html(this.contents);
-
-        this.$scriptContainer.append($generated);
+        this.$scriptContainer.html(this.content);
     },
 
     edit: function() {
-        this.$scriptContainer.empty();
+        this.$scriptContainer[0].innerHTML = '';
 
-        this.$textarea.show();
+        this.$textarea[0].style.display = 'block';
 
-        this.$textarea.val(this.contents);
+        this.$textarea.val(this.content);
 
         this.$editButton.attr('disabled', true);
         this.$saveButton.removeAttr('disabled');
@@ -107,11 +91,11 @@ var scriptPrototype = {
         var scriptSource = this.$textarea.val();
 
         if (checkHTML(scriptSource)) {
-            this.contents = scriptSource;
+            this.content = scriptSource;
 
             this.hydrateScriptContainer();
 
-            this.trigger('valid', this.contents);
+            this.trigger('valid', this.content);
         }
         else {
             this.trigger('invalid');

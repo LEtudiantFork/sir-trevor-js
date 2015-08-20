@@ -1,16 +1,16 @@
 var Locales = {
   en: {
     general: {
-      'delete':           'Delete?',
-      'drop':             'Drag __block__ here',
-      'paste':            'Or paste URL here',
-      'upload':           '...or choose a file',
-      'close':            'close',
-      'position':         'Position',
-      'wait':             'Please wait...',
-      'link':             'Enter a link',
-      'yes':              'Yes',
-      'no':               'No'
+      delete:           'Delete?',
+      drop:             'Drag __block__ here',
+      paste:            'Or paste URL here',
+      upload:           '...or choose a file',
+      close:            'close',
+      position:         'Position',
+      wait:             'Please wait...',
+      link:             'Enter a link',
+      yes:              'Yes',
+      no:               'No'
     },
     errors: {
       'title': "You have the following errors:",
@@ -22,39 +22,42 @@ var Locales = {
     },
     blocks: {
       text: {
-        'title': "Texte"
+        title: "Texte"
       },
       list: {
-        'title': "Liste"
+        title: "Liste"
       },
       iframe: {
-        'title': "Iframe"
+        title: "Iframe"
       },
       quote: {
-        'title': "Citation",
-        'credit_field': "Auteur"
+        title: "Citation",
+        credit_field: "Auteur"
       },
       image: {
-        'title': "Image",
-        'upload_error': "There was a problem with your upload"
+        title: "Image",
+        upload_error: "There was a problem with your upload"
       },
       video: {
-        'title': "Video"
+        title: "Video"
       },
       tweet: {
-        'title': "Tweet",
-        'fetch_error': "There was a problem fetching your tweet"
+        title: "Tweet",
+        fetch_error: "There was a problem fetching your tweet"
       },
       embedly: {
-        'title': "Embedly",
-        'fetch_error': "There was a problem fetching your embed",
-        'key_missing': "An Embedly API key must be present"
+        title: "Embedly",
+        fetch_error: "There was a problem fetching your embed",
+        key_missing: "An Embedly API key must be present"
       },
       heading: {
-        'title': "Titre"
+        title: "Titre"
       },
       media: {
-        'title': "Média"
+        title: "Média"
+      },
+      embed: {
+        title: "Embed"
       }
     },
     sub_blocks: {
@@ -76,11 +79,16 @@ var Locales = {
         quiz: {
             title: 'Quiz'
         },
+        personality: {
+            title: 'Personality'
+        },
         service: {
             title: 'Service'
         },
         script: {
-            title: 'Script'
+            title: 'Script',
+            save: 'Sauvegarder',
+            edit: 'Editer'
         }
       }
     }

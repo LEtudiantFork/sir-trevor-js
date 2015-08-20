@@ -103,7 +103,7 @@ function onChoose(choices) {
             type: block.subBlockType
         });
 
-        scriptSubBlock.appendTo(this.$editor);
+        scriptSubBlock.appendTo(this.editor);
 
         bindEventsOnScriptSubBlock(this, scriptSubBlock);
     }
@@ -113,9 +113,9 @@ function onChoose(choices) {
         block.servicePicker.open();
 
         block.servicePicker.on('selected', function(selectedService) {
-            block.$editor.empty();
+            block.editor.innerHTML = '';
 
-            block.$editor.append(selectedService.$elem);
+            block.editor.appendChild(selectedService.$elem[0]);
 
             block.setData({
                 type: block.subBlockType,
@@ -163,7 +163,7 @@ function onChoose(choices) {
                     application: block.globalConfig.application,
                     accessToken: block.globalConfig.accessToken,
                     apiUrl: block.globalConfig.apiUrl,
-                    $container: block.$editor,
+                    container: block.editor,
                     filterConfig: filterConfig,
                     sliderConfig: sliderConfig,
                     subBlockType: block.subBlockType
@@ -178,8 +178,7 @@ function onChoose(choices) {
 
                     block.subBlockSearch.destroy();
 
-                    block.$editor.append(selectedSubBlock.renderLarge());
-                    block.$editor.show();
+                    block.editor.appendChild(selectedSubBlock.renderLarge()[0]);
                 });
             })
             .catch(function(err) {
@@ -211,14 +210,14 @@ module.exports = Block.extend({
                     type: data.type
                 });
 
-                scriptSubBlock.appendTo(this.$editor);
+                scriptSubBlock.appendTo(this.editor);
 
                 bindEventsOnScriptSubBlock(this, scriptSubBlock);
             }
             else if (data.type === 'service') {
                 var serviceItem = ServiceItem.create(data);
 
-                serviceItem.$elem.appendTo(this.$editor);
+                serviceItem.$elem.appendTo(this.editor);
             }
             else {
                 this.loading();
@@ -240,7 +239,7 @@ module.exports = Block.extend({
                         type: data.type
                     });
 
-                    this.$editor.append(subBlock.renderLarge());
+                    this.editor.appendChild(subBlock.renderLarge()[0]);
 
                     this.ready();
                 }.bind(this))
