@@ -1,4 +1,4 @@
-var $                 = require('jquery');
+var $                 = require('etudiant-mod-dom');
 var _                 = require('../../lodash.js');
 var renderTable       = require('./render.js').render2DTable;
 var renderTableFooter = require('./render.js').renderTableFooter;
@@ -15,8 +15,8 @@ function renderTableControls(params) {
                 '<label><%= yAxisLabel %></label>',
                 '<input type="text" data-cell-type="axis" data-axis-type="y-axis" value="<%= yAxisValue %>" data-old-value="<%= yAxisValue %>" />',
             '</div>',
-            '<button data-action="add-row">Ajouter une rangée</button>',
-            '<button data-action="add-column">Ajouter une colonne</button>',
+            '<button type="button" data-action="add-row">Ajouter une rangée</button>',
+            '<button type="button" data-action="add-column">Ajouter une colonne</button>',
         '</div>'
     ].join('\n');
 

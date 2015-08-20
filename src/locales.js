@@ -13,51 +13,54 @@ var Locales = {
       no:               'No'
     },
     errors: {
-      'title': "You have the following errors:",
-      'validation_fail': "__type__ block is invalid",
-      'block_empty': "__name__ must not be empty",
-      'type_missing': "You must have a block of type __type__",
-      'required_type_empty': "A required block type __type__ is empty",
-      'load_fail': "There was a problem loading the contents of the document"
+      'title': 'You have the following errors:',
+      'validation_fail': '__type__ block is invalid',
+      'block_empty': '__name__ must not be empty',
+      'type_missing': 'You must have a block of type __type__',
+      'required_type_empty': 'A required block type __type__ is empty',
+      'load_fail': 'There was a problem loading the contents of the document'
     },
     blocks: {
       text: {
-        title: "Texte"
+        title: 'Texte'
       },
       list: {
-        title: "Liste"
+        title: 'Liste'
       },
       iframe: {
-        title: "Iframe"
+        title: 'Iframe'
       },
       quote: {
-        title: "Citation",
-        credit_field: "Auteur"
+        title: 'Citation',
+        credit_field: 'Auteur'
       },
       image: {
-        title: "Image",
-        upload_error: "There was a problem with your upload"
+        title: 'Image',
+        upload_error: 'There was a problem with your upload'
       },
       video: {
-        title: "Video"
+        title: 'Video'
       },
       tweet: {
-        title: "Tweet",
-        fetch_error: "There was a problem fetching your tweet"
+        title: 'Tweet',
+        fetch_error: 'There was a problem fetching your tweet'
       },
       embedly: {
-        title: "Embedly",
-        fetch_error: "There was a problem fetching your embed",
-        key_missing: "An Embedly API key must be present"
+        title: 'Embedly',
+        fetch_error: 'There was a problem fetching your embed',
+        key_missing: 'An Embedly API key must be present'
       },
       heading: {
-        title: "Titre"
+        title: 'Titre'
       },
       media: {
-        title: "Média"
+        title: 'Média'
       },
       embed: {
-        title: "Embed"
+        title: 'Embed'
+      },
+      chart: {
+        title: 'Chart'
       }
     },
     sub_blocks: {

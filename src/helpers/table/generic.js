@@ -1,4 +1,4 @@
-var $                   = require('jquery');
+var $                   = require('etudiant-mod-dom');
 var dataKeyIsUnique     = require('./lib.js').dataKeyIsUnique;
 var headerValueIsUnique = require('./lib.js').headerValueIsUnique;
 

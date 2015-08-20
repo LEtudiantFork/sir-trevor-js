@@ -42,7 +42,7 @@ module.exports = Block.extend({
         if (!_.isEmpty(data)) {
             this.chart = Chart.create(data);
 
-            this.$editor.append(this.chart.$elem);
+            this.editor.appendChild(this.chart.$elem[0]);
         }
     },
 
@@ -72,7 +72,7 @@ module.exports = Block.extend({
                     });
                 }
 
-                this.$editor.append(this.chart.$elem);
+                this.editor.appendChild(this.chart.$elem[0]);
             }.bind(this));
         }
     }

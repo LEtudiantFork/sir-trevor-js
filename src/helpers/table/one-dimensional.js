@@ -1,4 +1,4 @@
-var $                 = require('jquery');
+var $                 = require('etudiant-mod-dom');
 var _                 = require('../../lodash.js');
 var renderTable       = require('./render.js').render1DTable;
 var renderTableFooter = require('./render.js').renderTableFooter;
@@ -7,7 +7,7 @@ var getHeaderNames    = require('./lib.js').getHeaderNames;
 function renderTableControls() {
     return [
         '<div>',
-            '<button data-action="add-row">Ajouter une rangée</button>',
+            '<button type="button" data-action="add-row">Ajouter une rangée</button>',
         '</div>'
     ].join('\n');
 }

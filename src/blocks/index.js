@@ -4,8 +4,8 @@ module.exports = {
     Quote: require('./quote'),
     Iframe: require('./iframe'),
     Media: require('./media'),
-    Embed: require('./embed')
+    Embed: require('./embed'),
+    Chart: require('./chart')
     // Illustrated: require('./illustrated'),
-    // Chart: require('./chart'),
     // Table: require('./table')
 };
