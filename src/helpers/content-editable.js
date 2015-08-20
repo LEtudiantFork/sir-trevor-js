@@ -1,4 +1,4 @@
-var $ = require('jquery');
+var $ = require('etudiant-mod-dom');
 
 function getRange() {
     return window.getSelection().getRangeAt(0);

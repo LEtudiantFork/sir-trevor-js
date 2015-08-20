@@ -1,4 +1,4 @@
-var $                     = require('jquery');
+var $                     = require('etudiant-mod-dom');
 var _                     = require('../lodash.js');
 var contentEditableHelper = require('./content-editable.js');
 var eventablejs           = require('eventablejs');
@@ -156,7 +156,9 @@ var imageInserterPrototype = {
 };
 
 module.exports = {
-    awaitClick: function($elem, cb) {
+    awaitClick: function(elem, cb) {
+        var $elem = $(elem);
+
         $elem.css('cursor', 'copy');
 
         $elem.one('click', function() {
@@ -263,7 +265,7 @@ module.exports = {
                     application: block.imageInserter.application,
                     accessToken: block.imageInserter.accessToken,
                     apiUrl: block.imageInserter.apiUrl,
-                    $container: block.imageInserter.$imageSearchContainer,
+                    container: block.imageInserter.$imageSearchContainer,
                     filterConfig: filterConfig,
                     sliderConfig: sliderConfig,
                     subBlockType: block.imageInserter.subBlockType,

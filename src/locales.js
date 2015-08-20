@@ -12,6 +12,10 @@ var Locales = {
       yes:              'Yes',
       no:               'No'
     },
+    framed: {
+        choose: 'Choissisez un style',
+        no_style: 'Aucun style'
+    },
     errors: {
       'title': 'You have the following errors:',
       'validation_fail': '__type__ block is invalid',
