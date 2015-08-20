@@ -1,8 +1,9 @@
 "use strict";
 
-var _ = require('../lodash');
-var utils = require('../utils');
+var _     = require('../lodash');
 var Block = require('../block');
+var i18n  = require('../i18n-stub.js');
+var utils = require('../utils');
 
 module.exports = Block.extend({
 
@@ -31,7 +32,7 @@ module.exports = Block.extend({
 
     var source = this.providers[data.source];
 
-    var protocol = window.location.protocol === "file:" ? 
+    var protocol = window.location.protocol === "file:" ?
       "http:" : window.location.protocol;
 
     var aspectRatioClass = source.square ?
@@ -62,7 +63,7 @@ module.exports = Block.extend({
   handleDropPaste: function(url){
     if (!utils.isURI(url)) { return; }
 
-    for(var key in this.providers) { 
+    for(var key in this.providers) {
       if (!this.providers.hasOwnProperty(key)) { continue; }
       this.setAndLoadData(
         this.matchVideoProvider(this.providers[key], key, url)

@@ -1,7 +1,8 @@
 "use strict";
 
-var Dom = require('../packages/dom');
 var Block = require('../block');
+var Dom   = require('../packages/dom');
+var i18n  = require('../i18n-stub.js');
 
 module.exports = Block.extend({
 
@@ -43,7 +44,7 @@ module.exports = Block.extend({
       this.editor.innerHTML = '';
       this.editor.appendChild(Dom.createElement('img', { src: urlAPI.createObjectURL(file) }));
       Dom.show(this.editor);
-      
+
       this.uploader(
         file,
         function(data) {

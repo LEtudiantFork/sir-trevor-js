@@ -1,6 +1,7 @@
-var $ = require('etudiant-mod-dom');
-var _ = require('../lodash.js');
+var $     = require('etudiant-mod-dom');
+var _     = require('../lodash.js');
 var Block = require('../block');
+var i18n  = require('../i18n-stub.js');
 
 var getTemplate = function(params) {
     var template = '';

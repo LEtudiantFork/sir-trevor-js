@@ -4,7 +4,8 @@
   Text Block
 */
 
-var Block = require('../block');
+var Block    = require('../block');
+var i18n     = require('../i18n-stub.js');
 var stToHTML = require('../to-html');
 
 module.exports = Block.extend({

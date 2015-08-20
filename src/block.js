@@ -4,6 +4,8 @@ var _ = require('./lodash');
 
 var ScribeInterface = require('./scribe-interface');
 
+var i18n = require('./i18n-stub.js');
+
 var config = require('./config');
 var utils = require('./utils');
 var Dom = require('./packages/dom');

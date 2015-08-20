@@ -1,8 +1,9 @@
 "use strict";
 
-var _ = require('../lodash');
+var _     = require('../lodash');
+var Dom   = require('../packages/dom');
+var i18n  = require('../i18n-stub.js');
 var utils = require('../utils');
-var Dom = require('../packages/dom');
 
 var Block = require('../block');
 

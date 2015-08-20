@@ -1,5 +1,6 @@
-var $ = require('etudiant-mod-dom');
-var _ = require('../../lodash.js');
+var $           = require('etudiant-mod-dom');
+var _           = require('../../lodash.js');
+var i18n        = require('../../i18n-stub.js');
 var eventablejs = require('eventablejs');
 
 // N.B

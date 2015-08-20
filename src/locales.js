@@ -1,9 +1,3 @@
-"use strict";
-
-var _ = require('./lodash');
-var config = require('./config');
-var utils = require('./utils');
-
 var Locales = {
   en: {
     general: {
@@ -74,48 +68,23 @@ var Locales = {
         diaporama: {
           title: 'Diaporama'
         }
+      },
+      embed: {
+        poll: {
+            title: 'Sondage'
+        },
+        quiz: {
+            title: 'Quiz'
+        },
+        service: {
+            title: 'Service'
+        },
+        script: {
+            title: 'Script'
+        }
       }
     }
   }
 };
-
-if (window.i18n === undefined) {
-  // Minimal i18n stub that only reads the English strings
-  utils.log("Using i18n stub");
-  window.i18n = {
-    t: function(key, options) {
-      var parts = key.split(':'), str, obj, part, i;
-
-      obj = Locales[config.language];
-
-      for(i = 0; i < parts.length; i++) {
-        part = parts[i];
-
-        if(!_.isUndefined(obj[part])) {
-          obj = obj[part];
-        }
-      }
-
-      str = obj;
-
-      if (!_.isString(str)) { return ""; }
-
-      if (str.indexOf('__') >= 0) {
-        Object.keys(options).forEach(function(opt) {
-          str = str.replace('__' + opt + '__', options[opt]);
-        });
-      }
-
-      return str;
-    }
-  };
-} else {
-  utils.log("Using i18next");
-  // Only use i18next when the library has been loaded by the user, keeps
-  // dependencies slim
-  i18n.init({ resStore: Locales, fallbackLng: config.language,
-            ns: { namespaces: ['general', 'blocks'], defaultNs: 'general' }
-  });
-}
 
 module.exports = Locales;

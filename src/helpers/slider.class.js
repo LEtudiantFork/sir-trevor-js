@@ -2,6 +2,7 @@ var $           = require('etudiant-mod-dom');
 var _           = require('../lodash');
 var animate     = require('velocity-commonjs/velocity.ui');
 var eventablejs = require('eventablejs');
+var i18n        = require('../i18n-stub.js');
 var Slide       = require('./slide.class.js');
 
 var sliderTemplate = [

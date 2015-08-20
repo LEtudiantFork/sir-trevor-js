@@ -2,17 +2,15 @@
   Embed (Jeux, Concours et Sondages & Script) Block
 */
 
-var xhr = require('etudiant-mod-xhr');
-
-var _     = require('../lodash.js');
-var Block = require('../block');
-
-var fieldHelper = require('../helpers/field.js');
+var _               = require('../lodash.js');
+var Block           = require('../block');
+var fieldHelper     = require('../helpers/field.js');
+var i18n            = require('../i18n-stub.js');
+var ServiceItem     = require('../helpers/service/item.js');
+var ServicePicker   = require('../helpers/service/picker.js');
 var SubBlockSearch  = require('../helpers/sub-block-search.class.js');
 var subBlockManager = require('../sub_blocks/manager.js');
-
-var ServiceItem   = require('../helpers/service/item.js');
-var ServicePicker = require('../helpers/service/picker.js');
+var xhr             = require('etudiant-mod-xhr');
 
 var chooseableConfig = {
     name: 'subBlockType',

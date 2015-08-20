@@ -1,4 +1,5 @@
 var _ = require('./lodash');
+var i18n = require('./i18n-stub.js');
 var utils = require('./utils');
 var config = require('./config');
 
@@ -7,7 +8,7 @@ var Blocks = require('./blocks');
 
 var Dom = require("./packages/dom");
 
-const BLOCK_OPTION_KEYS = 
+const BLOCK_OPTION_KEYS =
   ['convertToMarkdown', 'convertFromMarkdown', 'formatBar'];
 
 var BlockManager = function(SirTrevor) {

@@ -6,6 +6,7 @@ var _     = require('../lodash.js');
 var Block = require('../block');
 var Chart = require('../helpers/chart/index.js');
 var utils = require('../utils.js');
+var i18n  = require('../i18n-stub.js');
 
 var chooseableConfig = {
     'name': 'chartType',

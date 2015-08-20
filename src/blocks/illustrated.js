@@ -2,12 +2,13 @@
   Illustrated Block
 */
 
-var Block            = require('../block');
-var stToHTML         = require('../to-html');
-var _                = require('../lodash.js');
 var $                = require('jquery');
+var _                = require('../lodash.js');
+var Block            = require('../block');
 var ColorPicker      = require('../helpers/colorpicker.class.js');
+var i18n             = require('../i18n-stub.js');
 var IconPicker       = require('../helpers/iconpicker.class.js');
+var stToHTML         = require('../to-html');
 
 var blockTemplate = _.template([
     '<div class="st-text-illustrated illustrated">',

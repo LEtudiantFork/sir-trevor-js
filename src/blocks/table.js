@@ -2,10 +2,10 @@
   Block Table
 */
 
-var _ = require('../lodash');
-var $ = require('jquery');
-
+var _     = require('../lodash');
+var $     = require('etudiant-mod-dom');
 var Block = require('../block');
+var i18n  = require('../i18n-stub.js');
 
 var template = [
     '<table>',

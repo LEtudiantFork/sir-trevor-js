@@ -4,6 +4,7 @@ var contentEditableHelper = require('./content-editable.js');
 var eventablejs           = require('eventablejs');
 var fieldHelper           = require('./field.js');
 var imageFilterHelper     = require('./image-filter.js');
+var i18n                  = require('../i18n-stub.js');
 var Modal                 = require('etudiant-mod-modal');
 var SubBlockSearch        = require('./sub-block-search.class.js');
 var subBlockManager       = require('../sub_blocks/manager.js');

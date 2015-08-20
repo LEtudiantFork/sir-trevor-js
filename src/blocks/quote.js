@@ -4,17 +4,17 @@
   Block Quote
 */
 
-var _ = require('../lodash');
-
-var Block = require('../block');
+var _        = require('../lodash');
+var Block    = require('../block');
+var i18n     = require('../i18n-stub.js');
 var stToHTML = require('../to-html');
 
-var template = _.template([
+var template = [
   '<blockquote class="st-required st-text-block" contenteditable="true"></blockquote>',
   '<label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>',
   '<input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>"',
   ' class="st-input-string st-required js-cite-input" type="text" />'
-].join("\n"));
+].join("\n");
 
 module.exports = Block.extend({
 
@@ -25,7 +25,7 @@ module.exports = Block.extend({
   icon_name: 'quote',
 
   editorHTML: function() {
-    return template(this);
+    return _.template(template, this, { imports: { i18n : i18n } });
   },
 
   loadData: function(data){

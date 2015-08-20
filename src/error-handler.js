@@ -1,11 +1,12 @@
-var _ = require('./lodash');
-var Dom = require('./packages/dom');
+var _    = require('./lodash');
+var Dom  = require('./packages/dom');
+var i18n = require('./i18n-stub.js');
 
 var ErrorHandler = function(wrapper, mediator, container) {
   this.wrapper = wrapper;
   this.mediator = mediator;
   this.el = container;
-  
+
   if (_.isUndefined(this.el)) {
     this._ensureElement();
     this.wrapper.insertBefore(this.el, this.wrapper.firstChild);

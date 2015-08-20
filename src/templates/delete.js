@@ -1,3 +1,5 @@
+var i18n = require('../i18n-stub.js');
+
 module.exports = `
   <div class="st-block__ui-delete-controls">
     <label class="st-block__delete-label">
