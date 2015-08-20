@@ -49,15 +49,11 @@ var diaporamaPrototype = {
 
         this.renderedAs = 'large';
 
-        if ('postRenderLarge' in this) {
-            this.postRenderLarge();
-        }
-
         return this.$elem;
     }
 };
 
 module.exports = {
     init: init,
-    prototype:diaporamaPrototype
+    prototype: diaporamaPrototype
 };
