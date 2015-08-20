@@ -58,6 +58,22 @@ var Locales = {
       },
       heading: {
         'title': "Titre"
+      },
+      media: {
+        'title': "Média"
+      }
+    },
+    sub_blocks: {
+      media: {
+        image: {
+          title: 'Image'
+        },
+        video: {
+          title: 'Vidéo'
+        },
+        diaporama: {
+          title: 'Diaporama'
+        }
       }
     }
   }

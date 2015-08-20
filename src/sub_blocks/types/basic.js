@@ -1,4 +1,4 @@
-var $ = require('jquery');
+var $ = require('etudiant-mod-dom');
 
 var EventBus = require('../../event-bus.js');
 
@@ -30,9 +30,7 @@ var basicPrototype = {
     prepareForRender: function() {
         this.$elem.empty();
 
-        this.$elem.removeClass(function(index, css) {
-            return (css.match(/(^|\s)st-sub-block-size-\S+/g) || []).join(' ');
-        });
+        this.$elem.removeClassByPrefix('st-sub-block-size-');
     },
 
     renderSmall: function() {

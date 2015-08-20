@@ -1,4 +1,4 @@
-var $           = require('jquery');
+var $           = require('etudiant-mod-dom');
 var eventablejs = require('eventablejs');
 
 var EventBus        = require('../event-bus.js');
@@ -79,7 +79,7 @@ var SubBlockSearch = function(params) {
     this.apiUrl = params.apiUrl;
     this.application = params.application;
     this.accessToken = params.accessToken;
-    this.$container = params.$container;
+    this.container = params.container;
     this.subBlockType = params.subBlockType;
     this.subBlockPreProcess = params.subBlockPreProcess;
 
@@ -95,7 +95,7 @@ var SubBlockSearch = function(params) {
 
     this.slider = new Slider(params.sliderConfig);
 
-    this.$elem.appendTo(this.$container);
+    this.$elem.appendTo(this.container);
 
     filterUpdate(this);
     filterSearch(this);

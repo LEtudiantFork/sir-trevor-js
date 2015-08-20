@@ -2,19 +2,15 @@
   Media block - images et vidéos
 */
 
-var $   = require('jquery');
-var xhr = require('etudiant-mod-xhr');
 
-var _     = require('../lodash.js');
-var Block = require('../block');
-var utils = require('../utils');
-
-var fieldHelper = require('../helpers/field.js');
-
-var SubBlockSearch = require('../helpers/sub-block-search.class.js');
-var subBlockManager = require('../sub_blocks/manager.js');
-
+var _                 = require('../lodash.js');
+var Block             = require('../block');
+var fieldHelper       = require('../helpers/field.js');
 var imageFilterHelper = require('../helpers/image-filter.js');
+var utils             = require('../utils');
+var SubBlockSearch    = require('../helpers/sub-block-search.class.js');
+var subBlockManager   = require('../sub_blocks/manager.js');
+var xhr               = require('etudiant-mod-xhr');
 
 var chooseableConfig = {
     name: 'subBlockType',
@@ -26,7 +22,7 @@ var chooseableConfig = {
             title: i18n.t('sub_blocks:media:video:title'),
             value: 'video'
         }, {
-            title: i18n.t('sub_blocks:media:diapo:title'),
+            title: i18n.t('sub_blocks:media:diaporama:title'),
             value: 'diaporama'
         }
     ]
@@ -95,13 +91,15 @@ function onChoose(choices) {
             application: block.globalConfig.application,
             accessToken: block.globalConfig.accessToken,
             apiUrl: block.globalConfig.apiUrl,
-            $container: block.$editor,
+            container: block.editor,
             filterConfig: filterConfig,
             sliderConfig: sliderConfig,
             subBlockType: block.subBlockType
         });
 
-        block.$editor.show();
+        // @todo put this in a class
+        // @todo too - is this even necessary any more ?
+        block.editor.style.display = 'block';
 
         block.subBlockSearch.on('selected', function(selectedSubBlock) {
             block.setData({
@@ -111,11 +109,11 @@ function onChoose(choices) {
 
             block.subBlockSearch.destroy();
 
-            block.$editor.append(selectedSubBlock.renderLarge());
+            block.editor.appendChild(selectedSubBlock.renderLarge()[0]);
 
             selectedSubBlock.on('save', function(newData) { block.setData(newData); });
 
-            block.$editor.show();
+            block.editor.style.display = 'block';
         });
     })
     .catch(function(err) {
@@ -127,7 +125,7 @@ module.exports = Block.extend({
     type: 'media',
 
     title: function() {
-        return i18n.t('blocks:medias:title');
+        return i18n.t('blocks:media:title');
     },
 
     chooseable: true,
@@ -161,7 +159,7 @@ module.exports = Block.extend({
 
                 mediaSubBlock.on('save', function(newData) { this.setData(newData); }.bind(this));
 
-                this.$editor.append(mediaSubBlock.renderLarge());
+                this.editor.appendChild(mediaSubBlock.renderLarge()[0]);
 
                 this.ready();
             }.bind(this))

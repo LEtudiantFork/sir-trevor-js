@@ -1,6 +1,6 @@
-var _            = require('../lodash.js');
-var xhr          = require('etudiant-mod-xhr');
-var eventablejs  = require('eventablejs');
+var _           = require('../lodash.js');
+var xhr         = require('etudiant-mod-xhr');
+var eventablejs = require('eventablejs');
 
 var fieldHelper = require('./field.js');
 

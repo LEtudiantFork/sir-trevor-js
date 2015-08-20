@@ -51,7 +51,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   toolbarEnabled: true,
 
-  availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable',
+  availableMixins: ['chooseable', 'droppable', 'pastable', 'uploadable', 'fetchable',
     'ajaxable', 'controllable', 'multi_editable'],
 
   droppable: false,
@@ -90,7 +90,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this._setBlockInner();
 
     this.editor = this.inner.children[0];
-    
+
     this.mixinsRequireInputs = false;
     this.availableMixins.forEach(function(mixin) {
       if (this[mixin]) {
@@ -224,7 +224,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this.remove();
   },
 
-  // REFACTOR: have one set of delete controls that moves around like the 
+  // REFACTOR: have one set of delete controls that moves around like the
   // block controls?
   addDeleteControls: function(){
 

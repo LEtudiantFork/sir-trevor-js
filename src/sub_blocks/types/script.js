@@ -1,4 +1,4 @@
-var $ = require('jquery');
+var $ = require('etudiant-mod-dom');
 var _ = require('../../lodash.js');
 var eventablejs = require('eventablejs');
 

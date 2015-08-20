@@ -1,4 +1,4 @@
-var $           = require('jquery');
+var $           = require('etudiant-mod-dom');
 var _           = require('../lodash');
 var animate     = require('velocity-commonjs/velocity.ui');
 var eventablejs = require('eventablejs');
@@ -36,7 +36,7 @@ function calculateSliderDimensions(reset) {
     this.$slides = this.$slideContainer.find('.st-slider-slide');
 
     if (this.$slides.length > 0) {
-        this.$slides.css('width', (this.$elem.width() / this.config.increment) + 'px');
+        this.$slides.css('width', (this.$elem.dim().width / this.config.increment) + 'px');
         this.$slideContainer.css('width', (this.$slides[0].clientWidth * this.$slides.length) + 'px');
 
         if (reset) {

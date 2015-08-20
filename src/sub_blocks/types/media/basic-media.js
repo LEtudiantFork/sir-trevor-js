@@ -1,4 +1,3 @@
-var $           = require('jquery');
 var _           = require('../../../lodash.js');
 var fieldHelper = require('../../../helpers/field.js');
 

@@ -1,10 +1,3 @@
-var $ = require('jquery');
-var _ = require('../lodash.js');
-
-/*
-    This file provides helper functions for creating and manipulating multiple 'sub blocks'
- */
-
 var SubBlockClass = require('./class.js');
 
 var SubBlockManager = {

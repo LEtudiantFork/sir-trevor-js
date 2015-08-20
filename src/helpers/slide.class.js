@@ -1,4 +1,4 @@
-var $ = require('jquery');
+var $ = require('etudiant-mod-dom');
 
 var slideTemplate = '<div class="st-slider-slide"></div>';
 

@@ -1,4 +1,4 @@
-var $           = require('jquery');
+var $           = require('etudiant-mod-dom');
 var eventablejs = require('eventablejs');
 var Slider      = require('./slider.class.js');
 

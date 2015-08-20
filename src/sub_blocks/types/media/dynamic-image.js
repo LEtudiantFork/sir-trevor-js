@@ -1,5 +1,5 @@
 var _             = require('../../../lodash.js');
-var $             = require('jquery');
+var $             = require('etudiant-mod-dom');
 var EventBus      = require('../../../event-bus.js');
 var fieldHelper   = require('../../../helpers/field.js');
 

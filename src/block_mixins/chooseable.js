@@ -132,6 +132,6 @@ module.exports = {
 
         this.choiceBox = new ChoiceBox(chosen, choices, callback);
 
-        this.choiceBox.appendTo(this.$inner);
+        this.choiceBox.appendTo(this.inner);
     }
 };
