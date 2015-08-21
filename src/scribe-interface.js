@@ -6,6 +6,7 @@ var config = require('./config');
 
 var scribePluginFormatterPlainTextConvertNewLinesToHTML = require('scribe-plugin-formatter-plain-text-convert-new-lines-to-html');
 var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command');
+var scribePluginHeadingCommand = require('scribe-plugin-heading-command');
 
 module.exports = {
 
@@ -20,6 +21,11 @@ module.exports = {
 
     scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
     scribe.use(scribePluginLinkPromptCommand());
+
+    // add H1, H2 and H3 support
+    scribe.use(scribePluginHeadingCommand(1));
+    scribe.use(scribePluginHeadingCommand(2));
+    scribe.use(scribePluginHeadingCommand(3));
 
     if (_.isFunction(configureScribe)) {
       configureScribe.call(this, scribe);

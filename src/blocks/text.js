@@ -9,7 +9,6 @@ var Block         = require('../block');
 var EventBus      = require('../event-bus.js');
 var i18n          = require('../i18n-stub.js');
 var ImageInserter = require('../helpers/image-inserter.class.js');
-var stToHTML      = require('../to-html');
 
 var framedConfig = {
     blue: {
@@ -30,6 +29,8 @@ module.exports = Block.extend({
 
   type: "text",
 
+  scribeOptions: { allowBlockElements: true },
+
   controllable: true,
 
   controls: [
@@ -41,7 +42,46 @@ module.exports = Block.extend({
             fn: function() {
                 var self = this;
 
-                ImageInserter.awaitClick(self.editor, function(insertionPoint) {
+                // custom string function
+                function indexOfEnd(string, startingIndex = 0) {
+                    var io = this.indexOf(string, startingIndex);
+                    return io == -1 ? -1 : io + string.length;
+                }
+
+                function injectImageMarkup(blockHTML) {
+                    var markerIndex = blockHTML.indexOf('scribe-marker');
+
+                    var nextIndex = Math.min(indexOfEnd.call(blockHTML, '</p>', markerIndex), indexOfEnd.call(blockHTML, '<p>', markerIndex));
+
+                    var firstPart = blockHTML.slice(0, nextIndex);
+                    var secondPart = blockHTML.slice(nextIndex, blockHTML.length);
+
+                    firstPart += [
+                        '<figure data-sub-block-in-block="282765" class="st-sub-block-align-right">',
+                            '<img src="http://static.letudiant.lk/ETU_ETU/6/5/282765-telechargement-original.jpeg">',
+                            '<figcaption>282765</figcaption>',
+                        '</figure>'
+                    ].join('\n');
+
+                    return firstPart + secondPart;
+                }
+
+                function cleanScribeMarker(string) {
+                    return string.replace(/<em class="scribe-marker"[^>]*>[^<]*<\/em>/, '');
+                }
+
+                ImageInserter.awaitClick(self.editor, function() {
+                    var selection = new self._scribe.api.Selection();
+                    selection.placeMarkers();
+
+                    var html = self._scribe.getHTML();
+
+                    html = injectImageMarkup(html);
+                    html = cleanScribeMarker(html)
+
+                    self._scribe.setHTML(html);
+
+                    /** /
                     ImageInserter.init(self)
                         .then(function() {
                             // here we know that the imageinserter is initialised
@@ -67,12 +107,12 @@ module.exports = Block.extend({
                                 dynamicImage.replaceRenderedInBlock();
                             });
                         });
+                    /**/
                 });
             }
         },
         {
             slug: 'framed',
-            icon: 'p',
             eventTrigger: 'change',
             fn: function(e) {
                 e.preventDefault();
@@ -89,15 +129,14 @@ module.exports = Block.extend({
                     framed: result
                 });
             },
-            html: [
-                '<select>',
-                    '<option selected disabled value"">' + i18n.t('framed:choose') + '</option>',
-                    '<option value="false">' + i18n.t('framed:no_style') + '</option>',
-                    '<option value="' + framedConfig.blue.value + '">' + framedConfig.blue.label + '</option>',
-                    '<option value="' + framedConfig.red.value + '">' + framedConfig.red.label + '</option>',
-                    '<option value="' + framedConfig.green.value + '">' + framedConfig.green.label + '</option>',
-                '</select>'
-            ].join('\n')
+            html:
+                `<select>
+                    <option selected disabled value"">${ i18n.t('framed:choose') }</option>
+                    <option value="false">${ i18n.t('framed:no_style') }</option>
+                    <option value="${ framedConfig.blue.value }">${ framedConfig.blue.label }</option>
+                    <option value="${ framedConfig.red.value }">${ framedConfig.red.label }</option>
+                    <option value="${ framedConfig.green.value }">${ framedConfig.green.label }</option>
+                </select>`
         }
     ],
 
@@ -108,6 +147,8 @@ module.exports = Block.extend({
   icon_name: 'text',
 
   loadData: function(data){
+    // @dev
+    window.textBlock = this;
 
     if (data.dynamicImages) {
         self.loading();
@@ -154,11 +195,7 @@ module.exports = Block.extend({
             });
     }
     else {
-        if (this.options.convertFromMarkdown && data.format !== "html") {
-          this.setTextBlockHTML(stToHTML(data.text, this.type));
-        } else {
-          this.setTextBlockHTML(data.text);
-        }
+      this.setTextBlockHTML(data.text);
     }
 
     if (data.framed) {

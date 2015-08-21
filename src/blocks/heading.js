@@ -4,27 +4,8 @@
   Heading Block
 */
 
-var Block    = require('../block');
-var i18n     = require('../i18n-stub.js');
-var stToHTML = require('../to-html');
-
-// @todo reimplement
-
-function stripHeaderTags(string) {
-    return string.replace(/<h1>(.*?)<\/h1>/g, '$1')
-                 .replace(/<h2>(.*?)<\/h2>/g, '$1')
-                 .replace(/<h3>(.*?)<\/h3>/g, '$1');
-}
-
-function changeHeaderLevel(block, level) {
-    var textBlock = block.getTextBlock();
-
-    var cleanedTextBlockContent = stripHeaderTags(textBlock.html());
-
-    if (cleanedTextBlockContent.length > 0) {
-        textBlock.html('<' + level + '>' + cleanedTextBlockContent + '</' + level + '>');
-    }
-}
+var Block = require('../block');
+var i18n  = require('../i18n-stub.js');
 
 module.exports = Block.extend({
 
@@ -38,11 +19,36 @@ module.exports = Block.extend({
 
   icon_name: 'heading',
 
+  controllable: true,
+
+  controls: [{
+        slug: 'framed',
+        eventTrigger: 'change',
+        fn: function(e) {
+            e.preventDefault();
+
+            this._scribe.el.focus();
+            this._scribe.commands[e.target.value].execute();
+
+            // @todo i18n the header levels
+        },
+        html:
+            `<select>
+                <option selected disabled value"">Selectionnez un niveau de titre</option>
+                <option value="h1">Titre</option>
+                <option value="h2">Sous-titre</option>
+                <option value="h3">Intertitre</option>
+            </select>`
+  }],
+
   loadData: function(data){
-    if (this.options.convertFromMarkdown && data.format !== "html") {
-      this.setTextBlockHTML(stToHTML(data.text, this.type));
-    } else {
-      this.setTextBlockHTML(data.text);
+    this.setTextBlockHTML(data.text);
+  },
+
+  onBlockRender: function() {
+    if (this.blockStorage.data && this.blockStorage.data.text && (this.blockStorage.data.text.indexOf('<p>') !== -1)) {
+        this._scribe.el.focus();
+        this._scribe.commands.h1.execute();
     }
   }
 });

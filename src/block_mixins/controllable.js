@@ -25,9 +25,6 @@ module.exports = {
     },
 
     addUiControl: function(controlConfig, index) {
-        // this.control_ui.appendChild(this.getControlTemplate(cmd));
-        // Events.delegate(this.control_ui, '.st-block-control-ui-btn--' + cmd, 'click', handler);
-
         var uiControl;
         var eventTrigger = controlConfig.eventTrigger || 'click';
 
@@ -66,12 +63,16 @@ module.exports = {
 
     getControlTemplate: function(controlConfig, customClass) {
         var elem = Dom.createElement('a', {
-            'data-icon': controlConfig.icon,
-            'class': 'st-icon st-block-control-ui-btn st-block-control-ui-btn--' + controlConfig.slug
+            'class': 'st-block-control-ui-btn st-block-control-ui-btn--' + controlConfig.slug
         });
 
         if (customClass) {
             elem.classList.add(customClass);
+        }
+
+        if (controlConfig.icon) {
+            elem.classList.add('st-icon');
+            elem.setAttribute('data-icon', controlConfig.icon);
         }
 
         if (controlConfig.html) {

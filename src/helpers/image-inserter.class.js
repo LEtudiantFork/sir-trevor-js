@@ -164,7 +164,7 @@ module.exports = {
         $elem.one('click', function() {
             $elem.css('cursor', '');
 
-            cb(contentEditableHelper.getRange());
+            cb();
         });
     },
 

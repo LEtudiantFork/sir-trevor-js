@@ -1,28 +1,28 @@
 var Locales = {
   en: {
     general: {
-      delete:           'Delete?',
-      drop:             'Drag __block__ here',
-      paste:            'Or paste URL here',
-      upload:           '...or choose a file',
-      close:            'close',
+      delete:           'Supprimer?',
+      drop:             'Faites trainer un __block__ ici',
+      paste:            'Ou collez un URL ici',
+      upload:           '...ou choisissez un fichier',
+      close:            'Fermer',
       position:         'Position',
-      wait:             'Please wait...',
-      link:             'Enter a link',
-      yes:              'Yes',
-      no:               'No'
+      wait:             'Veuillez attendre...',
+      link:             'Saisir un lien',
+      yes:              'Oui',
+      no:               'Non'
     },
     framed: {
         choose: 'Choissisez un style',
         no_style: 'Aucun style'
     },
     errors: {
-      'title': 'You have the following errors:',
-      'validation_fail': '__type__ block is invalid',
-      'block_empty': '__name__ must not be empty',
-      'type_missing': 'You must have a block of type __type__',
-      'required_type_empty': 'A required block type __type__ is empty',
-      'load_fail': 'There was a problem loading the contents of the document'
+      'title': 'Vous avez les erreurs suivantes:',
+      'validation_fail': '__type__ bloc invalide',
+      'block_empty': '__name__ ne doit pas être vide',
+      'type_missing': 'Vous devez obligatoirement avoir un bloc de type __type__',
+      'required_type_empty': 'Un type de bloc __type__ qui est requis, est vide',
+      'load_fail': 'Il y a eu un problème lors du chargement du contenu du document'
     },
     blocks: {
       text: {
@@ -40,19 +40,14 @@ var Locales = {
       },
       image: {
         title: 'Image',
-        upload_error: 'There was a problem with your upload'
+        upload_error: 'Il y a eu un problème lors de votre téléchargement'
       },
       video: {
         title: 'Video'
       },
       tweet: {
         title: 'Tweet',
-        fetch_error: 'There was a problem fetching your tweet'
-      },
-      embedly: {
-        title: 'Embedly',
-        fetch_error: 'There was a problem fetching your embed',
-        key_missing: 'An Embedly API key must be present'
+        fetch_error: 'Il y a eu un problème lors de la récuperation de votre tweet'
       },
       heading: {
         title: 'Titre'
