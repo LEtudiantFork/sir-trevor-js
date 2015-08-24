@@ -34,6 +34,7 @@
     "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "git://github.com/LEtudiantFork/scribe-plugin-formatter-plain-text-convert-new-lines-to-html.git#es6-modules",
     "scribe-plugin-link-prompt-command": "git://github.com/LEtudiantFork/scribe-plugin-link-prompt-command.git#es6-modules",
     "scribe-plugin-heading-command": "git://github.com/LEtudiantFork/scribe-plugin-heading-command.git#es6-modules",
+    "scribe-plugin-sanitizer": "git://github.com/LEtudiantFork/scribe-plugin-sanitizer.git#es6-modules",
     "scriptjs": "^2.5.7",
     "spin.js": "^2.1.2",
     "velocity-commonjs": "^1.0.0",

@@ -15,7 +15,7 @@ module.exports = Block.extend({
 
   editorHTML: '<h2 class="st-required st-text-block st-text-block--heading" contenteditable="true"></h2>',
 
-  scribeOptions: { 
+  scribeOptions: {
     allowBlockElements: false,
     tags: {
       p: false
@@ -48,12 +48,5 @@ module.exports = Block.extend({
 
   loadData: function(data){
     this.setTextBlockHTML(data.text);
-  },
-
-  onBlockRender: function() {
-    if (this.blockStorage.data && this.blockStorage.data.text && (this.blockStorage.data.text.indexOf('<p>') !== -1)) {
-        this._scribe.el.focus();
-        this._scribe.commands.h1.execute();
-    }
   }
 });
