@@ -12,8 +12,7 @@ var tweet_template = _.template([
   "<p><%= text %></p>",
   "&mdash; <%= user.name %> (@<%= user.screen_name %>)",
   "<a href='<%= status_url %>' data-datetime='<%= created_at %>'><%= created_at %></a>",
-  "</blockquote>",
-  '<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>'
+  "</blockquote>"
 ].join("\n"));
 
 module.exports = Block.extend({
@@ -41,6 +40,9 @@ module.exports = Block.extend({
     Dom.remove(iframe);
 
     this.inner.insertAdjacentHTML("afterbegin", tweet_template(data));
+
+    var script = Dom.createElement('script', {src: '//platform.twitter.com/widgets.js'});
+    this.inner.appendChild(script);
   },
 
   onContentPasted: function(event){
@@ -64,7 +66,7 @@ module.exports = Block.extend({
       this.loading();
       tweetID = tweetID[0];
 
-      this.fetch(url, undefined, this.onTweetSuccess, this.onTweetFail);
+      this.fetch(this.fetchUrl(tweetID), {dataType: 'json'}, this.onTweetSuccess, this.onTweetFail);
     }
   },
 

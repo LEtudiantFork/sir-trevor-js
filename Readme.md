@@ -6,6 +6,11 @@
 
 Conceived by [Andrew Sprinz](http://github.com/andrewsprinz). Maintained by [Chris Bell](http://github.com/cjbell88) & [Andrew Walker](http://github.com/ninjabiscuit).
 
+## Upgrade guide from v0.4
+
+- [Changelog](https://github.com/madebymany/sir-trevor-js/blob/master/CHANGELOG.md)
+- [Migration docs](https://github.com/madebymany/sir-trevor-js/blob/master/docs/migrations/0.4-0.5.md)
+
 ## Quick start
 
 Full documentation can be found [here](http://madebymany.github.io/sir-trevor-js/docs.html).
@@ -35,10 +40,10 @@ We are keeping a list of [custom block repos here](https://github.com/madebymany
 
 Sir Trevor is only tested on the following modern browsers:
 
-- IE10+
-- Chrome 25+
-- Safari 5+
-- Firefox 16+
+- IE11+
+- Chrome 43+
+- Safari 8+
+- Firefox 40+
 
 ECMAScript 6 shims are bundled in by default; if the platform you wish to run on doesn't support ECMAScript 5 APIs you'll need to shim those yourself.
 
@@ -84,6 +89,16 @@ Runs the linter and test suite, just like the CI server does.
 Concatenates scripts, compiles the Sass, runs the Jasmine tests and minifies the project.
 
 Please ensure any pull requests have relevant Jasmine tests (where applicable).
+
+## Current browser support tests
+
+matrix:
+  - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='OSX 10.9'
+  - BROWSER_NAME='chrome' BROWSER_VERSION='44' PLATFORM='Windows 7'
+  - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='OSX 10.9'
+  - BROWSER_NAME='firefox' BROWSER_VERSION='40' PLATFORM='Windows 7'
+  - BROWSER_NAME='internet explorer' BROWSER_VERSION='11' PLATFORM='Windows 10'
+  - BROWSER_NAME='safari' BROWSER_VERSION='8' PLATFORM='OSX 10.10'
 
 ## License
 

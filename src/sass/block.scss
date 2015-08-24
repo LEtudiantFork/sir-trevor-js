@@ -24,8 +24,7 @@
   bottom: 0;
 }
 
-.st--block-limit-reached .st-block--with-plus:after,
-.st--block-limit-reached .st-icon--add:after {
+.st--block-limit-reached .st-block-addition {
   display: none;
 }
 
@@ -97,6 +96,10 @@
   font-size: $text-block-font-size;
   line-height: 1.45;
   overflow:auto;
+}
+
+.st-text-block p {
+  margin: 1em 0;
 }
 
 .st-text-block--heading {
