@@ -60,6 +60,9 @@ var Locales = {
       },
       chart: {
         title: 'Chart'
+      },
+      illustrated: {
+        title: 'Illustré'
       }
     },
     sub_blocks: {

@@ -36,7 +36,6 @@ module.exports = Block.extend({
         html: '<input type="text" placeholder="' + i18n.t('blocks:iframe:placeholder') + '" class="st-block__paste-input st-paste-block">'
     },
 
-    controls_position: 'top',
     controls_visible: false,
     controls: [
         {

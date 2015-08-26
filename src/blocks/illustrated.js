@@ -2,136 +2,101 @@
   Illustrated Block
 */
 
-var $                = require('jquery');
-var _                = require('../lodash.js');
-var Block            = require('../block');
-var ColorPicker      = require('../helpers/colorpicker.class.js');
-var i18n             = require('../i18n-stub.js');
-var IconPicker       = require('../helpers/iconpicker.class.js');
-var stToHTML         = require('../to-html');
-
-var blockTemplate = _.template([
-    '<div class="st-text-illustrated illustrated">',
-        '<figure class="empty illustrated-figure"></figure>',
-        '<input type="text" class="title" value="<%= titleText %>" >',
-        '<div contenteditable="true" class="text st-text-block"> <%= text %> </div>',
-    '</div>'
-    ].join('\n')
-);
-
-var imgTemplate = '<img src="<%= src %>" alt="<%= copyright %>"></figcaption>';
+var $           = require('etudiant-mod-dom');
+var Block       = require('../block');
+var Icon        = require('../helpers/icon.class.js');
+var IconPicker  = require('../helpers/iconpicker.class.js');
+var i18n        = require('../i18n-stub.js');
 
 module.exports = Block.extend({
 
     type: 'Illustrated',
 
-    title: function() {
-        return i18n.t('blocks:illustrated:title');
-    },
+    title: function() { return i18n.t('blocks:illustrated:title'); },
 
-    ajaxable: true,
     controllable: true,
-
-    controls_position: 'top',
     controls_visible: true,
+
     controls: [
         {
             slug: 'change-color',
+            eventTrigger: 'change',
+            fn: function(e) {
+                this.setData({
+                    titleColor: e.target.value
+                });
+
+                this.editor.querySelector('.st-illustrated-inputs input[name="title"]').style.color = e.target.value;
+            },
+            html: '<input name="change-color" type="color" />'
+        },
+        {
+            slug: 'change-icon',
             eventTrigger: 'click',
             fn: function() {
-                this.colorPicker.toggleVisible();
+                if (!this.iconPicker) {
+                    this.iconPicker = IconPicker.create({
+                        apiUrl: this.globalConfig.apiUrl,
+                        application: this.globalConfig.application,
+                        accessToken: this.globalConfig.accessToken
+                    });
+
+                    this.iconPicker.on('selected', function(selectedIcon) {
+                        this.setData({
+                            icon: selectedIcon.src
+                        });
+
+                        this.iconPicker.close();
+
+                        $(this.editor).find('.st-illustrated-icon').replaceWith(selectedIcon.$elem);
+
+                    }.bind(this));
+                }
+
+                this.iconPicker.open();
             },
-            html: '<span>' + i18n.t('blocks:illustrated:button:color') + '</span>'
+            html: '<button type="button">Ajouter une icône</button>'
         }
     ],
 
-    editorHTML: blockTemplate({
-        text: i18n.t('blocks:illustrated:placeholder:text'),
-        titleText: i18n.t('blocks:illustrated:placeholder:title')
-    }),
+    editorHTML:
+        `<div class="st-illustrated-block">
+            <div class="st-illustrated-icon"></div>
+            <div class="st-illustrated-inputs">
+                <fieldset>
+                    <label for="">Titre</label>
+                    <input class="st-required" name="title" type="text" />
+                </fieldset>
+                <fieldset>
+                    <label for="">Description</label>
+                    <input class="st-required" name="description" type="text" />
+                </fieldset>
+            </div>
+        </div>`,
 
     icon_name: 'illustrated',
 
     loadData: function(data) {
+        if (data.icon) {
+            var icon = Icon.create({ src: data.icon });
 
-        if (data.title !== undefined) {
-            this.$el.find('.title').val(data.title);
-        }
-        if (data.titleColor !== undefined) {
-            this.$el.find('.title').css('color', data.titleColor);
-        }
-        if (data.img !== undefined) {
-            var imgHtml = _.template(imgTemplate, (data.img));
-            this.$el.find('figure').append(imgHtml).removeClass('empty');
+            $(this.editor).find('.st-illustrated-icon').replaceWith(icon.$elem);
         }
 
-        this.getTextBlock().html(stToHTML(data.text, this.type));
+        if (data.title) {
+            this.editor.querySelector('.st-illustrated-inputs input[name="title"]').value = data.title;
+        }
+
+        if (data.titleColor) {
+            this.editor.querySelector('.st-illustrated-inputs input[name="title"]').style.color = data.titleColor;
+
+            this.control_ui.querySelector('input[name="change-color"]').value = data.titleColor;
+        }
+
+        if (data.description) {
+            this.editor.querySelector('.st-illustrated-inputs input[name="description"]').value = data.description;
+        }
     },
 
-    onBlockRender: function() {
-        var self = this;
-
-        this.colorPicker = new ColorPicker({
-            block: this,
-            colors: {
-                blue: [
-                    '#0A122A',
-                    '#2E9AFE',
-                    '#2E64FE',
-                    '#2E64FE'
-                ],
-                red: [
-                    '#2A0A0A',
-                    '#8A0808',
-                    '#FE2E2E'
-                ],
-                green: [
-                    '#088A08',
-                    '#04B404',
-                    '#00FF00'
-                ]
-            }
-        });
-
-        this.colorPicker.on('color:change', function(selectedColor) {
-            this.$editor.find('.title').css('color', selectedColor);
-            this.setData({
-                titleColor: selectedColor
-            });
-
-        }.bind(this));
-
-        this.$editor.find('.title').on('keyup', function(){
-            var title = $(this).val();
-            self.setData({
-                title: title
-            });
-        });
-
-        this.iconPicker = new IconPicker({
-            // @todo: why was this in TWO places!?
-            // apiUrl: self.globalConfig.apiUrl + 'edt/media?application=ETU_ETU&type=image&limit=20',
-            apiUrl: self.globalConfig.apiUrl,
-            application: self.globalConfig.application,
-            accessToken: self.globalConfig.accessToken,
-            blockRef: this,
-            modalTriggerElement: this.$el.find('figure')
-        });
-
-        this.iconPicker.on('picture:change', function(selectedPicture) {
-            var imagePicturHtml =  _.template(imgTemplate, selectedPicture);
-
-            if (this.$editor.find('figure').children() !== undefined) {
-                this.$editor.find('figure').children().remove();
-            }
-
-            this.$editor.find('figure').append(imagePicturHtml).removeClass('empty');
-
-            this.setData({
-                img: selectedPicture
-            });
-
-        }.bind(this));
-    }
-
+    onBlockRender: function() {}
 });

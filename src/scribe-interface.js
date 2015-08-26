@@ -11,6 +11,9 @@ var scribePluginSanitizer = require('scribe-plugin-sanitizer');
 
 var sanitizeDefaults = {
   p: true,
+  h1: true,
+  h2: true,
+  h3: true,
   a: {
     href: true,
     target: '_blank',

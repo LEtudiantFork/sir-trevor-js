@@ -29,7 +29,11 @@ module.exports = Block.extend({
 
   type: "text",
 
-  scribeOptions: { allowBlockElements: true },
+  scribeOptions: { allowBlockElements: true,
+    tags: {
+      p: true
+    }
+  },
 
   controllable: true,
 
@@ -45,7 +49,8 @@ module.exports = Block.extend({
                 // custom string function
                 function indexOfEnd(string, startingIndex = 0) {
                     var io = this.indexOf(string, startingIndex);
-                    return io == -1 ? -1 : io + string.length;
+
+                    return io === -1 ? -1 : io + string.length;
                 }
 
                 function injectImageMarkup(blockHTML) {
@@ -138,7 +143,7 @@ module.exports = Block.extend({
                     <option value="${ framedConfig.green.value }">${ framedConfig.green.label }</option>
                 </select>`
         }
-    ],
+  ],
 
   title: function() { return i18n.t('blocks:text:title'); },
 
@@ -147,9 +152,6 @@ module.exports = Block.extend({
   icon_name: 'text',
 
   loadData: function(data){
-    // @dev
-    window.textBlock = this;
-
     if (data.dynamicImages) {
         self.loading();
         self.getTextBlock().hide();
