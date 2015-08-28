@@ -7,7 +7,10 @@ var config = require('./config');
 var scribePluginFormatterPlainTextConvertNewLinesToHTML = require('scribe-plugin-formatter-plain-text-convert-new-lines-to-html');
 var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command');
 var scribePluginHeadingCommand = require('scribe-plugin-heading-command');
+var scribePluginTableCommand = require('scribe-plugin-table-command');
 var scribePluginSanitizer = require('scribe-plugin-sanitizer');
+
+var scribePluginFigureCommand = require('./extensions/scribe-figure-command.js');
 
 var sanitizeDefaults = {
   p: true,
@@ -22,7 +25,10 @@ var sanitizeDefaults = {
   i: true,
   b: true,
   strong: true,
-  em: true
+  em: true,
+  table: true,
+  td: true,
+  tr: true
 };
 
 module.exports = {
@@ -47,6 +53,8 @@ module.exports = {
     scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
     scribe.use(scribePluginLinkPromptCommand());
     scribe.use(scribePluginSanitizer({tags: tags}));
+    scribe.use(scribePluginTableCommand());
+    scribe.use(scribePluginFigureCommand());
 
     // add H1, H2 and H3 support
     scribe.use(scribePluginHeadingCommand(1));

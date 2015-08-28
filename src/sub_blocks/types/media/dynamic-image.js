@@ -7,14 +7,13 @@ var smallTemplate = [
     '<figure class="st-sub-block-image" data-etu-zoom="">',
         '<img src="<%= thumbnail %>" />',
     '</figure>',
-    '<%= formatField %>',
     '<span>légende : <%= legend %></span>',
     '<span>&copy; <%= copyright %></span>'
 ].join('\n');
 
 var largeTemplate = [
     '<figure class="st-sub-block-image">',
-        '<img src="<%= thumbnail %>" />',
+        '<%= img %>',
     '</figure>',
     '<%= formatsField %>',
     '<%= legendField %>',
@@ -38,6 +37,10 @@ function hasFormatString(formatString, formats) {
     });
 }
 
+function getImageMarkup() {
+    return `<img alt=" ${ this.content.legend } " src=" ${ this.getFormattedSrc(this.content.activeFormat) } " />`;
+}
+
 function init() {
     this.smallTemplate = smallTemplate;
     this.largeTemplate = largeTemplate;
@@ -51,8 +54,14 @@ function init() {
 
 var dynamicImagePrototype = {
 
-    getData: function() {
-        return { prop: 'hi there kids' };
+    getSaveData: function() {
+        return {
+            activeFormat: this.content.activeFormat,
+            align: this.content.align,
+            id: this.id,
+            legend: this.content.legend,
+            link: this.content.link
+        };
     },
 
     getFormattedSrc: function(formatString) {
@@ -64,59 +73,39 @@ var dynamicImagePrototype = {
     },
 
     prepareSmallMarkup: function() {
-        var formatField = '';
-
-        if (this.content.formats.length > 1) {
-            var formats = this.content.formats.map(function(formatItem) {
-                return {
-                    value: formatItem.label,
-                    label: formatItem.label
-                };
-            });
-
-            formatField = fieldHelper.build({
-                type: 'select',
-                placeholder: 'Sélectionnez un format',
-                name: 'format-' + this.id,
-                options: formats
-            });
-        }
-
-        var toRender = Object.assign({}, this.content, {
-            formatField: formatField
-        });
-
-        return _.template(smallTemplate, toRender, { imports: { '_': _ } });
+        return _.template(smallTemplate, this.content, { imports: { '_': _ } });
     },
 
     postRenderSmall: function() {
         if (!this.hasRenderedSmall) {
             this.hasRenderedSmall = true;
 
-            this.$elem.on('click', 'select', function(e) {
+            this.$elem.on('click', 'select', (e) => {
                 if (this.renderedAs === 'small') {
                     e.stopPropagation();
                 }
-            }.bind(this));
+            });
 
-            this.$elem.on('change', 'select', function(e) {
+            this.$elem.on('change', 'select', (e) => {
                 if (this.renderedAs === 'small') {
                     e.stopPropagation();
 
                     this.content.activeFormat = e.currentTarget.value;
+
+
                 }
-            }.bind(this));
+            });
         }
     },
 
     prepareLargeMarkup: function() {
-        var formatOptions = this.content.formats.map(function(formatItem) {
+        var formatOptions = this.content.formats.map((formatItem) => {
             return {
                 value: formatItem.label,
                 label: formatItem.label,
                 selected: this.content.activeFormat === formatItem.label
             };
-        }.bind(this));
+        });
 
         var alignField = fieldHelper.build({
             type: 'select',
@@ -138,26 +127,34 @@ var dynamicImagePrototype = {
 
         var formatsField = fieldHelper.build({
             type: 'select',
-            label: 'Format',
             name: 'format',
+            label: 'Format',
             options: formatOptions
         });
 
         var legendField = fieldHelper.build({
             type: 'text',
-            name: 'link',
+            name: 'legend',
             label: 'Legend',
             value: this.content.legend
         });
 
-        var linkField = '';
+        var linkField;
 
         if (this.content.link) {
+             linkField = fieldHelper.build({
+                type: 'text',
+                name: 'link',
+                label: 'Lien',
+                value: this.content.link
+            });
+        }
+        else {
             linkField = fieldHelper.build({
                 type: 'text',
                 name: 'link',
-                label: 'Link',
-                value: this.content.link
+                label: 'Lien',
+                placeholder: 'Veuillez saisir un lien'
             });
         }
 
@@ -166,7 +163,7 @@ var dynamicImagePrototype = {
             formatsField: formatsField,
             legendField: legendField,
             linkField: linkField,
-            hasLink: this.content.link === '' ? this.content.link : 'entrez un lien'
+            img: getImageMarkup.call(this)
         });
 
         return _.template(largeTemplate, toRender, { imports: { '_': _ } });
@@ -176,53 +173,39 @@ var dynamicImagePrototype = {
         if (!this.hasRenderedLarge) {
             this.hasRenderedLarge = true;
 
-            this.$elem.on('change', 'select[name="align"]', function(e) {
+            this.$elem.on('change', 'select[name="align"]', (e) => {
                 this.content.align = e.currentTarget.value;
-            }.bind(this));
+            });
 
-            this.$elem.on('change', 'select[name="format"]', function(e) {
+            this.$elem.on('change', 'select[name="format"]', (e) => {
                 this.content.activeFormat = e.currentTarget.value;
-            }.bind(this));
 
-            this.$elem.on('keyup', 'input[name="legend"]', function(e) {
+                this.$elem[0].querySelector('img').outerHTML = getImageMarkup.call(this);
+            });
+
+            this.$elem.on('keyup', 'input[name="legend"]', (e) => {
                 this.content.legend = e.currentTarget.value;
-            }.bind(this));
+            });
 
-            this.$elem.on('keyup', 'input[name="link"]', function(e) {
+            this.$elem.on('keyup', 'input[name="link"]', (e) => {
                 this.content.link = e.currentTarget.value;
-            }.bind(this));
-
+            });
         }
     },
 
     // unlike renderSmall/Large this makes a new element every time
     renderInBlock: function() {
-        var $elem = $('<figure contenteditable="false" data-sub-block-in-block="' + this.id + '"></figure>');
+        var $elem = $(`<figure contenteditable="false" data-sub-block-id=" ${ this.id } "></figure>`);
 
-        $elem.on('click', 'button[data-edit]', function() {
-            EventBus.trigger('editImage', this);
-        }.bind(this));
-
-        $elem.on('click', 'button[data-delete]', function() {
-            if (confirm('Supprimez cette image ?')) {
-                $elem.remove();
-                $elem = null;
-            }
-        });
-
-        $elem.addClass('st-sub-block-align-' + this.content.align);
+        $elem.addClass('st-sub-block-dynamic-image u-align-' + this.content.align);
 
         var img;
 
         if (this.content.link && this.content.link !== '') {
-            img = [
-                    '<a href="' + this.content.link + '" target="_blank">',
-                      '<img src="' + this.getFormattedSrc(this.content.activeFormat) + '" />',
-                    '</a>'
-                   ].join('\n');
+            img = `<a href=" ${ this.content.link } " target="_blank"> ${ getImageMarkup.call(this) } <a>`;
         }
         else {
-            img = '<img src="' + this.getFormattedSrc(this.content.activeFormat) + '" />';
+            img = getImageMarkup.call(this);
         }
 
         $elem.html(
@@ -232,19 +215,11 @@ var dynamicImagePrototype = {
             })
         );
 
-        return $elem.get(0);
+        return $elem[0];
     },
 
-    getHTMLPlaceholder: function() {
-        var elem = document.createElement('div');
-
-        $(elem).attr('data-sub-block-in-block', this.id);
-
-        return elem.outerHTML;
-    },
-
-    replaceRenderedInBlock: function() {
-        $('[data-sub-block-in-block="' + this.id + '"]').replaceWith(this.renderInBlock());
+    replaceRenderedInBlock: function(container) {
+        container.querySelector(`[data-sub-block-id=" ${ this.id } "]`).outerHTML = this.renderInBlock().outerHTML;
     }
 };
 

@@ -17,7 +17,27 @@ function alphabetise(array, sortKey) {
     });
 }
 
-function fetch(params) {
+function prepareSingleImageFormat(image, formats) {
+    image.formats = formats.filter(function(singleFormat) {
+        return image.format_ids.indexOf(singleFormat.value) !== -1;
+    });
+    return image;
+}
+
+// adds format strings like '500x500' to each image
+function prepareImageFormats(images, formats) {
+    return images.map(function(image) {
+        return prepareSingleImageFormat(image, formats);
+    });
+}
+
+var instance;
+
+function getFilterData(params) {
+    if (instance) {
+        return Promise.resolve(instance);
+    }
+
     return xhr.get(params.apiUrl + '/edt/media/filters/' + params.application, {
         data: {
             access_token: params.accessToken
@@ -31,11 +51,13 @@ function fetch(params) {
             var copyrights = alphabetise(fetchedData.content.copyrights, 'name');
             var formats = alphabetise(fetchedData.content.formats, 'label');
 
-            return {
+            instance = {
                 categories: prepareForSelect(categories, 'id', 'label'),
                 copyrights: prepareForSelect(copyrights, 'id', 'name'),
                 formats: prepareForSelect(formats, 'id', 'label')
             };
+
+            return instance;
         }
         else {
             return Promise.reject(fetchedData);
@@ -46,22 +68,8 @@ function fetch(params) {
     });
 }
 
-// adds format strings like '500x500' to each image
-function prepareImageFormats(images, formats) {
-    return images.map(function(image) {
-        return prepareSingleImageFormat(image, formats);
-    });
-}
-
-function prepareSingleImageFormat(image, formats) {
-    image.formats = formats.filter(function(singleFormat) {
-        return image.format_ids.indexOf(singleFormat.value) !== -1;
-    });
-    return image;
-}
-
 module.exports = {
-    fetch: fetch,
+    getFilterData: getFilterData,
     prepareImageFormats: prepareImageFormats,
     prepareSingleImageFormat: prepareSingleImageFormat
 };

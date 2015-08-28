@@ -1,14 +1,13 @@
-"use strict";
+'use strict';
 
 /*
-  Text Block
+    Text Block
 */
 
-var $             = require('etudiant-mod-dom');
-var Block         = require('../block');
-var EventBus      = require('../event-bus.js');
-var i18n          = require('../i18n-stub.js');
-var ImageInserter = require('../helpers/image-inserter.class.js');
+var $               = require('etudiant-mod-dom');
+var Block           = require('../block');
+var i18n            = require('../i18n-stub.js');
+var ImageInserter   = require('../helpers/image-inserter.class.js');
 
 var framedConfig = {
     blue: {
@@ -27,94 +26,50 @@ var framedConfig = {
 
 module.exports = Block.extend({
 
-  type: "text",
+    type: 'text',
 
-  scribeOptions: { allowBlockElements: true,
+    scribeOptions: { allowBlockElements: true,
     tags: {
-      p: true
+        p: true,
+        table: true,
+        td: true,
+        tbody: true,
+        tr: true,
+        figure: true,
+        figcaption: true,
+        img: true
     }
-  },
+    },
 
-  controllable: true,
+    controllable: true,
 
-  controls: [
+    controls: [
         {
             slug: 'show-picture',
-            icon: 'image',
             sleep: true,
             eventTrigger: 'click',
             fn: function() {
-                var self = this;
 
-                // custom string function
-                function indexOfEnd(string, startingIndex = 0) {
-                    var io = this.indexOf(string, startingIndex);
+                this.imageInserter.openSearch();
 
-                    return io === -1 ? -1 : io + string.length;
-                }
+                this.imageInserter.once('selected', (selectedImage) => {
+                    this.editor.style.cursor = 'copy';
 
-                function injectImageMarkup(blockHTML) {
-                    var markerIndex = blockHTML.indexOf('scribe-marker');
+                    $(this.editor).once('click', () => {
+                        this.editor.style.cursor = '';
 
-                    var nextIndex = Math.min(indexOfEnd.call(blockHTML, '</p>', markerIndex), indexOfEnd.call(blockHTML, '<p>', markerIndex));
+                        this._dynamicImages = this._dynamicImages || {};
+                        this.blockStorage.data.dynamicImages = this.blockStorage.data.dynamicImages || {};
 
-                    var firstPart = blockHTML.slice(0, nextIndex);
-                    var secondPart = blockHTML.slice(nextIndex, blockHTML.length);
+                        this._dynamicImages[selectedImage.id] = selectedImage;
 
-                    firstPart += [
-                        '<figure data-sub-block-in-block="282765" class="st-sub-block-align-right">',
-                            '<img src="http://static.letudiant.lk/ETU_ETU/6/5/282765-telechargement-original.jpeg">',
-                            '<figcaption>282765</figcaption>',
-                        '</figure>'
-                    ].join('\n');
+                        this.blockStorage.data.dynamicImages[selectedImage.id] = selectedImage.getSaveData();
 
-                    return firstPart + secondPart;
-                }
-
-                function cleanScribeMarker(string) {
-                    return string.replace(/<em class="scribe-marker"[^>]*>[^<]*<\/em>/, '');
-                }
-
-                ImageInserter.awaitClick(self.editor, function() {
-                    var selection = new self._scribe.api.Selection();
-                    selection.placeMarkers();
-
-                    var html = self._scribe.getHTML();
-
-                    html = injectImageMarkup(html);
-                    html = cleanScribeMarker(html)
-
-                    self._scribe.setHTML(html);
-
-                    /** /
-                    ImageInserter.init(self)
-                        .then(function() {
-                            // here we know that the imageinserter is initialised
-                            self.imageInserter.openSearch();
-
-                            EventBus.on('editImage', function(dynamicImage) {
-                                if (dynamicImage.parentID === self.imageInserter.subBlockSearch.id) {
-                                    var shouldReplace = true;
-                                    self.imageInserter.editImage(dynamicImage, shouldReplace);
-                                }
-                            });
-
-                            self.imageInserter.on('selected', function(dynamicImage) {
-                                ImageInserter.saveImage(self.blockStorage.data, dynamicImage);
-
-                                // static method to insert the element at the insertionPoint
-                                ImageInserter.insertImage(insertionPoint, dynamicImage.renderInBlock());
-                            });
-
-                            self.imageInserter.on('replace', function(dynamicImage) {
-                                ImageInserter.saveImage(self.blockStorage.data, dynamicImage);
-
-                                dynamicImage.replaceRenderedInBlock();
-                            });
-                        });
-                    /**/
+                        this._scribe.commands.insertFigure.execute(selectedImage.renderInBlock());
+                    });
                 });
-            }
+            },
+            html: '<button type="button">Insérir une image</button>'
         },
         {
             slug: 'framed',
@@ -142,66 +97,83 @@ module.exports = Block.extend({
                     <option value="${ framedConfig.red.value }">${ framedConfig.red.label }</option>
                     <option value="${ framedConfig.green.value }">${ framedConfig.green.label }</option>
                 </select>`
+        },
+        {
+            slug: 'add-table',
+            eventTrigger: 'click',
+            fn: function() {
+                if (document.activeElement !== this.editor) {
+                    this._scribe.el.focus();
+                }
+
+                this._scribe.commands.table.execute();
+            },
+            html: '<button type="button">Insérir un tableau</button>'
         }
-  ],
+    ],
 
-  title: function() { return i18n.t('blocks:text:title'); },
+    title: function() { return i18n.t('blocks:text:title'); },
 
-  editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
+    editorHTML: '<div class="st-required st-text-block" contenteditable="true"></div>',
 
-  icon_name: 'text',
+    icon_name: 'text',
 
-  loadData: function(data){
-    if (data.dynamicImages) {
-        self.loading();
-        self.getTextBlock().hide();
+    loadData: function(data) {
+        window.textBlock = this;
 
-        ImageInserter.init(self)
-            .then(function() {
-                return self.imageInserter.reinitialiseImages({
-                    block: self,
-                    storedData: {
-                        dynamicImages: data.dynamicImages,
-                        text: data.text
-                    }
-                });
-            })
-            .then(function(result) {
-                self.dynamicImages = result.dynamicImages;
+        this.setTextBlockHTML(data.text);
 
-                self.getTextBlock().html(stToHTML(result.text));
+        if (data.framed) {
+            this.editor.classList.add('st-framed-' + data.framed);
+        }
 
-                self.dynamicImages.forEach(function(dynamicImage) {
-                    dynamicImage.replaceRenderedInBlock();
-                });
+        ImageInserter.init({
+            accessToken: this.globalConfig.accessToken,
+            apiUrl: this.globalConfig.apiUrl,
+            application: this.globalConfig.application,
+            block: this
+        }).then((imageInserter) => {
+            this.imageInserter = imageInserter;
 
-                // here we know that the imageinserter is initialised
-                EventBus.on('editImage', function(dynamicImage) {
-                    if (dynamicImage.parentID === self.blockID) {
-                        var shouldReplace = true;
-                        self.imageInserter.editImage(dynamicImage, shouldReplace);
-                    }
-                });
+            this.imageInserter.on('replace', (dynamicImage) => {
+                dynamicImage.replaceRenderedInBlock(this.editor);
 
-                self.getTextBlock().show();
-
-                // prepare behaviour for an image that has already been added but is then altered
-                self.imageInserter.on('replace', function(dynamicImage) {
-                    ImageInserter.saveImage(self.blockStorage.data, dynamicImage);
-
-                    dynamicImage.replaceRenderedInBlock();
-                });
-            })
-            .catch(function(error) {
-                console.error(error);
+                this.blockStorage.data.dynamicImages[dynamicImage.id] = dynamicImage.getSaveData();
             });
-    }
-    else {
-      this.setTextBlockHTML(data.text);
-    }
 
-    if (data.framed) {
-        this.editor.classList.add('st-framed-' + data.framed);
+            this._scribe.eventBus.on('editFigure', (figure) => {
+                var shouldReplace = true;
+                var id = figure.dataset.subBlockId.trim();
+                var dynamicImage = this._dynamicImages[id];
+
+                this.imageInserter.editImage(dynamicImage, shouldReplace);
+            });
+
+            this._scribe.eventBus.on('deleteFigure', (figure) => {
+                figure.remove();
+
+                var id = figure.dataset.subBlockId.trim();
+
+                delete this._dynamicImages[id];
+                delete this.blockStorage.data.dynamicImages[id];
+            });
+
+            if (data.dynamicImages) {
+                ImageInserter.reinitialiseImages({
+                    accessToken: this.globalConfig.accessToken,
+                    apiUrl: this.globalConfig.apiUrl,
+                    application: this.globalConfig.application,
+                    parentID: this.blockID,
+                    storedImages: data.dynamicImages
+                })
+                .then((dynamicImages) => {
+                    this._dynamicImages = this._dynamicImages || {};
+
+                    dynamicImages.forEach((dynamicImage) => {
+                        this._dynamicImages[dynamicImage.id] = dynamicImage;
+                    });
+                });
+            }
+        });
     }
-  },
 });
