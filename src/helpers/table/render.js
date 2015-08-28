@@ -79,9 +79,9 @@ function render1DTable(tableData) {
 
     var table = renderTHEAD(renderTR(renderTH('') + renderTH(renderInner({ value: headerData[0], type: 'column-header' })) +  renderTH('')));
 
-    var rows = tableData.map(function(rowData, rowIndex) {
+    var rows = tableData.map((rowData, rowIndex) => {
         return renderTR(
-            rowData.reduce(function(rowHeader, rowItem, innerIndex) {
+            rowData.reduce((rowHeader, rowItem, innerIndex) => {
                 var markup = renderTD(renderInner({ value: rowHeader, type: 'row-header' }));
 
                 markup += renderTD(renderInner({ value: rowItem.value, type: 'standard', coord: rowItem.coord }));
@@ -98,9 +98,9 @@ function render1DTable(tableData) {
         );
     });
 
-    table += renderTBODY(rows.reduce(function(previousRow, currentRow) {
+    table += renderTBODY(rows.reduce((previousRow, currentRow) => {
         return previousRow += currentRow;
-    }.bind(this)));
+    }));
 
     return renderElement({
         type: 'table',
@@ -118,7 +118,7 @@ function render2DTable(tableData) {
     }
     else {
         table = renderTHEAD(renderTR(
-            headerData.reduce(function(previousItem, currentItem, index) {
+            headerData.reduce((previousItem, currentItem, index) => {
                 if (index === 1) {
                     previousItem = renderTH('') + renderTH(renderInner({ value: previousItem, type: 'column-header' }));
                 }
@@ -134,9 +134,9 @@ function render2DTable(tableData) {
         ));
     }
 
-    var rows = tableData.map(function(rowData, rowIndex) {
+    var rows = tableData.map((rowData, rowIndex) => {
         return renderTR(
-            rowData.reduce(function(previousItem, currentItem, innerIndex) {
+            rowData.reduce((previousItem, currentItem, innerIndex) => {
                 if (innerIndex === 1) {
                     previousItem = renderTD(renderInner({ value: previousItem, type: 'row-header' }));
                 }
@@ -158,7 +158,7 @@ function render2DTable(tableData) {
     if (headerData.length > 1) {
         rows.push(
             renderTFOOT(renderTR(
-                headerData.reduce(function(previousItem, currentItem, index) {
+                headerData.reduce((previousItem, currentItem, index) => {
                     if (index === 1) {
                         previousItem = renderTD('') + renderTD('');
                     }
@@ -175,9 +175,9 @@ function render2DTable(tableData) {
         );
     }
 
-    table += renderTBODY(rows.reduce(function(previousRow, currentRow) {
+    table += renderTBODY(rows.reduce((previousRow, currentRow) => {
         return previousRow += currentRow;
-    }.bind(this)));
+    }));
 
     return renderElement({
         type: 'table',

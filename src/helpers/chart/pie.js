@@ -37,7 +37,7 @@ var pieChartPrototype = {
         this.$tableArea.append(this.table.$elem);
 
         // need to wait for redraw otherwise d3plus doesn't find element
-        setTimeout(function() { this.drawChart() }.bind(this), 0);
+        setTimeout(() => { this.drawChart() }, 0);
 
         this.table.on('update:key', function(newData) { this[newData.type] = newData.value; }.bind(this));
 

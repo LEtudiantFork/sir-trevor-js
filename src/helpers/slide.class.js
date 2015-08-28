@@ -22,9 +22,9 @@ Slide.prototype = {
     render: function() {
         this.$elem.empty();
 
-        this.contents.forEach(function(contentItem) {
+        this.contents.forEach((contentItem) => {
             this.$elem.append(contentItem);
-        }.bind(this));
+        });
 
         return this.$elem;
     }

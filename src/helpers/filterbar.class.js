@@ -63,13 +63,13 @@ FilterBar.prototype = Object.assign(FilterBar.prototype, {
     bindToDOM: function(container) {
         this.$elem = container.find('.st-block__filter');
 
-        this.$elem.on('keyup', 'input', _.debounce(function() {
+        this.$elem.on('keyup', 'input', _.debounce(() => {
             this.search();
-        }.bind(this), 300));
+        }, 300));
 
-        this.$elem.on('change', 'select', function() {
+        this.$elem.on('change', 'select', () => {
             this.search();
-        }.bind(this));
+        });
     },
 
     search: function(search, eventName) {
@@ -101,7 +101,7 @@ FilterBar.prototype = Object.assign(FilterBar.prototype, {
         xhr.get(this.url, {
             data: search
         })
-        .then(function(searchResult) {
+        .then((searchResult) => {
             if (searchResult.content) {
                 this.trigger(eventName + ':result', searchResult.content);
                 this.nextSearch.offset = this.nextSearch.offset ? this.nextSearch.offset += searchResult.content.length : searchResult.content.length;
@@ -109,9 +109,10 @@ FilterBar.prototype = Object.assign(FilterBar.prototype, {
             else {
                 this.trigger(eventName + ':no-result');
             }
-        }.bind(this), function(err) {
+        })
+        .catch((err) => {
             this.trigger(eventName + ':error', err);
-        }.bind(this));
+        });
     },
 
     moreResults: function() {

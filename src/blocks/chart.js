@@ -41,10 +41,10 @@ module.exports = Block.extend({
 
     loadData: function(data) {
         if (!_.isEmpty(data)) {
-            ChartLibFetch().then(function() {
+            ChartLibFetch().then(() => {
                 this.chart = Chart.create(data);
                 this.editor.appendChild(this.chart.$elem[0]);
-            }.bind(this))
+            })
             .catch(function(err) {
                 console.error(err);
             });
@@ -63,10 +63,10 @@ module.exports = Block.extend({
 
     onBlockRender: function() {
         if (_.isEmpty(this.blockStorage.data)) {
-            this.createChoices(chooseableConfig, function(choices) {
+            this.createChoices(chooseableConfig, (choices) =>{
                 var chartType = choices.chartType;
 
-                ChartLibFetch().then(function() {
+                ChartLibFetch().then(() => {
                     if (chartType === 'pie') {
                         this.chart = Chart.create({
                             type: chartType
@@ -79,11 +79,11 @@ module.exports = Block.extend({
                     }
 
                     this.editor.appendChild(this.chart.$elem[0]);
-                }.bind(this))
+                })
                 .catch(function(err) {
                     console.error(err);
                 });
-            }.bind(this));
+            });
         }
     }
 });

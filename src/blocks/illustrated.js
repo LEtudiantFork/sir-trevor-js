@@ -41,7 +41,7 @@ module.exports = Block.extend({
                         accessToken: this.globalConfig.accessToken
                     });
 
-                    this.iconPicker.on('selected', function(selectedIcon) {
+                    this.iconPicker.on('selected', (selectedIcon) => {
                         this.setData({
                             icon: selectedIcon.src
                         });
@@ -50,7 +50,7 @@ module.exports = Block.extend({
 
                         $(this.editor).find('.st-illustrated-icon').replaceWith(selectedIcon.$elem);
 
-                    }.bind(this));
+                    });
                 }
 
                 this.iconPicker.open();

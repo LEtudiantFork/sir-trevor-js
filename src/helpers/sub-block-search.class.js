@@ -104,9 +104,9 @@ var SubBlockSearch = function(params) {
 
     registerSelectSubBlock(this);
 
-    this.filterBar.once('search:result', function() {
+    this.filterBar.once('search:result', () => {
         this.trigger('ready');
-    }.bind(this));
+    });
 };
 
 var prototype = {

@@ -45,13 +45,13 @@ var barChartPrototype = {
         // need to wait for redraw otherwise d3plus doesn't find element
         setTimeout(function() { this.drawChart() }.bind(this), 0);
 
-        this.table.on('update:key', function(newData) { this[newData.type] = newData.value; }.bind(this));
+        this.table.on('update:key', (newData) => { this[newData.type] = newData.value; });
 
-        this.table.on('update', function(newData) {
+        this.table.on('update', (newData) => {
             this.data = newData;
 
             this.drawChart();
-        }.bind(this));
+        });
     },
 
     getData: function() {

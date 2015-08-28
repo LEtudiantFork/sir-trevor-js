@@ -89,23 +89,26 @@ function registerButtons() {
     var prevButton = this.$elem.find('.st-slider-controls button[data-direction="prev"]');
     var nextButton = this.$elem.find('.st-slider-controls button[data-direction="next"]');
 
-    this.$elem.on('click', '.st-slider-controls button', function(e) {
+    this.$elem.on('click', '.st-slider-controls button', (e) => {
         e.preventDefault();
         if (this[$(e.currentTarget).data('direction')]) {
             this[$(e.currentTarget).data('direction')].call(this);
         }
-    }.bind(this));
+    });
 
-    this.on('buttons:prev:disable', function() {
+    this.on('buttons:prev:disable', () => {
         prevButton.attr('disabled', 'disabled');
     });
-    this.on('buttons:prev:enable', function() {
+
+    this.on('buttons:prev:enable', () => {
         prevButton.removeAttr('disabled');
     });
-    this.on('buttons:next:disable', function() {
+
+    this.on('buttons:next:disable', () => {
         nextButton.attr('disabled', 'disabled');
     });
-    this.on('buttons:next:enable', function() {
+
+    this.on('buttons:next:enable', () => {
         nextButton.removeAttr('disabled');
     });
 }
@@ -189,9 +192,9 @@ Slider.prototype = Object.assign(Slider.prototype, {
 
         this.$slideContainer = this.$elem.find('.st-slider-container');
 
-        this.slides.forEach(function(slide) {
+        this.slides.forEach((slide) => {
             this.$slideContainer.append(slide.render());
-        }.bind(this));
+        });
 
         if (!this.isBoundToDOM) {
 
@@ -216,9 +219,9 @@ Slider.prototype = Object.assign(Slider.prototype, {
 
             this.slides = prepareSlides(newSlides, this.config.itemsPerSlide);
 
-            this.slides.forEach(function(slide) {
+            this.slides.forEach((slide) => {
                 this.$slideContainer.append(slide.render());
-            }.bind(this));
+            });
         }
         else {
             this.$slideContainer.html(noSlidesTemplate);
@@ -249,9 +252,9 @@ Slider.prototype = Object.assign(Slider.prototype, {
 
         this.slides = this.slides.concat(newSlides);
 
-        this.slides.slice(indexModifier, this.slides.length).forEach(function(slide) {
+        this.slides.slice(indexModifier, this.slides.length).forEach((slide) => {
             this.$slideContainer.append(slide.render());
-        }.bind(this));
+        });
 
         this.refreshDimensions(false);
         this.hasEmitted = false;

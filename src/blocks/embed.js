@@ -229,7 +229,7 @@ module.exports = Block.extend({
                         access_token: this.globalConfig.accessToken
                     }
                 })
-                .then(function(subBlockData) {
+                .then((subBlockData) => {
                     var subBlock = subBlockManager.buildSingle({
                         accessToken: this.globalConfig.accessToken,
                         apiUrl: this.globalConfig.apiUrl,
@@ -242,10 +242,10 @@ module.exports = Block.extend({
                     this.editor.appendChild(subBlock.renderLarge()[0]);
 
                     this.ready();
-                }.bind(this))
-                .catch(function(err) {
+                })
+                .catch((err) => {
                     throw new Error('No block returned for id:' + this.subBlockData.id + ' on app:' + this.subBlockData.application + ' ' + err);
-                }.bind(this));
+                });
             }
         }
     },

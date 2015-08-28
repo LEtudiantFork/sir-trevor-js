@@ -19,11 +19,11 @@ function init(params) {
     this.$elem.attr('data-sub-block-id', this.id);
     this.$elem.addClass('st-sub-block-' + this.type);
 
-    this.$elem.on('click', function() {
+    this.$elem.on('click', () => {
         if (this.renderedAs === 'small') {
             EventBus.trigger('sub-block-action:selected', this);
         }
-    }.bind(this));
+    });
 }
 
 var basicPrototype = {

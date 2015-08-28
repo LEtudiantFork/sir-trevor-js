@@ -10,21 +10,21 @@ var genericTablePrototype = {
 
         this.hasRegisteredClick = true;
 
-        this.$elem.on('click', 'button[data-action="add-column"]', function(e) {
+        this.$elem.on('click', 'button[data-action="add-column"]', (e) => {
             this.addColumn();
-        }.bind(this));
+        });
 
-        this.$elem.on('click', 'button[data-action="add-row"]', function(e) {
+        this.$elem.on('click', 'button[data-action="add-row"]', (e) => {
             this.addRow();
-        }.bind(this));
+        });
 
-        this.$elem.on('click', 'button[data-type="row"]', function(e) {
+        this.$elem.on('click', 'button[data-type="row"]', (e) => {
             this.deleteRow($(e.currentTarget).data('key').toString());
-        }.bind(this));
+        });
 
-        this.$elem.on('click', 'button[data-type="column"]', function(e) {
+        this.$elem.on('click', 'button[data-type="column"]', (e) => {
             this.deleteColumn($(e.currentTarget).data('key').toString());
-        }.bind(this));
+        });
     },
 
     updateDataKey: function(params) {
@@ -63,13 +63,13 @@ var genericTablePrototype = {
             this.trigger('error', 'empty')
         }
         else {
-            this.tableData = this.tableData.map(function(tableDataItem) {
+            this.tableData = this.tableData.map((tableDataItem) => {
                 if (tableDataItem[params.headerKey] === params.oldValue) {
                     tableDataItem[params.headerKey] = params.newValue;
                 }
 
                 return tableDataItem;
-            }.bind(this));
+            });
 
             this.trigger('update', this.tableData);
         }

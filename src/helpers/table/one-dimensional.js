@@ -50,14 +50,14 @@ var oneDimensionalTablePrototype = {
     },
 
     deleteRow: function(rowName) {
-        this.tableData = this.tableData.filter(function(tableDataItem) {
+        this.tableData = this.tableData.filter((tableDataItem) => {
             if (tableDataItem[this.rowKey] === rowName) {
                 return false;
             }
             else {
                 return true;
             }
-        }.bind(this));
+        });
 
         this.trigger('update', this.tableData);
         this.render();
@@ -86,7 +86,7 @@ var oneDimensionalTablePrototype = {
 
         this.hasRegisteredKeyUp = true;
 
-        this.$elem.on('keyup', _.debounce(function(e) {
+        this.$elem.on('keyup', _.debounce((e) => {
             var $srcElement = $(e.originalEvent.srcElement);
 
             var cellType = $srcElement.data('cellType');
@@ -112,7 +112,7 @@ var oneDimensionalTablePrototype = {
                     column: $srcElement.data('coord').split('$')[1].toString()
                 });
             }
-        }.bind(this), 400));
+        }, 400));
     },
 
     updateCell: function(params) {
@@ -125,13 +125,13 @@ var oneDimensionalTablePrototype = {
             this.render();
         }
         else {
-            this.tableData = this.tableData.map(function(tableDataItem) {
+            this.tableData = this.tableData.map((tableDataItem) => {
                 if (tableDataItem[this.rowKey] === params.row) {
                     tableDataItem[this.valueKey] = params.newValue;
                 }
 
                 return tableDataItem;
-            }.bind(this));
+            });
 
             this.trigger('update', this.tableData);
         }
