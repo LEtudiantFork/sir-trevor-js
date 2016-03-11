@@ -17,46 +17,46 @@ const BLOCK_ADDITION_TEMPLATE = require("./templates/top-block-addition");
 
 module.exports.create = function(SirTrevor) {
 
-  function createBlock(e) {
-    // REFACTOR: mediator so that we can trigger events directly on instance?
-    // REFACTOR: block create event expects data as second argument.
-    /*jshint validthis:true */
-    SirTrevor.mediator.trigger(
-      "block:create", 'Text', null, this.parentNode.id ? this.parentNode : this
-    );
-  }
-
-  function hide() {}
-
-  // Public
-  function destroy() {
-    SirTrevor = null;
-  }
-
-  SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE());
-
-  const topControls = SirTrevor.wrapper.querySelector('.st-top-controls');
-
-  function onDrop(ev) {
-    ev.preventDefault();
-
-    var dropped_on = topControls,
-      item_id = ev.dataTransfer.getData("text/plain"),
-      block = document.querySelector('#' + item_id);
-
-    if (!!item_id, !!block, dropped_on.id !== item_id) {
-      Dom.insertAfter(block, dropped_on);
+    function createBlock(e) {
+        // REFACTOR: mediator so that we can trigger events directly on instance?
+        // REFACTOR: block create event expects data as second argument.
+        /*jshint validthis:true */
+        SirTrevor.mediator.trigger(
+            "block:create", 'Text', null, this.parentNode.id ? this.parentNode : this
+        );
     }
-    SirTrevor.mediator.trigger("block:rerender", item_id);
-    EventBus.trigger("block:reorder:dropped", item_id);
-  }
 
-  dropEvents.dropArea(topControls);
-  topControls.addEventListener('drop', onDrop);
+    function hide() {}
 
-  Events.delegate(
-    SirTrevor.wrapper, ".st-block-addition", "click", createBlock
-  );
+    // Public
+    function destroy() {
+        SirTrevor = null;
+    }
 
-  return {destroy, hide};
+    SirTrevor.wrapper.insertAdjacentHTML("beforeend", BLOCK_ADDITION_TEMPLATE());
+
+    const topControls = SirTrevor.wrapper.querySelector('.st-top-controls');
+
+    function onDrop(ev) {
+        ev.preventDefault();
+
+        var dropped_on = topControls,
+            item_id = ev.dataTransfer.getData("text/plain"),
+            block = document.querySelector('#' + item_id);
+
+        if (!!item_id, !!block, dropped_on.id !== item_id) {
+            Dom.insertAfter(block, dropped_on);
+        }
+        SirTrevor.mediator.trigger("block:rerender", item_id);
+        EventBus.trigger("block:reorder:dropped", item_id);
+    }
+
+    dropEvents.dropArea(topControls);
+    topControls.addEventListener('drop', onDrop);
+
+    Events.delegate(
+        SirTrevor.wrapper, ".st-block-addition", "click", createBlock
+    );
+
+    return {destroy, hide};
 };

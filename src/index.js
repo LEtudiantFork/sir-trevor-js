@@ -10,64 +10,64 @@ var utils = require('./utils');
 
 var SirTrevor = {
 
-  config: require('./config'),
+    config: require('./config'),
 
-  log: utils.log,
+    log: utils.log,
 
-  Locales: require('./locales'),
+    Locales: require('./locales'),
 
-  Events: require('./events'),
-  EventBus: require('./event-bus'),
+    Events: require('./events'),
+    EventBus: require('./event-bus'),
 
-  EditorStore: require('./extensions/editor-store'),
-  Submittable: require('./extensions/submittable'),
-  FileUploader: require('./extensions/file-uploader'),
+    EditorStore: require('./extensions/editor-store'),
+    Submittable: require('./extensions/submittable'),
+    FileUploader: require('./extensions/file-uploader'),
 
-  BlockMixins: require('./block_mixins'),
-  BlockPositioner: require('./block-positioner'),
-  BlockReorder: require('./block-reorder'),
-  BlockDeletion: require('./block-deletion'),
-  BlockValidations: require('./block-validations'),
-  BlockStore: require('./block-store'),
-  BlockManager: require('./block-manager'),
+    BlockMixins: require('./block_mixins'),
+    BlockPositioner: require('./block-positioner'),
+    BlockReorder: require('./block-reorder'),
+    BlockDeletion: require('./block-deletion'),
+    BlockValidations: require('./block-validations'),
+    BlockStore: require('./block-store'),
+    BlockManager: require('./block-manager'),
 
-  SimpleBlock: require('./simple-block'),
-  Block: require('./block'),
+    SimpleBlock: require('./simple-block'),
+    Block: require('./block'),
 
-  Blocks: require('./blocks'),
+    Blocks: require('./blocks'),
 
-  FormatBar: require('./format-bar'),
-  Editor: require('./editor'),
+    FormatBar: require('./format-bar'),
+    Editor: require('./editor'),
 
-  toMarkdown: require('./to-markdown'),
-  toHTML: require('./to-html'),
+    toMarkdown: require('./to-markdown'),
+    toHTML: require('./to-html'),
 
-  setDefaults: function(options) {
-    Object.assign(SirTrevor.config.defaults, options || {});
-  },
+    setDefaults: function(options) {
+        Object.assign(SirTrevor.config.defaults, options || {});
+    },
 
-  getInstance: utils.getInstance,
+    getInstance: utils.getInstance,
 
-  setBlockOptions: function(type, options) {
-    var block = SirTrevor.Blocks[type];
+    setBlockOptions: function(type, options) {
+        var block = SirTrevor.Blocks[type];
 
-    if (typeof block === "undefined") {
-      return;
-    }
+        if (typeof block === "undefined") {
+            return;
+        }
 
-    Object.assign(block.prototype, options || {});
-  },
+        Object.assign(block.prototype, options || {});
+    },
 
-  runOnAllInstances: function(method) {
-    if (SirTrevor.Editor.prototype.hasOwnProperty(method)) {
-      var methodArgs = Array.prototype.slice.call(arguments, 1);
-      Array.prototype.forEach.call(SirTrevor.config.instances, function(i) {
-        i[method].apply(null, methodArgs);
-      });
-    } else {
-      SirTrevor.log("method doesn't exist");
-    }
-  },
+    runOnAllInstances: function(method) {
+        if (SirTrevor.Editor.prototype.hasOwnProperty(method)) {
+            var methodArgs = Array.prototype.slice.call(arguments, 1);
+            Array.prototype.forEach.call(SirTrevor.config.instances, function(i) {
+                i[method].apply(null, methodArgs);
+            });
+        } else {
+            SirTrevor.log("method doesn't exist");
+        }
+    },
 
 };
 
