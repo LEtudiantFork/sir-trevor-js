@@ -7,9 +7,9 @@
     "url": "git@github.com:madebymany/sir-trevor-js.git"
   },
   "scripts": {
-    "test": "grunt test",
-    "dist": "grunt",
-    "dev": "grunt dev watch"
+    "clean-html-janitor": "./node_modules/.bin/replace \"typeof define === 'function' && define.amd\" \"false\" ./node_modules/html-janitor/src/html-janitor.js",
+    "build-scribe": "npm run clean-html-janitor && ./node_modules/.bin/browserify -g deamdify ./src/scribe.js --standalone scribe | ./node_modules/.bin/derequire > ./src/scribe.build.js",
+    "postinstall": "npm run build-scribe"
   },
   "dependencies": {
     "es5-shim": "^4.0.3",

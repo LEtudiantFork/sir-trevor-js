@@ -1,12 +1,9 @@
 "use strict";
 
 var _ = require('./lodash');
-var Scribe = require('scribe-editor');
 var config = require('./config');
 
-var scribePluginFormatterPlainTextConvertNewLinesToHTML = require('scribe-plugin-formatter-plain-text-convert-new-lines-to-html');
-var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command');
-var scribePluginSanitizer = require('scribe-plugin-sanitizer');
+var scribeBuild = require('./scribe.build.js');
 
 var sanitizeDefaults = {
   p: true,
@@ -34,15 +31,15 @@ module.exports = {
       scribeConfig = Object.assign(scribeConfig, scribeOptions);
     }
 
-    var scribe = new Scribe(el, scribeConfig);
+    var scribe = new scribeBuild.Scribe(el, scribeConfig);
 
     if (scribeOptions.hasOwnProperty("tags")) {
       tags = Object.assign(sanitizeDefaults, scribeOptions.tags);
     }
 
-    scribe.use(scribePluginFormatterPlainTextConvertNewLinesToHTML());
-    scribe.use(scribePluginLinkPromptCommand());
-    scribe.use(scribePluginSanitizer({tags: tags}));
+    scribe.use(scribeBuild.scribePluginFormatterPlainTextConvertNewLinesToHTML());
+    scribe.use(scribeBuild.scribePluginLinkPromptCommand());
+    scribe.use(scribeBuild.scribePluginSanitizer({tags: tags}));
 
     if (_.isFunction(configureScribe)) {
       configureScribe.call(this, scribe);
