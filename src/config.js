@@ -56,7 +56,7 @@ module.exports = {
     required: [],
     uploadUrl: '/attachments',
     baseImageUrl: '/sir-trevor-uploads/',
-    iconUrl: '../src/icons/sir-trevor-icons.svg',
+    iconUrl: 'inc/sir-trevor-icons.svg',
     errorsContainer: undefined,
     convertFromMarkdown: true,
     formatBar: {
