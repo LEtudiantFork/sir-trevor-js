@@ -38,7 +38,7 @@ module.exports = Block.extend({
       'with-square-media' : 'with-sixteen-by-nine-media';
 
     this.editor.classList.add('st-block__editor--' + aspectRatioClass);
-    this.editor.innerHTML = _.template(source.html, {
+    this.editor.innerHTML = _.template(source.html)({
                                 protocol: protocol,
                                 remote_id: data.remote_id,
                                 width: this.editor.style.width // for videos like vine

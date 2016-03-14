@@ -15,10 +15,10 @@ module.exports = {
     this.paste_options = Object.assign(
       {}, config.defaults.Block.paste_options, this.paste_options);
 
-    this.inputs.insertAdjacentHTML("beforeend", _.template(this.paste_options.html, this));
+    this.inputs.insertAdjacentHTML("beforeend", _.template(this.paste_options.html)(this));
 
     Array.prototype.forEach.call(this.$('.st-paste-block'), (el) => {
-      el.addEventListener('click', function() { 
+      el.addEventListener('click', function() {
         var event = document.createEvent('HTMLEvents');
         event.initEvent('select', true, false);
         this.dispatchEvent(event);
