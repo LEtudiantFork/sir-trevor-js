@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 var scribeHeadingPlugin = function(block) {
   return function(scribe) {
-    
+
     const headingCommand = new scribe.api.Command('heading');
     headingCommand.queryEnabled = () => {
       return block.inline_editable;

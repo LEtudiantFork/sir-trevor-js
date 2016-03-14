@@ -24,8 +24,8 @@ var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command')
 var scribePluginSanitizer = require('scribe-plugin-sanitizer');
 
 module.exports = {
-        Scribe: Scribe,
-        scribePluginFormatterPlainTextConvertNewLinesToHTML: scribePluginFormatterPlainTextConvertNewLinesToHTML,
-        scribePluginLinkPromptCommand: scribePluginLinkPromptCommand,
-        scribePluginSanitizer: scribePluginSanitizer
-}
+    Scribe: Scribe,
+    scribePluginFormatterPlainTextConvertNewLinesToHTML: scribePluginFormatterPlainTextConvertNewLinesToHTML,
+    scribePluginLinkPromptCommand: scribePluginLinkPromptCommand,
+    scribePluginSanitizer: scribePluginSanitizer
+};

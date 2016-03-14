@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var Block = require('../block');
 var stToHTML = require('../to-html');

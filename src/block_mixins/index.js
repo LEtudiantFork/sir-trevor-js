@@ -1,8 +1,9 @@
-"use strict";
+'use strict';
 
 module.exports = {
   Ajaxable: require('./ajaxable.js'),
   Controllable: require('./controllable.js'),
+  Choosable: require('./chooseable.js'),
   Droppable: require('./droppable.js'),
   Fetchable: require('./fetchable.js'),
   Pastable: require('./pastable.js'),

@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 
 var scribeQuotePlugin = function(block) {
   return function(scribe) {
-    
+
     const quoteCommand = new scribe.api.Command('quote');
     quoteCommand.queryEnabled = () => {
       return block.inline_editable;

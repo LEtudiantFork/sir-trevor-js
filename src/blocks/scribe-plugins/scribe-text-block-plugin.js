@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var selectionRange = require('selection-range');
 
@@ -22,7 +22,7 @@ var ScribeTextBlockPlugin = function(block) {
       } else {
         div.appendChild(range.cloneContents());
       }
-      
+
       stripFirstEmptyElement(div);
 
       // Sometimes you'll get an empty tag at the start of the block.

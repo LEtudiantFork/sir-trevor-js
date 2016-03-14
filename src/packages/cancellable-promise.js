@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var cancellablePromise = function(promise) {
   var resolve, reject;

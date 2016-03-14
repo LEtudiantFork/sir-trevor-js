@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var selectionRange = require('selection-range');
 
@@ -64,7 +64,7 @@ module.exports = {
 
     if (options.keepCaretPosition && caretPosition.start !== 0 && caretPosition.end !== 0) {
       selectionRange(this._scribe.el, {
-        start: caretPosition.start, 
+        start: caretPosition.start,
         end: caretPosition.end
       });
     }

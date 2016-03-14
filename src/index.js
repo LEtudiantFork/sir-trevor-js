@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // ES6/ES7 shims
 require('core-js/library/fn/array/includes');
@@ -50,7 +50,7 @@ var SirTrevor = {
     setBlockOptions: function(type, options) {
         var block = SirTrevor.Blocks[type];
 
-        if (typeof block === "undefined") {
+        if (typeof block === 'undefined') {
             return;
         }
 
@@ -64,7 +64,7 @@ var SirTrevor = {
                 i[method].apply(null, methodArgs);
             });
         } else {
-            SirTrevor.log("method doesn't exist");
+            SirTrevor.log('method doesn\'t exist');
         }
     },
 

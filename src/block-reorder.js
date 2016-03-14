@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var dropEvents = require('./helpers/drop-events');
 

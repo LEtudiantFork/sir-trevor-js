@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 require('whatwg-fetch');
 var fetchJsonP = require('jsonp-promise');

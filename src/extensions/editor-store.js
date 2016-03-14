@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /*
  * Sir Trevor Editor Store

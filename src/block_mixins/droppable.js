@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /* Adds drop functionaltiy to this block */
 

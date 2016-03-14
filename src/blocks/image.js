@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var Dom = require('../packages/dom');
 var Block = require('../block');

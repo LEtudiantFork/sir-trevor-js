@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 exports.isEmpty = require('lodash.isempty');
 exports.isFunction = require('lodash.isfunction');

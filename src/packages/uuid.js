@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 // jshint ignore: start
 module.exports = function uuid(a,b){

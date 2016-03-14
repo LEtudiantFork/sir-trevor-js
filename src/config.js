@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var drop_options = {
     html: ['<div class="st-block__dropzone">',

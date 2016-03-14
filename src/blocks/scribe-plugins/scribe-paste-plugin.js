@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /*
 When content is pasted into a block take the sanitized html and create a block for each
@@ -8,7 +8,7 @@ paragraph that has been added.
 var scribePastePlugin = function(block) {
   return function(scribe) {
     var insertHTMLCommandPatch = new scribe.api.CommandPatch('insertHTML');
-    
+
     insertHTMLCommandPatch.execute = function (value) {
       scribe.transactionManager.run(() => {
         scribe.api.CommandPatch.prototype.execute.call(this, value);

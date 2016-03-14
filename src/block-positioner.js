@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var template = [
     "<div class='st-block-positioner__inner'>",

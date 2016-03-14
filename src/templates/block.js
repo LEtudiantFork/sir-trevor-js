@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 const BLOCK_ADDITION_TOP_TEMPLATE = require("./block-addition-top");
 const BLOCK_ADDITION_TEMPLATE = require("./block-addition");
