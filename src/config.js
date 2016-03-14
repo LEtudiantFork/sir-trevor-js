@@ -26,8 +26,8 @@ module.exports = {
     debug: true,
     scribeDebug: true,
     skipValidation: false,
-    version: "0.6.0",
-    language: "fr",
+    version: '0.6.0',
+    language: 'fr',
 
     instances: [],
 
@@ -62,34 +62,34 @@ module.exports = {
         formatBar: {
             commands: [
                 {
-                    name: "Bold",
-                    title: "bold",
-                    iconName: "fmt-bold",
-                    cmd: "bold",
+                    name: 'Bold',
+                    title: 'bold',
+                    iconName: 'fmt-bold',
+                    cmd: 'bold',
                     keyCode: 66,
-                    text : "B"
+                    text : 'B'
                 },
                 {
-                    name: "Italic",
-                    title: "italic",
-                    iconName: "fmt-italic",
-                    cmd: "italic",
+                    name: 'Italic',
+                    title: 'italic',
+                    iconName: 'fmt-italic',
+                    cmd: 'italic',
                     keyCode: 73,
-                    text : "i"
+                    text : 'i'
                 },
                 {
-                    name: "Link",
-                    title: "link",
-                    iconName: "fmt-link",
-                    cmd: "linkPrompt",
-                    text : "link",
+                    name: 'Link',
+                    title: 'link',
+                    iconName: 'fmt-link',
+                    cmd: 'linkPrompt',
+                    text : 'link',
                 },
                 {
-                    name: "Unlink",
-                    title: "unlink",
-                    iconName: "fmt-unlink",
-                    cmd: "unlink",
-                    text : "link",
+                    name: 'Unlink',
+                    title: 'unlink',
+                    iconName: 'fmt-unlink',
+                    cmd: 'unlink',
+                    text : 'link',
                 }
             ],
         },
