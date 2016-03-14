@@ -99,6 +99,7 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
 
     highlightSelectedButtons: function() {
         var block = utils.getBlockBySelection();
+
         [].forEach.call(this.el.querySelectorAll(".st-format-btn"), function(btn) {
             var cmd = btn.getAttribute('data-cmd');
             btn.classList.toggle("st-format-btn--is-active",
@@ -112,12 +113,13 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
         ev.stopPropagation();
 
         var block = utils.getBlockBySelection();
+
         if (_.isUndefined(block)) {
             throw "Associated block not found";
         }
 
-        var btn = ev.currentTarget,
-                cmd = btn.getAttribute('data-cmd');
+        var btn = ev.currentTarget;
+        var cmd = btn.getAttribute('data-cmd');
 
         if (_.isUndefined(cmd)) {
             return false;

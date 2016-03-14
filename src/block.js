@@ -49,6 +49,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   editorHTML: "<div class=\"st-block__editor\"></div>",
 
+  formatBarEnabled: true,
   toolbarEnabled: true,
 
   availableMixins: ['droppable', 'pastable', 'uploadable', 'fetchable',
@@ -298,13 +299,11 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     var positioner = new BlockPositioner(this.el, this.mediator);
 
-    this._withUIComponent(positioner, '.st-block-ui-btn__reorder',
-                          positioner.toggle);
+    this._withUIComponent(positioner, '.st-block-ui-btn__reorder', positioner.toggle);
 
     this._withUIComponent(new BlockReorder(this.el, this.mediator));
 
-    this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn__delete',
-                          this.onDeleteClick);
+    this._withUIComponent(new BlockDeletion(), '.st-block-ui-btn__delete', this.onDeleteClick);
 
     this.onFocus();
     this.onBlur();
@@ -346,8 +345,12 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   _initTextBlocks: function() {
     Array.prototype.forEach.call(this.getTextBlock(), (el) => {
-      el.addEventListener('keyup', this.getSelectionForFormatter);
-      el.addEventListener('mouseup', this.getSelectionForFormatter);
+
+      if (this.formatBarEnabled) {
+        el.addEventListener('keyup', this.getSelectionForFormatter);
+        el.addEventListener('mouseup', this.getSelectionForFormatter);
+      }
+
       el.addEventListener('DOMNodeInserted', this.clearInsertedStyles);
     });
 
