@@ -90,20 +90,6 @@ module.exports = {
                     iconName: "fmt-unlink",
                     cmd: "unlink",
                     text : "link",
-                },
-                {
-                    name: "Heading",
-                    title: "heading",
-                    iconName: "fmt-heading",
-                    cmd: "heading",
-                    text: "heading"
-                },
-                {
-                    name: "Quote",
-                    title: "quote",
-                    iconName: "fmt-quote",
-                    cmd: "quote",
-                    text: "quote"
                 }
             ],
         },
