@@ -1,10 +1,9 @@
 "use strict";
 
-// ES6 shims
-require('object.assign').shim();
-require('array.prototype.find');
-require('./vendor/array-includes'); // shims ES7 Array.prototype.includes
-require('es6-promise').polyfill();
+// ES6/ES7 shims
+require('core-js/library/fn/array/includes');
+require('core-js/library/fn/array/find');
+require('core-js/library/es6/promise');
 
 var utils = require('./utils');
 
