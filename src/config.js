@@ -26,8 +26,8 @@ module.exports = {
     debug: true,
     scribeDebug: true,
     skipValidation: false,
-    version: "0.4.0",
-    language: "en",
+    version: "0.6.0",
+    language: "fr",
 
     instances: [],
 
