@@ -17,7 +17,7 @@ var tweet_template = _.template([
 module.exports = Block.extend({
 
   type: "tweet",
-  icon_name: "tweet",
+  icon_name: "Tweet",
   droppable: true,
   pastable: true,
   fetchable: true,

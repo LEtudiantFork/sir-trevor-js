@@ -40,7 +40,6 @@ module.exports = {
     validations: [],
 
     validateField: function(field) {
-        
         var content = field.getAttribute('contenteditable') ? field.textContent : field.value;
 
         if (content.length === 0) {

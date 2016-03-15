@@ -1,113 +1,117 @@
 .st-block__control-ui {
-  position: absolute;
-  bottom: 0; left: 0;
-  opacity: 0;
-}
+    display: flex;
 
-.st-block__inner:hover .st-block__ui,
-.st-block__inner:hover .st-block__control-ui {
-  opacity: 1;
+    background-color: lighten($light-ui-color, 10%);
 }
 
 .st-block-ui__confirm {
-  color: $error-color;
-  border:1px solid $error-color;
-  background:none;
-  padding: 0.15em .4em;
-  margin: 0 0.1em;
-  font-size:.9em;
-  cursor:pointer;
+    margin: 0 0.1em;
+    border: 1px solid $error-color;
+    padding: 0.15em 0.4em;
+
+    color: $error-color;
+    font-size: 0.9em;
+
+    background: none;
+
+    cursor: pointer;
 }
 
 %st-block-ui-btn {
-  @extend .st-icon;
-  display: block;
-  cursor: pointer;
-  width: 1em;
-  height: 1em;
-  position: absolute;
-  top: 1em;
-  color:$block-controls-color;
+    @extend .st-icon;
+
+    display: block;
+    width: 1em;
+    height: 1em;
+
+    color: $block-controls-color;
+
+    cursor: pointer;
 }
 
 .st-block-ui-btn__reorder {
-  @extend %st-block-ui-btn;
-  right: 2em;
-  transform: scaleX(-1);
-  top: 0.5em;
-  opacity: 0.2;
-  transition: opacity 0.3s ease-in-out;
-  &:hover,
-  &:focus {
-    color:$accent-color;
-    opacity: 1;
-  }
+    @extend %st-block-ui-btn;
+
+    position: absolute;
+    top: 0.5em;
+    right: 2em;
+
+    transform: scaleX(-1);
+
+    &:hover,
+    &:focus {
+        color: $accent-color;
+    }
 }
 
 .st-block-ui-btn__delete {
-  @extend %st-block-ui-btn;
-  right: 1em;
-  top: 1.5em;
-  font-size:1.5em;
-  opacity: 0.5;
-  &:hover,
-  &:focus {
-    color:$error-color;
-    opacity: 1;
-  }
+    @extend %st-block-ui-btn;
 
-  .st-block--textable &,
-  .st-block[data-type="list"] &,
-  .st-block {
-    display: none;
-  }
-  .st-block[data-type="quote"] & {
-    display: block;
-  }
+    position: absolute;
+    top: 3em;
+    right: 2em;
+
+    &:hover,
+    &:focus {
+        color: $error-color;
+    }
+
+    .st-block--textable &,
+    .st-block[data-type='list'] &,
+    .st-block {
+        display: none;
+    }
+    .st-block[data-type='quote'] & {
+        display: block;
+    }
 }
 
 .st-block-control-ui-btn {
-  @extend %st-block-ui-btn;
-  width: 2em;
-  font-size: 1.5em;
-  line-height: 1.25em;
-  height: 1.25em;
-  border: $default-border;
-  border-left: 0;
-  border-bottom: 0;
+    @extend %st-block-ui-btn;
+
+    width: 2em;
+    height: 1.25em;
+
+    font-size: 1.5em;
+    line-height: 1.25em;
 }
 
 .st-block--with-errors .st-block-control-ui-btn,
 .st-block--delete-active .st-block-control-ui-btn {
-  color: $error-color;
-  border-color: $error-color;
+    border-color: $error-color;
 
-  &:hover,
-  &.active {
-    color: #fff;
-    background-color: $error-color;
-  }
+    color: $error-color;
+
+    &:hover,
+    &.active {
+        color: #fff;
+
+        background-color: $error-color;
+    }
 }
 
 .st-block__ui-delete-controls {
-  @include ui-popup;
-  right: 4em;
-  top: 1.85em;
-  padding: 0.3em .5em;
-  border-color:$error-color;
+    @include ui-popup;
 
-  &:before {
-    left:auto;
-    right:-0.3em;
-    border-color:$error-color;
-  }
+    border-color: $error-color;
+    padding: 0.3em 0.5em;
+
+    top: 1.85em;
+    right: 4em;
+
+    &:before {
+        border-color: $error-color;
+
+        right: -0.3em;
+        left: auto;
+    }
 }
 
 .st-block--with-errors {
-  opacity: 1;
-  z-index: 2;
+    z-index: 2;
+    opacity: 1;
 }
 
 .st-block__delete-label {
-  color: $error-color;
+    color: $error-color;
 }

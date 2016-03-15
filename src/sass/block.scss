@@ -1,295 +1,331 @@
 .st-blocks {
-  overflow: hidden;
-  position:relative;
+    overflow: hidden;
+
+    position: relative;
 }
 
 .st-block {
-  position: relative;
+    position: relative;
 }
 
 .st-block__inner {
-  position: relative;
-  margin: 0 110px;
-  margin-top: 1em;
-  margin-bottom: 1em;
+    margin: 0 110px;
+    margin-top: 1em;
+    margin-bottom: 1em;
 
-  .st-block--textable & {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
+    position: relative;
+
+    .st-block--textable & {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
 }
 
 .st-block__inner--droppable {
-  border: 1px solid $blocks-control-border-color;
-  background: $blocks-control-bg-color;
-  cursor: pointer;
-  margin-top: 2em;
-  margin-bottom: 2em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    border: 1px solid $blocks-control-border-color;
 
-  &:focus {
-    border-color: $accent-color;
-    outline: none;
-  }
+    background: $blocks-control-bg-color;
+
+    cursor: pointer;
+
+    &:focus {
+        outline: none;
+        border-color: $accent-color;
+    }
 }
 
 .st-block__inner {
-  .st-block[data-type="quote"] & {
-    margin-left: 155px;
-    margin-right: 155px;
-    margin-top: 2em;
-    margin-bottom: 2em;
-  }
+    .st-block[data-type='quote'] & {
+        margin-top: 2em;
+        margin-right: 155px;
+        margin-bottom: 2em;
+        margin-left: 155px;
+    }
 }
 
 .st-block--with-errors .st-block__inner,
-.st-block--delete-active .st-block__inner  {
-  border-color: $error-color;
+.st-block--delete-active .st-block__inner {
+    border-color: $error-color;
 }
 
 .st-block--with-plus:after,
 .st-icon--add:after {
-  display: block;
-  position: relative; z-index: 1;
-  bottom: 0;
+    z-index: 1;
+
+    display: block;
+
+    position: relative;
+    bottom: 0;
 }
 
 .st--block-limit-reached .st-block-addition {
-  display: none;
+    display: none;
 }
 
 .st-icon--add:after {
-  text-align: center;
-  font-size: 1.875em;
-  padding: 0.3em 0;
-  line-height: 0.9;
-  border-radius: 0.2em;
+    border-radius: 0.2em;
+    padding: 0.3em 0;
+
+    font-size: 1.875em;
+    line-height: 0.9;
+    text-align: center;
 }
 
 .st-block--with-plus:after {
-  background: $blocks-control-bg-color;
-  color: $accent-color;
-  cursor: pointer;
+    color: $accent-color;
+
+    background: $blocks-control-bg-color;
+
+    cursor: pointer;
 }
 
 .with-st-controls:after,
 .with-st-controls:before {
-  display:none
+    display: none;
 }
 
 .st-block.st-drag-over:after,
 .st-block.st-drag-over:last-child:after,
 .st-top-controls.st-drag-over:before {
-  content: "";
-  background: transparent;
-  display:block;
-  width:100%;
-  height:3px;
-  position:absolute;
-  bottom:0;
-  left:0;
-  background:$accent-color;
+    display: block;
+    width: 100%;
+    height: 3px;
+    content: '';
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+
+    background: transparent;
+    background: $accent-color;
 }
 
 .st-drag-element {
-  background:#fff;
-  box-shadow: 3px 3px $accent-color inset, -3px -3px $accent-color inset ;
-  position:absolute;
-  width:100%;
-  z-index:-1;
+    z-index: -1;
 
-  .st-block-addition {
-    display:none;
-  }
+    width: 100%;
+
+    position: absolute;
+
+    background: #fff;
+    box-shadow: 3px 3px $accent-color inset, -3px -3px $accent-color inset ;
+
+    .st-block-addition {
+        display: none;
+    }
 }
 
 .st-block--dragging {
-  background:#f6f7f9;
-  & > * {
-    opacity:0;
-  }
-  & .st-block-addition {
-    opacity:1;
-  }
+    background: #f6f7f9;
+    & > * {
+        opacity: 0;
+    }
+    & .st-block-addition {
+        opacity: 1;
+    }
 }
 
 .st-drag-over {
-  & .st-block-addition {
-    opacity:0;
-  }
+    & .st-block-addition {
+        opacity: 0;
+    }
 }
 
 .st-text-block {
-  @include st-input;
-  @include st-input-active;
-  font-size: $text-block-font-size;
-  line-height: 1.45;
-  overflow:visible;
+    @include st-input;
+    @include st-input-active;
 
-  .st-block--empty & {
-    line-height: 55px;
-  }
+    overflow: visible;
+
+    font-size: $text-block-font-size;
+    line-height: 1.45;
 }
 
 .st-text-block p {
-  // display: inline;
-  // margin: 0;
-  vertical-align: 14%;
+    // display: inline;
+    // margin: 0;
+    vertical-align: 14%;
 }
 
 .st-text-block--heading {
-  line-height: 1.45;
-  font-size: 1.5em;
-  min-height: 1em;
-  font-weight: 700;
-  margin: 0.58em 0;
-  overflow: visible;
+    overflow: visible;
+
+    margin: 0.58em 0;
+    min-height: 1em;
+
+    font-size: 1.5em;
+    font-weight: 700;
+    line-height: 1.45;
 }
 
 .st-text-block--heading p {
-  margin:.5em 0;
+    margin: 0.5em 0;
 }
 
 .st-text-block--quote {
-  font-size: 1.875em;
-  line-height: 1.3;
-  margin-bottom: 1.8em;
+    margin-bottom: 1.8em;
+
+    font-size: 1.875em;
+    line-height: 1.3;
 }
 
 ul.st-text-block {
-  margin-left: 1.875em;
+    margin-left: 1.875em;
 }
 
 .st-list-block__list {
-  font-size: $text-block-font-size;
-  margin: 0;
-  padding-left: 1em;
+    margin: 0;
+    padding-left: 1em;
+
+    font-size: $text-block-font-size;
 }
 
 .st-list-block__editor {
-  width: 100%;
-  line-height: 1.8em;
+    width: 100%;
+
+    line-height: 1.8em;
 }
 
 .st-block__inputs {
-  padding: 1.6em 0 1em;
-  border-radius: 0.2em;
-  border-top: $border-size $border-style transparent;
+    border-top: $border-size $border-style transparent;
+    border-radius: 0.2em;
+    padding: 1.6em 0 1em;
 }
 
 .st-block__dropzone .st-icon {
-  font-size: 4em;
-  color: $base-ui-color;
-  display: block;
-  text-align: center;
-  margin: 0 auto 0.2em;
+    display: block;
+    margin: 0 auto 0.2em;
+
+    color: $base-ui-color;
+    font-size: 4em;
+    text-align: center;
 }
 
 .st-block__dropzone p {
-  text-align: center;
-  color: $base-ui-color;
-  font-size: 1.2em;
-  margin: 0;
+    margin: 0;
+
+    color: $base-ui-color;
+    font-size: 1.2em;
+    text-align: center;
 }
 
 .st-block__dropzone p span {
-  font-weight: 700;
+    font-weight: 700;
 }
 
 .st-drag-over .st-block__inputs {
-  border-top-color: darken($blocks-control-bg-color, 15%);
+    border-top-color: darken($blocks-control-bg-color, 15%);
 }
 
-.st-block .st-block__paste-input[type="text"] {
-  text-align: center;
-  width: 80%;
-  display: block;
-  margin: 0.4em auto 0;
+.st-block .st-block__paste-input[type='text'] {
+    display: block;
+    margin: 0.4em auto 0;
+    width: 80%;
+
+    text-align: center;
 }
 
 .st-upload-btn {
-  border: 0;
-  background: $base-ui-color;
-  border-radius: 0.2em;
-  padding: 0.35em 1em;
-  font-size: 1.125em;
-  cursor: pointer;
-  color: #fff;
-  position: relative;
-  z-index: 10;
+    z-index: 10;
+
+    border: 0;
+    border-radius: 0.2em;
+    padding: 0.35em 1em;
+
+    position: relative;
+
+    color: #fff;
+    font-size: 1.125em;
+
+    background: $base-ui-color;
+
+    cursor: pointer;
 }
 
 .st-block__upload-container:hover .st-upload-btn {
-  background:$accent-color;
-  color: #fff;
+    color: #fff;
+
+    background: $accent-color;
 }
 
 .st-block__editor--with-square-media {
-  padding-top: 100%; /* 16:9 */
-  height: 0;
-  position: relative;
-  width: 100%;
+    padding-top: 100%; /* 16:9 */
+    width: 100%;
+    height: 0;
+
+    position: relative;
 }
 
 .st-block__editor--with-sixteen-by-nine-media {
-  padding-top: 56.25%; /* 16:9 */
-  height: 0;
-  position: relative;
-  width: 100%;
+    padding-top: 56.25%; /* 16:9 */
+    width: 100%;
+    height: 0;
+
+    position: relative;
 }
 
 .st-block__editor--with-square-media video,
 .st-block__editor--with-square-media iframe,
 .st-block__editor--with-sixteen-by-nine-media video,
 .st-block__editor--with-sixteen-by-nine-media iframe {
-  height: 100%;
-  width: 100%;
-  left: 0; top: 0;
-  position: absolute;
+    width: 100%;
+    height: 100%;
+
+    position: absolute;top: 0;
+    left: 0;
 }
 
 .st-block__editor img {
-  width: 100%;
-  height: auto;
+    width: 100%;
+    height: auto;
 }
 
 .st-block__upload-container {
-  margin: 0.4em 0 0 0;
-  text-align: center;
+    margin: 0.4em 0 0 0;
+
+    text-align: center;
 }
 
-.st-block__upload-container input[type="file"] {
-  position: absolute;
-  z-index: 50;
-  opacity: 0;
-  cursor: pointer;
-  left: 0;
-  width: 100%;
-  padding: 7px 0;
-  text-align: center;
+.st-block__upload-container input[type='file'] {
+    z-index: 50;
+    opacity: 0;
+
+    padding: 7px 0;
+    width: 100%;
+
+    position: absolute;
+    left: 0;
+
+    text-align: center;
+
+    cursor: pointer;
 }
 
 .st-block__messages {
-  display: none;
-  position: relative;
-  padding: .3em .5em;
-  border: $default-border;
-  border-left: none;
-  border-top: none;
-  max-width: 80%;
+    display: none;
+    border: $default-border;
+    border-top: none;
+    border-left: none;
+    padding: 0.3em 0.5em;
+    max-width: 80%;
+
+    position: relative;
 }
 
 .st-block__messages--is-visible {
-  display: block;
+    display: block;
 }
 
 .st-block--with-errors .st-block__messages {
-  border-color: $error-color;
+    border-color: $error-color;
 }
 
 .st-block__messages span {
-  display: block;
+    display: block;
 }
 
 .st-msg--error {
-  color: $error-color;
+    color: $error-color;
 }

@@ -7,6 +7,9 @@ var scribeBuild = require('./scribe.build.js');
 
 var sanitizeDefaults = {
     p: true,
+    h1: true,
+    h2: true,
+    h3: true,
     a: {
         href: true,
         target: '_blank',
@@ -40,6 +43,11 @@ module.exports = {
         scribe.use(scribeBuild.scribePluginFormatterPlainTextConvertNewLinesToHTML());
         scribe.use(scribeBuild.scribePluginLinkPromptCommand());
         scribe.use(scribeBuild.scribePluginSanitizer({tags: tags}));
+
+        // add H1, H2 and H3 support
+        scribe.use(scribeBuild.scribePluginHeadingCommand(1));
+        scribe.use(scribeBuild.scribePluginHeadingCommand(2));
+        scribe.use(scribeBuild.scribePluginHeadingCommand(3));
 
         if (_.isFunction(configureScribe)) {
             configureScribe.call(this, scribe);

@@ -27,7 +27,7 @@ module.exports = {
       'data-icon': cmd,
       'class': 'st-icon st-block-control-ui-btn st-block-control-ui-btn--' + cmd,
       'html': `<svg role="img" class="st-icon">
-                  <use xlink:href="${config.defaults.iconUrl}#${cmd}"/>
+                  <use xlink:href="${config.defaults.iconUrl}#icon-${cmd}"/>
                 </svg>`
     });
   },

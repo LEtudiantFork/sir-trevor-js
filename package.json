@@ -32,6 +32,7 @@
     "replace": "^0.3.0",
     "scribe-editor": "2.1.1",
     "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "^0.1.1",
+    "scribe-plugin-heading-command": "^0.1.0",
     "scribe-plugin-link-prompt-command": "^0.2.0",
     "scribe-plugin-sanitizer": "^0.1.9",
     "selection-range": "^1.0.1",

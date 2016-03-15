@@ -8,8 +8,6 @@ var Block = require('../block');
 var stToHTML = require('../to-html');
 
 var ScribeTextBlockPlugin = require('./scribe-plugins/scribe-text-block-plugin');
-var ScribeHeadingPlugin = require('./scribe-plugins/scribe-heading-plugin');
-var ScribeQuotePlugin = require('./scribe-plugins/scribe-quote-plugin');
 
 module.exports = Block.extend({
 
@@ -17,28 +15,45 @@ module.exports = Block.extend({
 
   title: function(){ return i18n.t('blocks:heading:title'); },
 
-  editorHTML: '<h2 class="st-required st-text-block st-text-block--heading" contenteditable="true"></h2>',
+  editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
 
   configureScribe: function(scribe) {
     scribe.use(new ScribeTextBlockPlugin(this));
-    scribe.use(new ScribeHeadingPlugin(this));
-    scribe.use(new ScribeQuotePlugin(this));
-    
+
     scribe.on('content-changed', this.toggleEmptyClass.bind(this));
   },
 
+  controllable: true,
   textable: false,
   toolbarEnabled: true,
   formatBarEnabled: false,
 
-  scribeOptions: { 
+  controls: {
+    heading1(e) {
+      e.preventDefault();
+      this._scribe.el.focus();
+      this._scribe.commands.h1.execute();
+    },
+    heading2(e) {
+      e.preventDefault();
+      this._scribe.el.focus();
+      this._scribe.commands.h2.execute();
+    },
+    heading3(e) {
+      e.preventDefault();
+      this._scribe.el.focus();
+      this._scribe.commands.h3.execute();
+    }
+  },
+
+  scribeOptions: {
     allowBlockElements: false,
     tags: {
       p: false
     }
   },
 
-  icon_name: 'heading',
+  icon_name: 'Header',
 
   loadData: function(data){
     if (this.options.convertFromMarkdown && data.format !== "html") {

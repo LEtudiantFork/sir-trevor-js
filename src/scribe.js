@@ -22,10 +22,12 @@ var Scribe = require('scribe-editor');
 var scribePluginFormatterPlainTextConvertNewLinesToHTML = require('scribe-plugin-formatter-plain-text-convert-new-lines-to-html');
 var scribePluginLinkPromptCommand = require('scribe-plugin-link-prompt-command');
 var scribePluginSanitizer = require('scribe-plugin-sanitizer');
+var scribePluginHeadingCommand = require('scribe-plugin-heading-command');
 
 module.exports = {
     Scribe: Scribe,
     scribePluginFormatterPlainTextConvertNewLinesToHTML: scribePluginFormatterPlainTextConvertNewLinesToHTML,
     scribePluginLinkPromptCommand: scribePluginLinkPromptCommand,
-    scribePluginSanitizer: scribePluginSanitizer
+    scribePluginSanitizer: scribePluginSanitizer,
+    scribePluginHeadingCommand: scribePluginHeadingCommand
 };

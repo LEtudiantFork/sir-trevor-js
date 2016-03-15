@@ -11,7 +11,7 @@ module.exports = Block.extend({
   droppable: true,
   uploadable: true,
 
-  icon_name: 'image',
+  icon_name: 'Image',
 
   loadData: function(data){
     // Create our image tag

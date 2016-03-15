@@ -27,7 +27,7 @@ Object.assign(BlockReorder.prototype, require('./function-bind'), require('./ren
 
     attributes: function() {
         return {
-            'html': `<svg role="img" class="st-icon"><use xlink:href="${config.defaults.iconUrl}#move"/></svg>`,
+            'html': `<svg role="img" class="st-icon"><use xlink:href="${config.defaults.iconUrl}#icon-Move"/></svg>`,
             'draggable': 'true',
             'data-icon': 'move'
         };

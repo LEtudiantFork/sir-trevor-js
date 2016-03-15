@@ -1,5 +1,8 @@
 'use strict';
 
+// No longer using this - prefer to use ScribeHeadingCommandPlugin because it allows different
+// header tags
+
 var scribeHeadingPlugin = function(block) {
   return function(scribe) {
 
