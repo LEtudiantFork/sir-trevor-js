@@ -47,12 +47,7 @@ module.exports = Block.extend({
     },
     extra: {
       event: 'change',
-      elem() {
-        return Dom.createElement("div", {
-          'class': 'st-block-control-ui-btn st-block-control-ui-btn--extra',
-          'html': `<select><option value="yep">yep</option><option value="nope">nope</option></select>`
-        });
-      },
+      html: '<select><option value="yep">yep</option><option value="nope">nope</option></select>',
       cb() {
         alert('This should be set off by the select');
       }

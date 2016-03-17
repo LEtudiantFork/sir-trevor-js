@@ -97,6 +97,10 @@ var Locales = {
           'title': "Image",
           'upload_error': "Il y a un problème avec votre téléchargement"
         },
+        iframe: {
+            title: 'Iframe',
+            placeholder: 'Coller'
+        },
         video: {
           'title': "Vidéo"
         },
