@@ -5,6 +5,7 @@
 */
 
 var Block = require('../block');
+var Dom = require('../packages/dom');
 var stToHTML = require('../to-html');
 
 var ScribeTextBlockPlugin = require('./scribe-plugins/scribe-text-block-plugin');
@@ -43,6 +44,18 @@ module.exports = Block.extend({
       e.preventDefault();
       this._scribe.el.focus();
       this._scribe.commands.h3.execute();
+    },
+    extra: {
+      event: 'change',
+      elem() {
+        return Dom.createElement("div", {
+          'class': 'st-block-control-ui-btn st-block-control-ui-btn--extra',
+          'html': `<select><option value="yep">yep</option><option value="nope">nope</option></select>`
+        });
+      },
+      cb() {
+        alert('This should be set off by the select');
+      }
     }
   },
 
