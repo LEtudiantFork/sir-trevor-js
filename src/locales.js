@@ -90,6 +90,9 @@ var Locales = {
           'title': "Citation",
           'credit_field': "Auteur"
         },
+        media: {
+          'title': "Média"
+        },
         image: {
           'title': "Image",
           'upload_error': "Il y a un problème avec votre téléchargement"
