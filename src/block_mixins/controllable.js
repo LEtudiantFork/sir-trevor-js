@@ -17,14 +17,14 @@ module.exports = {
 
       if (typeof this.controls[cmd] === 'function') {
         // Bind configured handler to current block context
-        this.control_ui.appendChild(this.getControlTemplate(cmd));
+        this.control_ui.appendChild(this.getControlTemplate(cmd, `st-icon st-block-control-ui-btn st-block-control-ui-btn--${cmd}`));
 
         this.addUiControl(cmd, this.controls[cmd].bind(this));
       }
       else {
-        this.control_ui.appendChild(this.controls[cmd].elem());
+        this.control_ui.appendChild(this.getControlTemplate(cmd, this.controls[cmd].cssClasses, this.controls[cmd].html));
 
-        this.addUiControl(cmd, this.controls[cmd].cb, this.controls[cmd].event)
+        this.addUiControl(cmd, this.controls[cmd].cb.bind(this), this.controls[cmd].event)
       }
 
     });
@@ -32,14 +32,15 @@ module.exports = {
     this.inner.appendChild(this.control_ui);
   },
 
-  getControlTemplate: function(cmd) {
-    return Dom.createElement("a", {
-      'class': 'st-icon st-block-control-ui-btn st-block-control-ui-btn--' + cmd,
-      'html': `<svg role="img" class="st-icon"><use xlink:href="${config.defaults.iconUrl}#icon-${cmd}"/></svg>`
+  getControlTemplate: function(cmd, cssClasses = 'st-block__control-ui__item', html = `<svg role="img" class="st-icon"><use xlink:href="${config.defaults.iconUrl}#icon-${cmd}"/></svg>`) {
+    return Dom.createElement("div", {
+      'data-st-controllable': cmd,
+      'class': cssClasses,
+      'html': html
     });
   },
 
   addUiControl: function(cmd, handler, eventType = 'click') {
-    Events.delegate(this.control_ui, '.st-block-control-ui-btn--' + cmd, eventType, handler);
+    Events.delegate(this.control_ui, `[data-st-controllable="${cmd}"]`, eventType, handler);
   }
 };
