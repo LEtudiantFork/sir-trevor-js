@@ -5,7 +5,11 @@
 }
 
 .st-block {
+    display: flex;
+
     position: relative;
+
+    align-items: center;
 }
 
 .st-block__inner {
@@ -14,6 +18,8 @@
     margin-bottom: 1em;
 
     position: relative;
+
+    flex: 1;
 
     .st-block--textable & {
         margin-top: 0;

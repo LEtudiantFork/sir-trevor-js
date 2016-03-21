@@ -2,6 +2,10 @@
     display: flex;
 
     background-color: lighten($light-ui-color, 10%);
+
+    &.hidden {
+        display: none;
+    }
 }
 
 .st-block-ui__confirm {
@@ -64,6 +68,14 @@
     .st-block[data-type='quote'] & {
         display: block;
     }
+}
+
+.st-block-ui-btn__settings {
+    @extend %st-block-ui-btn;
+
+    position: absolute;
+    top: 5em;
+    right: 2em;
 }
 
 .st-block-control-ui-btn {

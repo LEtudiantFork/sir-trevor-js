@@ -5,13 +5,34 @@ var config = require('../config');
 var Dom = require('../packages/dom');
 var Events = require('../packages/events');
 
+const createControlsButton = () => {
+  return Dom.createElement("a", {
+      'class': 'st-block-ui-btn__settings',
+      'html': `<svg role="img" class="st-icon">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="inc/icons.svg#icon-cog"></use>
+              </svg>`
+    });
+}
+
 module.exports = {
 
   mixinName: "Controllable",
 
   initializeControllable: function() {
     utils.log("Adding controllable to block " + this.blockID);
-    this.control_ui = Dom.createElement('div', {'class': 'st-block__control-ui'});
+    this.control_ui = Dom.createElement('div', {'class': 'st-block__control-ui hidden'});
+
+    this.on('onInitUI', () => {
+      let blockUI = this.el.querySelector('.st-block__ui');
+
+      let controlButton = createControlsButton();
+
+      console.log(controlButton);
+
+      blockUI.appendChild(controlButton);
+
+      controlButton.addEventListener('click', () => this.toggleControls());
+    });
 
     Object.keys(this.controls).forEach(cmd => {
 
@@ -30,6 +51,10 @@ module.exports = {
     });
 
     this.inner.appendChild(this.control_ui);
+  },
+
+  toggleControls: function() {
+      this.control_ui.classList.toggle('hidden');
   },
 
   getControlTemplate: function(cmd, cssClasses = 'st-block__control-ui__item', html = `<svg role="img" class="st-icon"><use xlink:href="${config.defaults.iconUrl}#icon-${cmd}"/></svg>`) {
