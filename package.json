@@ -17,6 +17,7 @@
     "browserify-derequire": "^0.9.4",
     "core-js": "^2.1.5",
     "deamdify": "^0.2.0",
+    "etudiant-mod-dom": "^1.19.4",
     "eventablejs": "^1.0.5",
     "jsonp-promise": "^0.1.2",
     "lodash.isempty": "^4.0.0",

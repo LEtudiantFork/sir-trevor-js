@@ -1,38 +1,45 @@
 // Block Controls
 
 .st-block-controls {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  right: 0;
-  font-size:0.8em;
-  padding: 0px 110px;
-  transform: translateY(-50%);
-  z-index: 1;
+    z-index: 1;
+
+    padding: 0 110px;
+
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+
+    font-size: 0.8em;
+
+    transform: translateY(-50%);
 }
 
 .st-block-controls__buttons {
-  text-align: center;
+    text-align: center;
 }
 
 .st-block-controls__button {
-  border:none;
-  background:transparent;
-  font-size: 12px;
-  text-transform: uppercase;
-  display: inline-block;
-  cursor: pointer;
-  margin: 0.5em;
-  text-transform: uppercase;
+    display: inline-block;
+    margin: 0.5em;
+    border: none;
+
+    font-size: 12px;
+    text-transform: uppercase;
+    text-transform: uppercase;
+
+    background: transparent;
+
+    cursor: pointer;
 }
 
 .st-block-controls__button .st-icon {
-  margin: 0 0 10px 0;
-  display: block;
-  width: 42px;
-  height: 42px;
+    display: block;
+    margin: 0 auto 10px;
+    width: 42px;
+    height: 42px;
 }
 
 .st-block-controls__button:hover {
-  color: $accent-color;
+    color: $accent-color;
 }
