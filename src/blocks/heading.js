@@ -4,10 +4,11 @@
   Heading Block
 */
 
-var Block = require('../block');
-var Dom = require('../packages/dom');
+var Block    = require('../block');
+var Dom      = require('../packages/dom');
 var stToHTML = require('../to-html');
 
+var scribeBuild           = require('../scribe.build.js');
 var ScribeTextBlockPlugin = require('./scribe-plugins/scribe-text-block-plugin');
 
 module.exports = Block.extend({
@@ -20,6 +21,11 @@ module.exports = Block.extend({
 
   configureScribe: function(scribe) {
     scribe.use(new ScribeTextBlockPlugin(this));
+
+    // add H1, H2 and H3 support
+    scribe.use(scribeBuild.scribePluginHeadingCommand(1));
+    scribe.use(scribeBuild.scribePluginHeadingCommand(2));
+    scribe.use(scribeBuild.scribePluginHeadingCommand(3));
 
     scribe.on('content-changed', this.toggleEmptyClass.bind(this));
   },
