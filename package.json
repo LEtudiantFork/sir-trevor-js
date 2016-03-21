@@ -33,6 +33,7 @@
     "scribe-plugin-heading-command": "^0.1.0",
     "scribe-plugin-link-prompt-command": "^0.2.0",
     "scribe-plugin-sanitizer": "^0.1.9",
+    "scribe-plugin-table-command": "^0.1.0",
     "selection-range": "^1.0.1",
     "spin.js": "^2.0.1",
     "svg4everybody": "^2.0.3",
