@@ -102,6 +102,8 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
         this.el.appendChild(ui_element);
         this.ui = ui_element;
         this._initUIComponents();
+
+        this.trigger('onInitUI');
     },
 
     _initMessages: function() {
