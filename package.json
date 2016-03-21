@@ -7,18 +7,16 @@
     "url": "git@github.com:LEtudiantFork/sir-trevor-js.git"
   },
   "scripts": {
-    "clean-html-janitor": "./node_modules/.bin/replace \"typeof define === 'function' && define.amd\" \"false\" ./node_modules/html-janitor/src/html-janitor.js",
-    "build-scribe": "npm run clean-html-janitor && ./node_modules/.bin/browserify -g deamdify ./src/scribe.js --standalone scribe | ./node_modules/.bin/derequire > ./src/scribe.build.js",
-    "postinstall": "npm run build-scribe"
+    "postinstall": "node ./scribe-bundler.js"
   },
   "dependencies": {
     "babel-plugin-transform-object-assign": "^6.5.0",
     "babel-preset-es2015": "^6.6.0",
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
+    "browserify-derequire": "^0.9.4",
     "core-js": "^2.1.5",
     "deamdify": "^0.2.0",
-    "derequire": "^2.0.3",
     "eventablejs": "^1.0.5",
     "jsonp-promise": "^0.1.2",
     "lodash.isempty": "^4.0.0",
