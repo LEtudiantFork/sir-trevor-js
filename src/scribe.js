@@ -13,13 +13,11 @@ var scribePluginFormatterPlainTextConvertNewLinesToHTML = require('scribe-plugin
 var scribePluginLinkPromptCommand                       = require('scribe-plugin-link-prompt-command');
 var scribePluginSanitizer                               = require('scribe-plugin-sanitizer');
 var scribePluginHeadingCommand                          = require('scribe-plugin-heading-command');
-var scribeTableCommand                                  = require('scribe-plugin-table-command');
 
 module.exports = {
     Scribe: Scribe,
     scribePluginFormatterPlainTextConvertNewLinesToHTML: scribePluginFormatterPlainTextConvertNewLinesToHTML,
     scribePluginLinkPromptCommand: scribePluginLinkPromptCommand,
     scribePluginSanitizer: scribePluginSanitizer,
-    scribePluginHeadingCommand: scribePluginHeadingCommand,
-    scribeTableCommand: scribeTableCommand
+    scribePluginHeadingCommand: scribePluginHeadingCommand
 };

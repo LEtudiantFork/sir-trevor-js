@@ -27,8 +27,6 @@ module.exports = {
 
       let controlButton = createControlsButton();
 
-      console.log(controlButton);
-
       blockUI.appendChild(controlButton);
 
       controlButton.addEventListener('click', () => this.toggleControls());

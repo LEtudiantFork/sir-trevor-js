@@ -13,13 +13,6 @@ replace({
   paths: ['./node_modules/html-janitor/src/html-janitor.js']
 });
 
-// remove the require of a .stylus file
-replace({
-  regex: /(require\(\'\.\/scribe-plugin-table-command\.styl'\))/,
-  replacement: '//',
-  paths: ['./node_modules/scribe-plugin-table-command/src/TableContextMenu.js']
-});
-
 // create a browserify bundle with derequire plugin
 var bundler = browserify(
   __dirname + '/src/scribe.js',

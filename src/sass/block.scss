@@ -150,8 +150,6 @@
 }
 
 .st-text-block p {
-    // display: inline;
-    // margin: 0;
     vertical-align: 14%;
 }
 
@@ -168,6 +166,17 @@
 
 .st-text-block--heading p {
     margin: 0.5em 0;
+}
+
+.st-text-block--table {
+    table {
+        border-collapse: collapse;
+    }
+
+    td {
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
 }
 
 .st-text-block--quote {
