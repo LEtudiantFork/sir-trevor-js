@@ -5,9 +5,21 @@ var utils = require('./utils');
 var Dom = require('./packages/dom');
 var Events = require('./packages/events');
 
+var config = require('./config');
+
 var BlockReorder = require('./block-reorder');
 
 const BLOCK_TEMPLATE = require('./templates/block');
+
+function getGlobalConfig(instanceID) {
+    var instance = config.instances.filter(instance => {
+        if (instance.ID === instanceID) {
+            return true;
+        }
+    })[0];
+
+    return instance.options;
+}
 
 var SimpleBlock = function(data, instance_id, mediator, options) {
     this.createStore(data);
@@ -15,6 +27,8 @@ var SimpleBlock = function(data, instance_id, mediator, options) {
     this.instanceID = instance_id;
     this.mediator = mediator;
     this.options = options || {};
+
+    this.globalConfig = getGlobalConfig(this.instanceID);
 
     this._ensureElement();
     this._bindFunctions();

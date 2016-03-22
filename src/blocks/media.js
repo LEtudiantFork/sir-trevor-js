@@ -1,11 +1,10 @@
 'use strict';
 
 var _     = require('../lodash');
-var Dom   = require('../packages/dom');
 var Block = require('../block');
 
 var chooseableConfig = {
-    name: 'subBlockType',
+    name: 'type',
     options: [
         {
             title: i18n.t('blocks:image:title'),
@@ -25,17 +24,13 @@ var chooseableConfig = {
 
 module.exports = Block.extend({
 
-    type: "media",
+    type: 'media',
 
     title() { return i18n.t('blocks:media:title'); },
 
     chooseable: true,
 
     icon_name: 'Image',
-
-    loadData(data){
-        console.log(data);
-    },
 
     onBlockRender() {
         if (_.isEmpty(this.blockStorage.data)) {
