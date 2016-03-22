@@ -40,11 +40,20 @@ var Locales = {
         media: {
           'title': "Média"
         },
+        diaporama: {
+          'title': "Diaporama"
+        },
         jcs: {
             'title': 'JCS'
         },
         chart: {
             'title': 'Chart'
+        },
+        barChart: {
+            'title': 'Charte de barres'
+        },
+        pieChart: {
+            'title': 'Charte en camembert'
         },
         table: {
             'title': 'Table'

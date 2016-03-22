@@ -8,15 +8,15 @@ var chooseableConfig = {
     name: 'subBlockType',
     options: [
         {
-            title: 'Image',
+            title: i18n.t('blocks:image:title'),
             icon: 'Image',
             value: 'image'
         }, {
-            title: 'Vidéo',
+            title: i18n.t('blocks:video:title'),
             icon: 'Video',
             value: 'video'
         }, {
-            title: 'Diaporama',
+            title: i18n.t('blocks:diaporama:title'),
             icon: 'Diaporama',
             value: 'diaporama'
         }
@@ -27,20 +27,35 @@ module.exports = Block.extend({
 
     type: "media",
 
-    title: function() { return i18n.t('blocks:media:title'); },
+    title() { return i18n.t('blocks:media:title'); },
 
     chooseable: true,
 
     icon_name: 'Image',
 
-    loadData: function(data){
+    loadData(data){
         console.log(data);
     },
 
-    onBlockRender: function() {
+    onBlockRender() {
         if (_.isEmpty(this.blockStorage.data)) {
             this.createChoices(chooseableConfig, choices => {
                 console.log('The following things were chosen ', choices);
+
+                this.pandoraSearch = PandoraSearch.create({
+                    apiUrl: '',
+                    type: choices.subBlockType
+                });
+
+                // if (choices.subBlockType && choices.subBlockType === 'image') {
+                //     this.mediator.trigger("block:replace", this.el, 'Image', {});
+                // }
+                // else if (choices.subBlockType && choices.subBlockType === 'video') {
+                //     this.mediator.trigger("block:replace", this.el, 'Video', {});
+                // }
+                // else if (choices.subBlockType && choices.subBlockType === 'diaporama') {
+                //     this.mediator.trigger("block:replace", this.el, 'Diaporama', {});
+                // }
             });
         }
     }

@@ -1,23 +1,46 @@
 'use strict';
 
+var _   = require('../lodash');
 var Dom = require('../packages/dom');
 var Block = require('../block');
 
+var chooseableConfig = {
+    name: 'subBlockType',
+    options: [
+        {
+            title: 'Barre',
+            icon: 'bar-chart',
+            value: 'bar'
+        }, {
+            title: 'Camembert',
+            icon: 'pie-chart',
+            value: 'pie'
+        }
+    ]
+};
+
 module.exports = Block.extend({
 
-  type: "chart",
-  title: function() { return i18n.t('blocks:chart:title'); },
+    type: "chart",
 
-  icon_name: 'pie-chart',
+    title() { return i18n.t('blocks:chart:title'); },
 
-  toolbarEnabled: true,
-  formatBarEnabled: false,
+    chooseable: true,
 
-  loadData: function(data){
-    console.log(data);
-  },
+    icon_name: 'pie-chart',
 
-  onBlockRender: function() {
+    toolbarEnabled: true,
+    formatBarEnabled: false,
 
-  }
+    loadData(data){
+        console.log(data);
+    },
+
+    onBlockRender() {
+        if (_.isEmpty(this.blockStorage.data)) {
+            this.createChoices(chooseableConfig, choices => {
+                console.log('The following things were chosen ', choices);
+            });
+        }
+    }
 });
