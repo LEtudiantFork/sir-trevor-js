@@ -1,5 +1,6 @@
 // Block Controls
 
+.st-block-chooseable,
 .st-block-controls {
     z-index: 1;
 
@@ -15,10 +16,12 @@
     transform: translateY(-50%);
 }
 
+.st-block-chooseable__buttons,
 .st-block-controls__buttons {
     text-align: center;
 }
 
+.st-block-chooseable__button,
 .st-block-controls__button {
     display: inline-block;
     margin: 0.5em;
@@ -33,6 +36,7 @@
     cursor: pointer;
 }
 
+.st-block-chooseable__button .st-icon,
 .st-block-controls__button .st-icon {
     display: block;
     margin: 0 auto 10px;
@@ -40,6 +44,7 @@
     height: 42px;
 }
 
+.st-block-chooseable__button:hover,
 .st-block-controls__button:hover {
     color: $accent-color;
 }

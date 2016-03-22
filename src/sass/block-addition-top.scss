@@ -62,6 +62,7 @@
         display: none;
     }
 
+    .st-chooseable--is-active + .st-block &,
     .st-block--empty + .st-block & {
         display: none;
     }

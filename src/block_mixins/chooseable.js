@@ -1,18 +1,24 @@
 var _ = require('../lodash');
 var $ = require('etudiant-mod-dom').default;
 
+var eventablejs = require('eventablejs');
+
+const containerClass = 'st-block-chooseable';
+const buttonClass = 'st-block-chooseable__button';
+
 const choiceContainer = (choices) => {
     return `
-    <div class="st-block-controls__buttons">
-        ${ choices.map(choice => choiceButton(choice)).join('') }
+    <div class="${containerClass}">
+        <div class="st-block-chooseable__buttons">
+            ${ choices.map(choice => choiceButton(choice)).join('') }
+        </div>
     </div>
     `;
 };
 
-
 const choiceButton = ({ icon, title, value}) => {
     return `
-    <button class="st-block-controls__button" data-choice="${value}" type="button">
+    <button class="${buttonClass}" data-choice="${value}" type="button">
         <svg class="st-icon">
             <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="inc/icons.svg#icon-${icon}"></use>
         </svg>
@@ -52,13 +58,13 @@ function getChoice(choice, selected) {
 }
 
 function getButtons(choiceBox) {
-    return Array.prototype.slice.call(choiceBox.$elem[0].querySelectorAll('button.st-block-controls__button'));
+    return Array.prototype.slice.call(choiceBox.$elem[0].querySelectorAll(`button.${buttonClass}`));
 }
 
 const ChoiceBox = {
     create(chosen, choices, callback) {
 
-        let instance = Object.assign(Object.create(this.prototype));
+        let instance = Object.assign(Object.create(this.prototype), eventablejs);
 
         instance.choices = choices;
         instance.chosen = chosen;
@@ -85,7 +91,7 @@ const ChoiceBox = {
         },
 
         ready() {
-            this.$elem.on('click', 'a.st-btn', (e) => {
+            this.$elem.on('click', `button.${buttonClass}`, (e) => {
                 e.preventDefault();
 
                 var selectedId = $(e.currentTarget).data('choice');
@@ -95,20 +101,22 @@ const ChoiceBox = {
                 this.chosen[choice.name] = selectedId;
 
                 if (choice && choice.subChoice) {
-                    var choicesMarkup = generateChoices(choice.subChoice.options);
+                    var choicesMarkup = choiceContainer(choice.subChoice.options);
 
                     this.$elem.html(choicesMarkup);
                     this.buttons = getButtons(this);
                 }
                 else {
-                    this.$elem.remove();
                     this.callback(this.chosen);
                     this.destroy();
+
                 }
             });
         },
 
         destroy() {
+            this.trigger('destroy');
+            this.$elem.remove();
             this.$elem = null;
         }
     }
@@ -125,6 +133,12 @@ module.exports = {
 
         this.choiceBox = ChoiceBox.create(chosen, choices, callback);
 
-        this.choiceBox.appendTo(this.inner);
+        this.el.classList.add('st-chooseable--is-active');
+
+        this.choiceBox.appendTo(this.el);
+
+        this.choiceBox.on('destroy', () => {
+            this.el.classList.remove('st-chooseable--is-active');
+        });
     }
 };

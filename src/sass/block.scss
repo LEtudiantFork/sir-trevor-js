@@ -10,6 +10,10 @@
     position: relative;
 
     align-items: center;
+
+    &.st-chooseable--is-active {
+        min-height: 70px;
+    }
 }
 
 .st-block__inner {
