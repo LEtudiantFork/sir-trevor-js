@@ -15,7 +15,7 @@ function init() {
 
 var basicJcsPrototype = {
     prepareSmallMarkup: function() {
-        return _.template(smallTemplate, this.content, { imports: { '_': _ } });
+        return _.template(smallTemplate, { imports: { '_': _ } })(this.content);
     }
 };
 

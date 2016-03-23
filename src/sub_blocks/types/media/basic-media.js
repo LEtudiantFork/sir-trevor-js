@@ -20,7 +20,7 @@ function watchFields(subBlock) {
 
 var basicMediaPrototype = {
     prepareSmallMarkup: function() {
-        return _.template(this.smallTemplate, this.content, { imports: { '_' : _ } });
+        return _.template(this.smallTemplate, { imports: { '_' : _ } })(this.content);
     },
 
     postRenderLarge: function() {

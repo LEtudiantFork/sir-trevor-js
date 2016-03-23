@@ -18,6 +18,7 @@
     "core-js": "^2.1.5",
     "deamdify": "^0.2.0",
     "etudiant-mod-dom": "^1.19.4",
+    "etudiant-mod-sass": "^1.33.5",
     "etudiant-mod-xhr": "^1.12.1",
     "eventablejs": "^1.0.5",
     "jsonp-promise": "^0.1.2",

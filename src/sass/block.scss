@@ -5,15 +5,13 @@
 }
 
 .st-block {
-    display: flex;
+    overflow: hidden;
+
+    min-height: 70px;
 
     position: relative;
 
     align-items: center;
-
-    &.st-chooseable--is-active {
-        min-height: 70px;
-    }
 }
 
 .st-block__inner {
@@ -22,8 +20,6 @@
     margin-bottom: 1em;
 
     position: relative;
-
-    flex: 1;
 
     .st-block--textable & {
         margin-top: 0;

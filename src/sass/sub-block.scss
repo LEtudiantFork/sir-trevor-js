@@ -1,0 +1,302 @@
+.st-sub-block {
+    @include clearfix;
+
+    position: relative;
+
+    background-color: $white;
+
+    cursor: pointer;
+}
+
+.st-sub-block-size-small {
+    margin: 10px;
+    padding: 10px 40px 10px 10px;
+
+    transition: background-color 0.1s ease-in-out;
+
+    .st-icon {
+        transition: color 0.1s ease-in-out;
+    }
+
+    &:hover {
+        background-color: $blocks-control-bg-color;
+
+        .st-icon {
+            color: $accent-color;
+        }
+    }
+
+    .st-sub-block-image {
+        margin: 0 10px 10px 0;
+        width: 100px;
+        height: 100px;
+
+        float: left;
+
+        img {
+            width: 100%;
+            height: auto;
+        }
+    }
+
+    .st-sub-block-link {
+        top: 10px;
+        right: 10px;
+
+        font-size: 20px;
+    }
+
+    h3 {
+        margin: 0;
+        padding-right: 40px;
+
+        font-size: 15px;
+    }
+
+    &.st-sub-block__poll {
+        min-height: 100px;
+    }
+
+    .st-sub-block-site {
+        display: inline-block;
+        border-radius: 10px;
+        padding: 3px;
+
+        color: $white;
+        font-size: 12px;
+
+        background-color: $base-ui-color;
+    }
+}
+
+.st-sub-block-size-large {
+    @include clearfix;
+
+    position: relative;
+
+
+    .st-sub-block-image {
+    }
+
+    .st-sub-block-link {
+        top: 0;
+        right: 10px;
+
+        font-size: 26px;
+    }
+
+    &.st-sub-block__personality,
+    &.st-sub-block__poll,
+    &.st-sub-block__quiz {
+        padding-right: 30px;
+
+        .st-sub-block-image {
+            height: 100%;
+
+            position: absolute;
+            top: 0;
+            left: 0;
+
+            img {
+                margin: 0 auto;
+                width: 80%;
+                height: auto;
+            }
+        }
+    }
+
+    &.st-sub-block__image,
+    &.st-sub-block__video {
+        .st-sub-block-image {
+            padding: 20px;
+
+            img {
+                width: 100%;
+            }
+        }
+    }
+
+    &.st-sub-block__personality,
+    &.st-sub-block__quiz {
+        padding-left: 200px;
+    }
+
+    &.st-sub-block__poll {
+        h3 {
+            padding-left: 25px;
+        }
+    }
+
+    .st-sub-block-poll {
+        padding: 20px;
+        width: 300px;
+
+        float: left;
+    }
+}
+
+.st-sub-block-description {
+    overflow: hidden;
+
+    display: block;
+    height: 70px;
+
+    font-size: 12px;
+}
+
+.st-sub-block-link {
+    display: block;
+
+    position: absolute;
+
+    color: $base-ui-color;
+    text-decoration: none;
+
+    &:hover {
+        color: $accent-color;
+    }
+}
+
+.st-sub-block-image {
+    overflow: hidden;
+
+    img {
+        display: block;
+    }
+}
+
+.st-sub-block__script {
+    padding: 10px;
+
+    background-color: $blocks-control-bg-color;
+
+    textarea {
+        display: block;
+        border-radius: 4px;
+        padding: 10px;
+        width: 100%;
+
+        font-family: Monaco, monospace;
+
+        resize: none;
+    }
+}
+
+.st-sub-block__quiz {
+}
+
+.st-sub-block__personality {
+}
+
+.st-sub-block-poll {
+    meter {
+        appearance: none;
+
+        display: block;
+        margin: 0 auto;
+        border: none;
+        width: 100%;
+
+        background: none;
+        background-color: $light-ui-color;
+
+        .meter-gauge {
+            display: block;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            width: 100%;
+
+            background-color: $light-ui-color;
+        }
+
+        .meter-gauge > span {
+            display: block;
+            height: inherit;
+
+            text-indent: -9999px;
+
+            background-color: $accent-color;
+        }
+    }
+
+    meter::-webkit-meter-bar {
+        border-radius: 3px;
+
+        background: none;
+        background-color: $light-ui-color;
+    }
+
+    meter::-moz-meter-bar {
+        background: none;
+        background-color: $accent-color;
+    }
+
+    meter::-webkit-meter-optimum-value {
+        border-radius: 3px;
+
+        background: none;
+        background-color: $accent-color;
+    }
+}
+
+.st-sub-block-poll-choice {
+    @include clearfix;
+
+    margin: 10px 0;
+    padding: 0 10px;
+
+    span,
+    meter {
+        display: block;
+
+        float: left;
+    }
+
+    span {
+        padding-right: 10px;
+        width: 70%;
+
+        font-size: 12px;
+    }
+
+    meter {
+        width: 30%;
+    }
+}
+
+.st-sub-block-dynamic-image {
+    margin: 0;
+    padding: 0;
+
+    position: relative;
+
+    img {
+        display: block;
+    }
+
+    figcaption {
+        width: 100%;
+
+        position: absolute;
+        bottom: 0;
+
+        color: #fff;
+        font-size: 10px;
+
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    &.u-align-right {
+        margin: 10px;
+        margin-right: 0;
+
+        float: right;
+    }
+
+    &.u-align-left {
+        margin: 10px;
+        margin-left: 0;
+
+        float: left;
+    }
+}

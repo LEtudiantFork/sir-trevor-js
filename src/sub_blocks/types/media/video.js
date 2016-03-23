@@ -24,7 +24,7 @@ function init() {
 
 var videoPrototype = {
     prepareLargeMarkup: function() {
-        return _.template(this.largeTemplate, this.content, { imports: { '_' : _ } });
+        return _.template(this.largeTemplate, { imports: { '_' : _ } })(this.content);
     },
 
     postRenderLarge: function() {
@@ -39,7 +39,8 @@ var videoPrototype = {
                   .css('width', '100%');
         });
     }
-}
+};
+
 module.exports = {
     init: init,
     prototype: videoPrototype

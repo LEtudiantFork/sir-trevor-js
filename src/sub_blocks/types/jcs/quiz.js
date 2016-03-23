@@ -11,7 +11,7 @@ var largeTemplate = [
 
 var quizPrototype = {
     prepareLargeMarkup: function() {
-        return _.template(largeTemplate, this.content, { imports: { '_': _ } });
+        return _.template(largeTemplate, { imports: { '_': _ } })(this.content);
     }
 };
 

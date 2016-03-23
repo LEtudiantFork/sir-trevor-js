@@ -40,7 +40,7 @@ var imagePrototype = {
             legendField: legendField
         });
 
-        return _.template(this.largeTemplate, toRender, { imports: { '_' : _ } });
+        return _.template(this.largeTemplate, { imports: { '_' : _ } })(toRender);
     },
 
     save: function(changedElement) {

@@ -1,6 +1,8 @@
+@import '../../node_modules/etudiant-mod-sass/mixins/valign';
+@import '../../node_modules/etudiant-mod-sass/utility/clearfix';
+
 @import '_variables';
 @import '_icons';
-
 
 @import 'patterns/ui-popup';
 @import 'utils';
@@ -25,3 +27,7 @@
 
 // Scribe Table Plugin
 @import 'scribe-table-plugin';
+
+@import 'slider';
+@import 'filter-bar';
+@import 'sub-block';

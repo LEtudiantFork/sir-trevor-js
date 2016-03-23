@@ -28,11 +28,11 @@ var largeTemplate = [
 
 var pollPrototype = {
     prepareSmallMarkup: function() {
-        return _.template(smallTemplate, this.content, { imports: { '_': _ } });
+        return _.template(smallTemplate, { imports: { '_': _ } })(this.content);
     },
 
     prepareLargeMarkup: function() {
-        return _.template(largeTemplate, this.content, { imports: { '_': _ } });
+        return _.template(largeTemplate, { imports: { '_': _ } })(this.content);
     }
 };
 

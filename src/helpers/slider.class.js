@@ -148,15 +148,7 @@ Slider.prototype = Object.assign(Slider.prototype, {
     },
 
     goTo: function(index) {
-        // animate(this.$slideContainer[0],
-        //     {
-        //         left: '-' + ((100 / this.config.increment).toFixed(2) * index) + '%'
-        //     },
-        //     {
-        //         queue: false,
-        //         duration: 400,
-        //         easing: 'ease-in-out'
-        // });
+        this.$slideContainer.css('left', '-' + ((100 / this.config.increment).toFixed(2) * index) + '%');
 
         this.currentIndex = index;
 
