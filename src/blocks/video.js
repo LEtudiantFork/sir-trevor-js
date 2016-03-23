@@ -4,9 +4,11 @@ var _     = require('../lodash');
 var Dom   = require('../packages/dom');
 var Block = require('../block');
 
+// @todo use etudiant-mod-video
+
 module.exports = Block.extend({
 
-    type: "video",
+    type: 'video',
 
     toolbarEnabled: false,
 
