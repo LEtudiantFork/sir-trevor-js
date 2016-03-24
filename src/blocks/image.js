@@ -8,6 +8,8 @@ module.exports = Block.extend({
 
     toolbarEnabled: false,
 
+    editorHTML: '<div class="st-block--image" contenteditable="true"></div>',
+
     title() { return i18n.t('blocks:image:title'); },
 
     icon_name: 'Image',

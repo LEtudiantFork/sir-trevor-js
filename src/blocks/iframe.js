@@ -64,7 +64,7 @@ module.exports = Block.extend({
         }
     },
 
-    editorHTML: '<div class="st-iframe-block"></div>',
+    editorHTML: '<div class="st-block--iframe"></div>',
 
     onBlockRender: function() {
         this.editor.appendChild(this.$iframeWrapper[0]);

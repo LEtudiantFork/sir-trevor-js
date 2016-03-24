@@ -24,6 +24,8 @@ module.exports = Block.extend({
 
     title() { return i18n.t('blocks:chart:title'); },
 
+    editorHTML: '<div class="st-block--chart"></div>',
+
     chooseable: true,
 
     icon_name: 'pie-chart',

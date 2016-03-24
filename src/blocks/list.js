@@ -23,8 +23,9 @@ module.exports = Block.extend({
         scribe.use(new ScribeListBlockPlugin(this));
     },
 
-    editorHTML: '<ul class="st-list-block__list"></ul>',
-    listItemEditorHTML: '<li class="st-list-block__item"><div class="st-list-block__editor st-block__editor"></div></li>',
+    editorHTML: '<ul class="st-block--list__list"></ul>',
+
+    listItemEditorHTML: '<li class="st-block--list__item"><div class="st-block--list__editor st-block__editor"></div></li>',
 
     initialize: function() {
         this.editorIds = [];

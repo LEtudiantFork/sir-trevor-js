@@ -16,7 +16,7 @@ module.exports = Block.extend({
 
     title: function(){ return i18n.t('blocks:heading:title'); },
 
-    editorHTML: '<div class="st-required st-text-block st-text-block--heading" contenteditable="true"></div>',
+    editorHTML: '<div class="st-required st-text-block st-block--heading" contenteditable="true"></div>',
 
     configureScribe: function(scribe) {
         scribe.use(new ScribeTextBlockPlugin(this));

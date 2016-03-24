@@ -153,7 +153,7 @@
     vertical-align: 14%;
 }
 
-.st-text-block--heading {
+.st-block--heading {
     overflow: visible;
 
     margin: 0.58em 0;
@@ -164,11 +164,11 @@
     line-height: 1.45;
 }
 
-.st-text-block--heading p {
+.st-block--heading p {
     margin: 0.5em 0;
 }
 
-.st-text-block--table {
+.st-block--table {
     table {
         border-collapse: collapse;
     }
@@ -190,7 +190,7 @@ ul.st-text-block {
     margin-left: 1.875em;
 }
 
-.st-list-block__list {
+.st-block--list__list {
     margin: 0;
     padding-left: 1em;
 

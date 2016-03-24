@@ -8,6 +8,8 @@ module.exports = Block.extend({
 
     type: 'pieChart',
 
+    editorHTML: '<div class="st-block--pie-chart"></div>',
+
     toolbarEnabled: false,
 
     title() { return i18n.t('blocks:pieChart:title'); },

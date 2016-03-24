@@ -6,6 +6,8 @@ module.exports = Block.extend({
 
     type: 'barChart',
 
+    editorHTML: '<div class="st-block--bar-chart"></div>',
+
     toolbarEnabled: false,
 
     title() { return i18n.t('blocks:barChart:title'); },

@@ -7,6 +7,8 @@ module.exports = Block.extend({
     type: 'jcs',
     title: function() { return i18n.t('blocks:jcs:title'); },
 
+    editorHTML: '<div class="st-block--jcs"></div>',
+
     icon_name: 'jcs',
 
     toolbarEnabled: true,

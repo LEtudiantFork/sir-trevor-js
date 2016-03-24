@@ -8,6 +8,8 @@ module.exports = Block.extend({
 
     toolbarEnabled: false,
 
+    editorHTML: '<div class="st-block--diaporama"></div>',
+
     title() { return i18n.t('blocks:diaporama:title'); },
 
     icon_name: 'Diaporama',

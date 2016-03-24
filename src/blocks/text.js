@@ -15,7 +15,7 @@ module.exports = Block.extend({
 
     type: 'text',
 
-    title: function() { return i18n.t('blocks:text:title'); },
+    title() { return i18n.t('blocks:text:title'); },
 
     editorHTML: '<div class="st-text-block" contenteditable="true"></div>',
 
@@ -24,7 +24,7 @@ module.exports = Block.extend({
     textable: true,
     toolbarEnabled: false,
 
-    configureScribe: function(scribe) {
+    configureScribe(scribe) {
         scribe.use(new ScribeTextBlockPlugin(this));
         scribe.use(new ScribePastePlugin(this));
         scribe.use(new ScribeQuotePlugin(this));
@@ -39,7 +39,7 @@ module.exports = Block.extend({
         }
     },
 
-    loadData: function(data){
+    loadData(data){
         if (this.options.convertFromMarkdown && data.format !== 'html') {
             this.setTextBlockHTML(stToHTML(data.text, this.type));
         }
@@ -48,16 +48,16 @@ module.exports = Block.extend({
         }
     },
 
-    onBlockRender: function() {
+    onBlockRender() {
         this.focus();
         this.toggleEmptyClass();
     },
 
-    toggleEmptyClass: function() {
+    toggleEmptyClass() {
         this.el.classList.toggle('st-block--empty', this.isEmpty());
     },
 
-    isEmpty: function() {
+    isEmpty() {
         return this._scribe.getTextContent() === '';
     }
 });

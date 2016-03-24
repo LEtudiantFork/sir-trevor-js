@@ -12,7 +12,7 @@ module.exports = Block.extend({
     type: 'table',
     title: function() { return i18n.t('blocks:table:title'); },
 
-    editorHTML: '<div class="st-required st-text-block st-text-block--table" contenteditable="true"></div>',
+    editorHTML: '<div class="st-required st-text-block st-block--table" contenteditable="true"></div>',
 
     icon_name: 'table',
 
