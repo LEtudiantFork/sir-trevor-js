@@ -19,7 +19,7 @@ function init(params) {
     this.$elem = $(wrapperTemplate);
 
     this.$elem.attr('data-sub-block-id', this.id);
-    this.$elem.addClass('st-sub-block-' + this.type);
+    this.$elem.addClass('st-sub-block--' + this.type);
 
     this.$elem.on('click', (e) => {
         e.preventDefault();
