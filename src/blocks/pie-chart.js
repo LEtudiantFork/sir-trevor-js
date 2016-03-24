@@ -6,7 +6,7 @@ var Block = require('../block');
 
 module.exports = Block.extend({
 
-    type: "pieChart",
+    type: 'pieChart',
 
     toolbarEnabled: false,
 

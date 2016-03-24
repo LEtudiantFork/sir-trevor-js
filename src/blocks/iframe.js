@@ -1,10 +1,7 @@
-var _     = require('../lodash.js');
 var $     = require('etudiant-mod-dom').default;
 var Block = require('../block');
 
-var Dom = require('../packages/dom');
-
-var getTemplate = function({ src = '', scrolling = '', height = '', visible = false }) {
+const getTemplate = function({ src = '', scrolling = '', height = '', visible = false }) {
     src = src.length > 0 ? `src="${src}"` : '';
     scrolling = scrolling.length > 0 ? `scrolling="${scrolling}"` : '';
     height = height.length > 0 ? `height="${height}px"` : '';
@@ -18,7 +15,7 @@ var getTemplate = function({ src = '', scrolling = '', height = '', visible = fa
 };
 
 module.exports = Block.extend({
-    title: function() {
+    title() {
         return i18n.t('blocks:iframe:title');
     },
 

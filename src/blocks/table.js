@@ -1,6 +1,5 @@
 'use strict';
 
-const Dom = require('../packages/dom');
 const Block = require('../block');
 
 const ScribeTableBlockPlugin = require('./scribe-plugins/scribe-table-plugin');
@@ -10,47 +9,47 @@ const tableContent = '<table><tbody><tr><td>Header1</td><td>Header2</td><td>Head
 
 module.exports = Block.extend({
 
-  type: "table",
-  title: function() { return i18n.t('blocks:table:title'); },
+    type: 'table',
+    title: function() { return i18n.t('blocks:table:title'); },
 
-  editorHTML: '<div class="st-required st-text-block st-text-block--table" contenteditable="true"></div>',
+    editorHTML: '<div class="st-required st-text-block st-text-block--table" contenteditable="true"></div>',
 
-  icon_name: 'table',
+    icon_name: 'table',
 
-  toolbarEnabled: true,
-  formatBarEnabled: false,
-  textable: false,
+    toolbarEnabled: true,
+    formatBarEnabled: false,
+    textable: false,
 
-  loadData: function(data){
-    if (data && data.format === 'html') {
-      this.setTextBlockHTML(data.text);
+    loadData: function(data){
+        if (data && data.format === 'html') {
+            this.setTextBlockHTML(data.text);
+        }
+    },
+
+    configureScribe: function(scribe) {
+        scribe.use(new ScribeTableBlockPlugin(this));
+
+        scribe.use(new ScribeTextBlockPlugin(this));
+    },
+
+    scribeOptions: {
+        allowBlockElements: false,
+        tags: {
+            table: true,
+            thead: true,
+            tbody: true,
+            tfoot: true,
+            tr: true,
+            th: true,
+            td: true,
+            p: false,
+            br: false
+        }
+    },
+
+    onBlockRender: function() {
+        if (this._scribe.getContent() === '') {
+            this._scribe.setContent(tableContent);
+        }
     }
-  },
-
-  configureScribe: function(scribe) {
-    scribe.use(new ScribeTableBlockPlugin(this));
-
-    scribe.use(new ScribeTextBlockPlugin(this));
-  },
-
-  scribeOptions: {
-    allowBlockElements: false,
-    tags: {
-      table: true,
-      thead: true,
-      tbody: true,
-      tfoot: true,
-      tr: true,
-      th: true,
-      td: true,
-      p: false,
-      br: false
-    }
-  },
-
-  onBlockRender: function() {
-    if (this._scribe.getContent() === '') {
-      this._scribe.setContent(tableContent);
-    }
-  }
 });

@@ -1,0 +1,29 @@
+var _           = require('../../../lodash.js');
+// var fieldHelper = require('../../../helpers/field.js');
+
+// var innerStaticTemplate = [
+//     '<%= legend %>',
+//     '<label><%= copyrightLabel %>&copy;</label><span> <%= copyright %></span>'
+// ].join('\n');
+
+// function watchFields(subBlock) {
+//     var $fields = subBlock.$elem.find('input, select');
+
+//     $fields.on('keyup', _.debounce(function() {
+//         subBlock.save(this);
+//     }, 400));
+
+//     $fields.on('change', function() {
+//         subBlock.save(this);
+//     });
+// }
+
+var basicMediaPrototype = {
+    prepareSmallMarkup: function() {
+        return _.template(this.smallTemplate, { imports: { '_' : _ } })(this.content);
+    }
+};
+
+module.exports = {
+    prototype: basicMediaPrototype
+};

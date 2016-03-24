@@ -1,3 +1,5 @@
+// @todo replace with etudiant-mod-carousel
+
 var $           = require('etudiant-mod-dom').default;
 var eventablejs = require('eventablejs');
 var Slider      = require('./slider.class.js');

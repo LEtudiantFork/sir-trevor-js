@@ -1,10 +1,9 @@
 'use strict';
 
-var _   = require('../lodash');
-var Dom = require('../packages/dom');
-var Block = require('../block');
+const _   = require('../lodash');
+const Block = require('../block');
 
-var chooseableConfig = {
+const chooseableConfig = {
     name: 'subBlockType',
     options: [
         {
@@ -21,7 +20,7 @@ var chooseableConfig = {
 
 module.exports = Block.extend({
 
-    type: "chart",
+    type: 'chart',
 
     title() { return i18n.t('blocks:chart:title'); },
 

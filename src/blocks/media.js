@@ -1,14 +1,14 @@
 'use strict';
 
-var _     = require('../lodash');
-var Block = require('../block');
+const _     = require('../lodash');
+const Block = require('../block');
 
-var fieldHelper       = require('../helpers/field');
-var imageFilterHelper = require('../helpers/image-filter');
+const fieldHelper = require('../helpers/field');
 
-import SubBlockSearch from '../helpers/sub-block-search.class';
+import filterDataFetcher from '../helpers/filter-data-fetcher';
+import PandoraSearch from '../helpers/pandora-search.class';
 
-var chooseableConfig = {
+const chooseableConfig = {
     name: 'type',
     options: [
         {
@@ -27,6 +27,12 @@ var chooseableConfig = {
     ]
 };
 
+const subBlockTrevorMap = {
+    image: 'Image',
+    video: 'Video',
+    diaporama: 'Diaporama'
+};
+
 module.exports = Block.extend({
 
     type: 'media',
@@ -40,11 +46,7 @@ module.exports = Block.extend({
     onBlockRender() {
         if (_.isEmpty(this.blockStorage.data)) {
             this.createChoices(chooseableConfig, choices => {
-                console.log('The following things were chosen ', choices);
-
-                var block = this;
-
-                var sliderConfig = {
+                const sliderConfig = {
                     controls: {
                         next: 'Next',
                         prev: 'Prev'
@@ -53,16 +55,17 @@ module.exports = Block.extend({
                     increment: 2
                 };
 
-                imageFilterHelper.getFilterData({
-                    apiUrl: block.globalConfig.apiUrl,
-                    application: block.globalConfig.application,
-                    accessToken: block.globalConfig.accessToken
+                filterDataFetcher.getData({ // @todo put inside a service
+                    apiUrl: this.globalConfig.apiUrl,
+                    application: this.globalConfig.application,
+                    accessToken: this.globalConfig.accessToken
                 })
-                .then(function(filterData) {
+                .then(filterData => {
 
-                    var filterConfig = {
-                        url: block.globalConfig.apiUrl + '/edt/media',
-                        accessToken: block.globalConfig.accessToken,
+                    let filterConfig = {
+                        url: this.globalConfig.apiUrl + '/edt/media',
+                        accessToken: this.globalConfig.accessToken,
+                        application: this.globalConfig.application,
                         fields: [
                             {
                                 type: 'search',
@@ -76,46 +79,26 @@ module.exports = Block.extend({
                             }
                         ],
                         limit: 20,
-                        application: block.globalConfig.application,
                         type: choices.type
                     };
 
-                    block.subBlockSearch = SubBlockSearch.create({
-                        application: block.globalConfig.application,
-                        accessToken: block.globalConfig.accessToken,
-                        apiUrl: block.globalConfig.apiUrl,
-                        container: block.editor,
+                    this.pandoraSearch = PandoraSearch.create({
+                        container: this.editor,
                         filterConfig: filterConfig,
                         sliderConfig: sliderConfig,
                         subBlockType: choices.type
                     });
 
-                    block.subBlockSearch.on('selected', function(selectedSubBlock) {
-                        block.setData({
-                            id: selectedSubBlock.id,
-                            type: selectedSubBlock.type
-                        });
+                    this.pandoraSearch.on('selected', selectedSubBlock => {
+                        this.mediator.trigger('block:replace', this.el, subBlockTrevorMap[selectedSubBlock.type], selectedSubBlock.content);
 
-                        block.subBlockSearch.destroy();
-
-                        block.editor.appendChild(selectedSubBlock.renderLarge()[0]);
-
-                        selectedSubBlock.on('save', function(newData) { block.setData(newData); });
+                        this.pandoraSearch.destroy();
                     });
                 })
                 .catch(function(err) {
                     console.error(err);
                 });
 
-                // if (choices.subBlockType && choices.subBlockType === 'image') {
-                //     this.mediator.trigger("block:replace", this.el, 'Image', {});
-                // }
-                // else if (choices.subBlockType && choices.subBlockType === 'video') {
-                //     this.mediator.trigger("block:replace", this.el, 'Video', {});
-                // }
-                // else if (choices.subBlockType && choices.subBlockType === 'diaporama') {
-                //     this.mediator.trigger("block:replace", this.el, 'Diaporama', {});
-                // }
             });
         }
     }

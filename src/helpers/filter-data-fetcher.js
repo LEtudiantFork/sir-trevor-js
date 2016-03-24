@@ -59,17 +59,16 @@ function getFilterData(params) {
 
             return instance;
         }
-        else {
-            return Promise.reject(fetchedData);
-        }
+
+        return Promise.reject(fetchedData);
     })
     .catch(function(err) {
         console.error(err);
     });
 }
 
-module.exports = {
-    getFilterData: getFilterData,
+export default {
+    getData: getFilterData,
     prepareImageFormats: prepareImageFormats,
     prepareSingleImageFormat: prepareSingleImageFormat
 };

@@ -1,33 +1,41 @@
-var $ = require('etudiant-mod-dom').default;
+import $ from 'etudiant-mod-dom';
 
-var slideTemplate = '<div class="st-slider-slide"></div>';
+const slideTemplate = '<div class="st-slider-slide"></div>';
 
-var Slide = function(id, contents, max) {
+function init(id, contents, max) {
     this.id = id;
     this.contents = contents;
     this.max = max;
 
     this.$elem = $(slideTemplate);
-};
+}
 
-Slide.prototype = {
-    isFull: function() {
-        return this.max <= this.contents.length;
+export default {
+    create() {
+        const instance = Object.create(this.prototype);
+
+        init.apply(instance, arguments);
+
+        return instance;
     },
 
-    addItem: function(item) {
-        this.contents.push(item);
-    },
+    prototype: {
+        isFull() {
+            return this.max <= this.contents.length;
+        },
 
-    render: function() {
-        this.$elem.empty();
+        addItem(item) {
+            this.contents.push(item);
+        },
 
-        this.contents.forEach((contentItem) => {
-            this.$elem.append(contentItem);
-        });
+        render() {
+            this.$elem.empty();
 
-        return this.$elem;
+            this.contents.forEach(contentItem => {
+                this.$elem.append(contentItem);
+            });
+
+            return this.$elem;
+        }
     }
 };
-
-module.exports = Slide;

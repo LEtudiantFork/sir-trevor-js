@@ -1,7 +1,5 @@
 'use strict';
 
-var _     = require('../lodash');
-var Dom   = require('../packages/dom');
 var Block = require('../block');
 
 // @todo use etudiant-mod-video
@@ -17,6 +15,7 @@ module.exports = Block.extend({
     icon_name: 'Video',
 
     loadData(data){
+        console.log(data);
     },
 
     onBlockRender() {

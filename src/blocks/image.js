@@ -1,12 +1,10 @@
 'use strict';
 
-var _     = require('../lodash');
-var Dom   = require('../packages/dom');
-var Block = require('../block');
+const Block = require('../block');
 
 module.exports = Block.extend({
 
-    type: "image",
+    type: 'image',
 
     toolbarEnabled: false,
 
@@ -15,6 +13,7 @@ module.exports = Block.extend({
     icon_name: 'Image',
 
     loadData(data){
+        console.log(data);
     },
 
     onBlockRender() {

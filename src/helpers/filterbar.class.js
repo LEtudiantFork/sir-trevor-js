@@ -4,20 +4,7 @@ var eventablejs = require('eventablejs');
 
 var fieldHelper = require('./field.js');
 
-var searchBuilder = function($elem) {
-    var search = {};
-    var $fields = $elem.find('input, select');
-
-    $fields.each(function() {
-        if (this.value) {
-            search[this.name] = this.value;
-        }
-    });
-
-    return search;
-};
-
-var filterBarTemplate = `
+const filterBarTemplate = `
     <div class="st-block__filter-wrapper">
         <form name="" class="st-block__filter">
             <%= fields %>
@@ -25,7 +12,7 @@ var filterBarTemplate = `
     </div>
 `;
 
-var FilterBar = function(params) {
+function init(params) {
     this.accessToken = params.accessToken;
     this.app = params.app;
     this.application = params.application;
@@ -46,80 +33,101 @@ var FilterBar = function(params) {
             this.bindToDOM(params.container);
         }
     }
-};
+}
 
-FilterBar.prototype = Object.assign(FilterBar.prototype, {
+function searchBuilder($elem) {
+    var search = {};
+    var $fields = $elem.find('input, select');
 
-    render: function() {
-        var fieldMarkup = '';
+    $fields.each(function() {
+        if (this.value) {
+            search[this.name] = this.value;
+        }
+    });
 
-        this.fields.forEach(function(field) {
-            fieldMarkup += fieldHelper.build(field);
-        });
+    return search;
+}
 
-        return _.template(filterBarTemplate)({ fields: fieldMarkup });
+export default {
+    create() {
+        const instance = Object.assign(Object.create(this.prototype), eventablejs);
+
+        init.apply(instance, arguments);
+
+        return instance;
     },
 
-    bindToDOM: function(container) {
-        this.$elem = container.find('.st-block__filter');
+    prototype: {
 
-        this.$elem.on('keyup', 'input', _.debounce(() => {
-            this.search();
-        }, 300));
+        render: function() {
+            var fieldMarkup = '';
 
-        this.$elem.on('change', 'select', () => {
-            this.search();
-        });
-    },
+            this.fields.forEach(function(field) {
+                fieldMarkup += fieldHelper.build(field);
+            });
 
-    search: function(search, eventName) {
-        search = search || {};
-        eventName = eventName || 'search';
+            return _.template(filterBarTemplate)({ fields: fieldMarkup });
+        },
 
-        this.trigger(eventName + ':start');
+        bindToDOM: function(container) {
+            this.$elem = container.find('.st-block__filter');
 
-        search = Object.assign(search, searchBuilder(this.$elem), {
-            access_token: this.accessToken,
-            limit: this.limit,
-            application: this.app
-        });
+            this.$elem.on('keyup', 'input', _.debounce(() => {
+                this.search();
+            }, 300));
 
-        if (this.type) {
-            search.type = this.type;
+            this.$elem.on('change', 'select', () => {
+                this.search();
+            });
+        },
+
+        search: function(search, eventName) {
+            search = search || {};
+            eventName = eventName || 'search';
+
+            this.trigger(eventName + ':start');
+
+            search = Object.assign(search, searchBuilder(this.$elem), {
+                access_token: this.accessToken,
+                limit: this.limit,
+                application: this.app
+            });
+
+            if (this.type) {
+                search.type = this.type;
+            }
+
+            if (this.application) {
+                search.application = this.application;
+            }
+
+
+            this.nextSearch = search;
+
+            xhr.get(this.url, {
+                data: search
+            })
+            .then((searchResult) => {
+                if (searchResult.content) {
+                    this.trigger(eventName + ':result', searchResult.content);
+                    this.nextSearch.offset = this.nextSearch.offset ? this.nextSearch.offset += searchResult.content.length : searchResult.content.length;
+                }
+                else {
+                    this.trigger(eventName + ':no-result');
+                }
+            })
+            .catch((err) => {
+                this.trigger(eventName + ':error', err);
+            });
+        },
+
+        moreResults: function() {
+            this.search(this.nextSearch, 'update');
+        },
+
+        destroy: function() {
+            this.$elem.parent().remove();
         }
 
-        if (this.application) {
-            search.application = this.application;
-        }
-
-
-        this.nextSearch = search;
-
-        xhr.get(this.url, {
-            data: search
-        })
-        .then((searchResult) => {
-            if (searchResult.content) {
-                this.trigger(eventName + ':result', searchResult.content);
-                this.nextSearch.offset = this.nextSearch.offset ? this.nextSearch.offset += searchResult.content.length : searchResult.content.length;
-            }
-            else {
-                this.trigger(eventName + ':no-result');
-            }
-        })
-        .catch((err) => {
-            this.trigger(eventName + ':error', err);
-        });
-    },
-
-    moreResults: function() {
-        this.search(this.nextSearch, 'update');
-    },
-
-    destroy: function() {
-        this.$elem.parent().remove();
     }
-
-}, eventablejs);
-
-module.exports = FilterBar;
+}
