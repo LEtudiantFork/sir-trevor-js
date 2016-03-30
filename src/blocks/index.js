@@ -10,7 +10,11 @@ module.exports = {
     Media: require('./media'),
     Iframe: require('./iframe'),
     Quote: require('./quote'),
-    JCS: require('./jcs'),
+    Embed: require('./embed'),
     Chart: require('./chart'),
-    Table: require('./table')
+    Table: require('./table'),
+    Personality: require('./personality'),
+    Poll: require('./poll'),
+    Quiz: require('./quiz'),
+    Script: require('./script')
 };

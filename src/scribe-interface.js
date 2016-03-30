@@ -42,7 +42,7 @@ module.exports = {
 
         scribe.use(scribeBuild.scribePluginFormatterPlainTextConvertNewLinesToHTML());
         scribe.use(scribeBuild.scribePluginLinkPromptCommand());
-        scribe.use(scribeBuild.scribePluginSanitizer({tags: tags}));
+        scribe.use(scribeBuild.scribePluginSanitizer({ tags: tags }));
 
         if (_.isFunction(configureScribe)) {
             configureScribe.call(this, scribe);

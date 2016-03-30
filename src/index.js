@@ -63,11 +63,11 @@ var SirTrevor = {
             Array.prototype.forEach.call(SirTrevor.config.instances, function(i) {
                 i[method].apply(null, methodArgs);
             });
-        } else {
+        }
+        else {
             SirTrevor.log('method doesn\'t exist');
         }
-    },
-
+    }
 };
 
 Object.assign(SirTrevor, require('./form-events'));

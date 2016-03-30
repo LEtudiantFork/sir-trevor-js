@@ -1,8 +1,9 @@
 var _           = require('../lodash.js');
-var xhr         = require('etudiant-mod-xhr').default;
 var eventablejs = require('eventablejs');
 
 var fieldHelper = require('./field.js');
+
+import xhr from 'etudiant-mod-xhr';
 
 const filterBarTemplate = `
     <div class="st-block__filter-wrapper">

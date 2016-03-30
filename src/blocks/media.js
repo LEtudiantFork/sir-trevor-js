@@ -1,6 +1,5 @@
 'use strict';
 
-const _     = require('../lodash');
 const Block = require('../block');
 
 const fieldHelper = require('../helpers/field');
@@ -27,7 +26,7 @@ const chooseableConfig = {
     ]
 };
 
-const subBlockTrevorMap = {
+const subBlockMap = {
     image: 'Image',
     video: 'Video',
     diaporama: 'Diaporama'
@@ -44,62 +43,59 @@ module.exports = Block.extend({
     icon_name: 'Image',
 
     onBlockRender() {
-        if (_.isEmpty(this.blockStorage.data)) {
-            this.createChoices(chooseableConfig, choices => {
-                const sliderConfig = {
-                    controls: {
-                        next: 'Next',
-                        prev: 'Prev'
-                    },
-                    itemsPerSlide: 2,
-                    increment: 2
+        this.createChoices(chooseableConfig, choices => {
+            const sliderConfig = {
+                controls: {
+                    next: 'Next',
+                    prev: 'Prev'
+                },
+                itemsPerSlide: 2,
+                increment: 2
+            };
+
+            filterDataFetcher.getData({ // @todo put inside a service
+                apiUrl: this.globalConfig.apiUrl,
+                application: this.globalConfig.application,
+                accessToken: this.globalConfig.accessToken
+            })
+            .then(filterData => {
+
+                let filterConfig = {
+                    url: this.globalConfig.apiUrl + '/edt/media',
+                    accessToken: this.globalConfig.accessToken,
+                    application: this.globalConfig.application,
+                    fields: [
+                        {
+                            type: 'search',
+                            name: 'query',
+                            placeholder: 'Rechercher'
+                        }, {
+                            type: 'select',
+                            name: 'category',
+                            placeholder: 'Categorie',
+                            options: fieldHelper.addNullOptionToArray(filterData.categories, 'Aucune categorie')
+                        }
+                    ],
+                    limit: 20,
+                    type: choices.type
                 };
 
-                filterDataFetcher.getData({ // @todo put inside a service
-                    apiUrl: this.globalConfig.apiUrl,
-                    application: this.globalConfig.application,
-                    accessToken: this.globalConfig.accessToken
-                })
-                .then(filterData => {
-
-                    let filterConfig = {
-                        url: this.globalConfig.apiUrl + '/edt/media',
-                        accessToken: this.globalConfig.accessToken,
-                        application: this.globalConfig.application,
-                        fields: [
-                            {
-                                type: 'search',
-                                name: 'query',
-                                placeholder: 'Rechercher'
-                            }, {
-                                type: 'select',
-                                name: 'category',
-                                placeholder: 'Categorie',
-                                options: fieldHelper.addNullOptionToArray(filterData.categories, 'Aucune categorie')
-                            }
-                        ],
-                        limit: 20,
-                        type: choices.type
-                    };
-
-                    this.pandoraSearch = PandoraSearch.create({
-                        container: this.editor,
-                        filterConfig: filterConfig,
-                        sliderConfig: sliderConfig,
-                        subBlockType: choices.type
-                    });
-
-                    this.pandoraSearch.on('selected', selectedSubBlock => {
-                        this.mediator.trigger('block:replace', this.el, subBlockTrevorMap[selectedSubBlock.type], selectedSubBlock.content);
-
-                        this.pandoraSearch.destroy();
-                    });
-                })
-                .catch(function(err) {
-                    console.error(err);
+                this.pandoraSearch = PandoraSearch.create({
+                    container: this.editor,
+                    filterConfig: filterConfig,
+                    sliderConfig: sliderConfig,
+                    subBlockType: choices.type
                 });
 
+                this.pandoraSearch.on('selected', selectedSubBlock => {
+                    this.mediator.trigger('block:replace', this.el, subBlockMap[selectedSubBlock.type], selectedSubBlock.content);
+
+                    this.pandoraSearch.destroy();
+                });
+            })
+            .catch(function(err) {
+                console.error(err);
             });
-        }
+        });
     }
 });

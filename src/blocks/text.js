@@ -22,6 +22,7 @@ module.exports = Block.extend({
     icon_name: 'text',
 
     textable: true,
+
     toolbarEnabled: false,
 
     configureScribe(scribe) {
@@ -39,7 +40,7 @@ module.exports = Block.extend({
         }
     },
 
-    loadData(data){
+    loadData(data) {
         if (this.options.convertFromMarkdown && data.format !== 'html') {
             this.setTextBlockHTML(stToHTML(data.text, this.type));
         }

@@ -1,5 +1,5 @@
-var _   = require('../lodash.js');
-var xhr = require('etudiant-mod-xhr').default;
+import _   from '../lodash';
+import xhr from 'etudiant-mod-xhr';
 
 // prepares data for a template like '<option value="<%= value %>"><%= label %></option>'
 function prepareForSelect(array, valueKeyName, labelKeyName) {
