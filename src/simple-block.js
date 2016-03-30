@@ -79,7 +79,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
     _setBlockInner : function() {
         var editor_html = _.result(this, 'editorHTML');
 
-        this.el.insertAdjacentHTML("beforeend", this.block_template(editor_html));
+        this.el.insertAdjacentHTML('beforeend', this.block_template(editor_html));
 
         this.inner = this.el.querySelector('.st-block__inner');
     },
@@ -100,7 +100,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
         this.checkAndLoadData();
 
         this.el.classList.add('st-item-ready');
-        this.on("onRender", this.onBlockRender);
+        this.on('onRender', this.onBlockRender);
         this.save();
     },
 
@@ -112,7 +112,7 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
     },
 
     _initUI : function() {
-        var ui_element = Dom.createElement("div", { 'class': 'st-block__ui' });
+        var ui_element = Dom.createElement('div', { 'class': 'st-block__ui' });
         this.el.appendChild(ui_element);
         this.ui = ui_element;
         this._initUIComponents();
@@ -121,13 +121,13 @@ Object.assign(SimpleBlock.prototype, require('./function-bind'), require('./even
     },
 
     _initMessages: function() {
-        var msgs_element = Dom.createElement("div", { 'class': 'st-block__messages' });
+        var msgs_element = Dom.createElement('div', { 'class': 'st-block__messages' });
         this.inner.insertBefore(msgs_element, this.inner.firstChild);
         this.messages = msgs_element;
     },
 
     addMessage: function(msg, additionalClass) {
-        msg = Dom.createElement("span", { html: msg, class: "st-msg " + additionalClass });
+        msg = Dom.createElement('span', { html: msg, class: 'st-msg ' + additionalClass });
         this.messages.appendChild(msg);
         this.messages.classList.add('st-block__messages--is-visible');
         return msg;
