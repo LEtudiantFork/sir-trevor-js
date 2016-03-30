@@ -47,7 +47,7 @@ var Locales = {
                 title: 'Embed'
             },
             chart: {
-                title: 'Chart'
+                title: 'Charte'
             },
             barChart: {
                 title: 'Charte de barres'
@@ -56,11 +56,11 @@ var Locales = {
                 title: 'Charte en camembert'
             },
             illustrated: {
-                title: 'Valeur Illustrée',
+                title: 'Illustrée',
                 placeholder: 'Place holder :D'
             },
             table: {
-                title: 'Table'
+                title: 'Tableau'
             },
             image: {
                 title: 'Image'

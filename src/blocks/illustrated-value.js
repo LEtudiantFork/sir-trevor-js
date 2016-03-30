@@ -19,7 +19,7 @@ module.exports = Block.extend({
 
     title() { return i18n.t('blocks:illustrated:title'); },
 
-    icon_name: 'Embed',
+    icon_name: 'illustrated-value',
 
     editorHTML() {
         return template(this);
