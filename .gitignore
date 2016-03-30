@@ -9,4 +9,3 @@ website/.bundle/
 website/vendor/
 build/*.test.*
 build/*.debug.*
-scribe.build.js
