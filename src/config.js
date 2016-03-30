@@ -49,7 +49,7 @@ module.exports = {
         Block: {
             drop_options: drop_options,
             paste_options: paste_options,
-            upload_options: upload_options,
+            upload_options: upload_options
         },
         blockLimit: 0,
         blockTypeLimits: {},
@@ -82,23 +82,16 @@ module.exports = {
                     title: 'link',
                     iconName: 'fmt-link',
                     cmd: 'linkPrompt',
-                    text : 'link',
+                    text : 'link'
                 },
                 {
                     name: 'Unlink',
                     title: 'unlink',
                     iconName: 'fmt-unlink',
                     cmd: 'unlink',
-                    text : 'link',
-                },
-                {
-                    name: "Quote",
-                    title: "quote",
-                    iconName: "fmt-quote",
-                    cmd: "quote",
-                    text: "quote"
+                    text : 'link'
                 }
-            ],
+            ]
         },
         ajaxOptions: {
             headers: {}

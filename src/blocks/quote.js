@@ -22,10 +22,10 @@ module.exports = Block.extend({
 
     title: function() { return i18n.t('blocks:quote:title'); },
 
-    icon_name: 'quote',
+    icon_name: 'fmt-quote',
 
     textable: true,
-    toolbarEnabled: false,
+    toolbarEnabled: true,
 
     editorHTML: function() {
         return template(this);
