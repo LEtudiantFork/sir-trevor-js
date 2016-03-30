@@ -55,6 +55,10 @@ var Locales = {
             pieChart: {
                 title: 'Charte en camembert'
             },
+            illustrated: {
+                title: 'Valeur Illustrée',
+                placeholder: 'Place holder :D'
+            },
             table: {
                 title: 'Table'
             },

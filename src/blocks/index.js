@@ -5,6 +5,7 @@ module.exports = {
     Heading: require('./heading'),
     List: require('./list'),
     Image: require('./image'),
+    Illustrated: require('./illustrated-value'),
     Video: require('./video'),
     Diaporama: require('./diaporama'),
     Media: require('./media'),

@@ -91,7 +91,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this._setBlockInner();
 
     this.editor = this.inner.children[0];
-    
+
     this.mixinsRequireInputs = false;
     this.availableMixins.forEach(function(mixin) {
       if (this[mixin]) {
@@ -228,7 +228,7 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
     this.mediator.trigger('block:remove', this.blockID, {focusOnPrevious: true});
   },
 
-  // REFACTOR: have one set of delete controls that moves around like the 
+  // REFACTOR: have one set of delete controls that moves around like the
   // block controls?
   addDeleteControls: function(){
 
