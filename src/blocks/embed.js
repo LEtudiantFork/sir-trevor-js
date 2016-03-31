@@ -62,7 +62,7 @@ module.exports = Block.extend({
                 this.mediator.trigger('block:replace', this.el, choices.type, {});
             }
 
-            const thematicOptionsUrl = this.globalConfig.apiUrl + '/jcs/thematics/list/' + apiJCSNames[choices.type];
+            const thematicOptionsUrl = `${this.globalConfig.apiUrl}/jcs/thematics/list/${choices.type}`;
 
             const sliderConfig = {
                 controls: {

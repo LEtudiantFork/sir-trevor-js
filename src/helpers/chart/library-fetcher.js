@@ -1,4 +1,4 @@
-var $script = require('scriptjs')
+var $script = require('scriptjs');
 
 var state = 'not-loaded';
 
@@ -8,7 +8,7 @@ var chartLibs = [
 ];
 
 function fetchChartLibs() {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve) => {
         if (state === 'not-loaded') {
             state = 'loading';
 
