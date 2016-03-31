@@ -8,7 +8,7 @@ function dataKeyIsUnique(newKey, tableData) {
 
 function getHeaderNames(tableData, headerKey) {
     return _.uniq(
-            tableData.map(function(tableDataItem) {
+        tableData.map(function(tableDataItem) {
             return tableDataItem[headerKey];
         })
     );

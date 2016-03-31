@@ -1,26 +1,16 @@
-var $script = require('scriptjs');
+import $script from 'scriptjs';
 
-var state = 'not-loaded';
-
-var chartLibs = [
+const chartLibs = [
     'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js',
     'https://cdnjs.cloudflare.com/ajax/libs/d3plus/1.8.0/d3plus.min.js'
 ];
 
-function fetchChartLibs() {
-    return new Promise((resolve) => {
-        if (state === 'not-loaded') {
-            state = 'loading';
+let fetchChartPromise;
 
-            $script(chartLibs, function() {
-                state = 'loaded';
-                resolve();
-            });
-        }
-        else if (state === 'loaded') {
-            resolve();
-        }
+export const fetchChartLibs = () => {
+    fetchChartPromise = fetchChartPromise || new Promise(resolve => {
+        $script.order(chartLibs, () => resolve());
     });
-}
 
-module.exports = fetchChartLibs;
+    return fetchChartPromise;
+};

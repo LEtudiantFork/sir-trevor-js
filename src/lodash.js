@@ -12,4 +12,5 @@ exports.isUndefined = require('lodash.isundefined');
 exports.result      = require('lodash.result');
 exports.template    = require('lodash.template');
 exports.uniqueId    = require('lodash.uniqueid');
+exports.uniq        = require('lodash.uniq');
 exports.sortBy      = require('lodash.sortby');

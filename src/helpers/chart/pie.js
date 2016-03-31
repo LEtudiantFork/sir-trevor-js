@@ -1,24 +1,24 @@
-var Table  = require('../table/index.js');
+import Table from '../table/index.js';
 
-var mockData = [
+const mockData = [
     { valeur: 10, section: 'Section 1' },
     { valeur: 20, section: 'Section 2' },
     { valeur: 30, section: 'Section 3' }
 ];
 
-var pieChartPrototype = {
-    drawChart: function() {
+export default {
+    drawChart() {
         window.d3plus.viz()
         .container('#' + this.id)
         .data(this.data)
-        .type('pie')
+        .type(this.type)
         .id(this.rowKey)
         .margin('10px 20px')
         .size(this.valueKey)
         .draw();
     },
 
-    generate: function() {
+    generate() {
         this.type = 'pie';
 
         if (!this.data) {
@@ -37,18 +37,17 @@ var pieChartPrototype = {
         this.$tableArea.append(this.table.$elem);
 
         // need to wait for redraw otherwise d3plus doesn't find element
-        setTimeout(() => { this.drawChart() }, 0);
+        setTimeout(() => this.drawChart(), 0);
 
-        this.table.on('update:key', function(newData) { this[newData.type] = newData.value; }.bind(this));
+        this.table.on('update:key', data => this[data.type] = data.value);
 
-        this.table.on('update', function(newData) {
-            this.data = newData;
-
+        this.table.on('update', data => {
+            this.data = data;
             this.drawChart();
-        }.bind(this));
+        });
     },
 
-    getData: function() {
+    getData() {
         return {
             valueKey: this.valueKey,
             data: this.data,
@@ -57,5 +56,3 @@ var pieChartPrototype = {
         }
     }
 };
-
-module.exports = pieChartPrototype;

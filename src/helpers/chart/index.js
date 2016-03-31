@@ -1,45 +1,29 @@
-var $           = require('etudiant-mod-dom').default;
-var eventablejs = require('eventablejs');
+import $           from 'etudiant-mod-dom';
+import eventablejs from 'eventablejs';
 
-var chartPrototype    = require('./generic.js');
+import chartPrototype    from './generic.js';
+import barChartPrototype from './bar.js';
+import pieChartPrototype from './pie.js';
 
-var barChartPrototype = require('./bar.js');
-var pieChartPrototype = require('./pie.js');
+export default {
+    create: function({ type, data, rowKey, valueKey, columnKey }) {
+        const instance = Object.assign({}, chartPrototype);
 
-module.exports = {
-    create: function(params) {
-        var instance;
-
-        if (params.type === 'pie') {
-            function PieChart() {}
-
-            instance = new PieChart();
-
-            instance = Object.assign(instance, chartPrototype, pieChartPrototype, eventablejs);
+        if (type === 'pie') {
+            Object.assign(instance, pieChartPrototype);
         }
-        else if (params.type === 'bar') {
-            function BarChart() {}
-
-            instance = new BarChart();
-
-            instance = Object.assign(instance, chartPrototype, barChartPrototype, eventablejs);
+        else if (type === 'bar') {
+            Object.assign(instance, barChartPrototype);
         }
 
-        instance.id = 'chart-' + Date.now();
-        instance.data = params.data;
+        const id = 'chart-' + Date.now();
+        const $elem = $('<div class="chart-builder"></div>');
+        const $chartArea = $(`<div id="${id}" class="chart-area"></div>`);
+        const $tableArea = $('<div class="table-area"></div>');
 
-        instance.rowKey = params.rowKey;
-        instance.valueKey = params.valueKey;
-        instance.columnKey = params.columnKey;
-
-        instance.$elem = $('<div class="chart-builder"></div>');
-
-        instance.$chartArea = $('<div id="' + instance.id + '" class="chart-area"></div>');
-        instance.$tableArea = $('<div class="table-area"></div>');
-
-        instance.$elem.append(instance.$chartArea);
-        instance.$elem.append(instance.$tableArea);
-
+        Object.assign(instance, eventablejs, { id, $elem, $chartArea, $tableArea, data, rowKey, valueKey, columnKey });
+        $elem.append($chartArea);
+        $elem.append($tableArea);
         instance.generate();
 
         return instance;

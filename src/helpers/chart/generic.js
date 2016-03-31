@@ -1,3 +1,5 @@
-var chartPrototype = {
-
+export default {
+    drawChart() {},
+    generate() {},
+    getData() {}
 };
