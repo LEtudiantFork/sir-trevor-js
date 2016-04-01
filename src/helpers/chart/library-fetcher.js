@@ -7,7 +7,7 @@ const chartLibs = [
 
 let fetchChartPromise;
 
-export const fetchChartLibs = () => {
+export default () => {
     fetchChartPromise = fetchChartPromise || new Promise(resolve => {
         $script.order(chartLibs, () => resolve());
     });

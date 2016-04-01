@@ -5,7 +5,6 @@
 import * as _        from '../lodash.js';
 import Block         from '../block';
 import Chart         from '../helpers/chart/index.js';
-import { fetchChartLibs } from '../helpers/chart/library-fetcher.js';
 import utils         from '../utils.js';
 
 const chooseableConfig = {
@@ -29,7 +28,7 @@ module.exports = Block.extend({
 
     type: 'Chart',
 
-    title: function() {
+    title() {
         return i18n.t('blocks:chart:title');
     },
 
@@ -37,20 +36,13 @@ module.exports = Block.extend({
 
     icon_name: 'pie-chart',
 
-    loadData: function(data) {
-        if (!_.isEmpty(data)) {
-            fetchChartLibs().then(() => {
-                this.chart = Chart.create(data);
-                this.editor.appendChild(this.chart.$elem[0]);
-            })
-            .catch(function(err) {
-                console.error(err);
-            });
-        }
+    loadData(data) {
+        this.chart = Chart.create(data);
+        this.editor.appendChild(this.chart.$elem[0]);
     },
 
-    _serializeData: function() {
-        utils.log('toData for ' + this.blockID);
+    _serializeData() {
+        utils.log(`toData for ${this.blockID}`);
 
         if (this.chart) {
             return this.chart.getData();
@@ -59,19 +51,11 @@ module.exports = Block.extend({
         return {};
     },
 
-    onBlockRender: function() {
+    onBlockRender() {
         if (_.isEmpty(this.blockStorage.data)) {
-            this.createChoices(chooseableConfig, (choices) =>{
-                const type = choices.chartType;
-
-                fetchChartLibs().then(() => {
-                    this.chart = Chart.create({ type });
-
-                    this.editor.appendChild(this.chart.$elem[0]);
-                })
-                .catch(function(err) {
-                    console.error(err);
-                });
+            this.createChoices(chooseableConfig, choice => {
+                this.chart = Chart.create({ type: choice.chartType });
+                this.editor.appendChild(this.chart.$elem[0]);
             });
         }
     }

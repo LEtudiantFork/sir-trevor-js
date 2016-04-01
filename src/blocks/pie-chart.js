@@ -17,7 +17,7 @@ module.exports = Block.extend({
     icon_name: 'pie-chart',
 
     loadData(data) {
-
+        console.log(data);
     },
 
     onBlockRender() {

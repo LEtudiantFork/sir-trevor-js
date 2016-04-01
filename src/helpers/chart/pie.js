@@ -1,31 +1,30 @@
 import Table from '../table/index.js';
 
 const mockData = [
-    { valeur: 10, section: 'Section 1' },
-    { valeur: 20, section: 'Section 2' },
-    { valeur: 30, section: 'Section 3' }
+    { valeur: 10, section: 'Section 1', hex: '#a22' },
+    { valeur: 20, section: 'Section 2', hex: '#2a2' },
+    { valeur: 30, section: 'Section 3', hex: '#22a' }
 ];
 
 export default {
+    type: 'pie',
+
     drawChart() {
         window.d3plus.viz()
-        .container('#' + this.id)
+        .container(`#${this.id}`)
         .data(this.data)
         .type(this.type)
-        .id(this.rowKey)
         .margin('10px 20px')
+        .id(this.rowKey)
         .size(this.valueKey)
+        .color('hex')
         .draw();
     },
 
     generate() {
-        this.type = 'pie';
-
-        if (!this.data) {
-            this.data = mockData;
-            this.rowKey = 'section';
-            this.valueKey = 'valeur';
-        }
+        this.data = this.data || mockData;
+        this.rowKey = this.rowKey || 'section';
+        this.valueKey = this.valueKey || 'valeur';
 
         this.table = Table.create({
             tableType: '1D',
@@ -53,6 +52,6 @@ export default {
             data: this.data,
             rowKey: this.rowKey,
             type: this.type
-        }
+        };
     }
 };

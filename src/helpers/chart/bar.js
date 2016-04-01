@@ -10,9 +10,11 @@ const mockData = [
 ];
 
 export default {
+    type: 'bar',
+
     drawChart() {
         window.d3plus.viz()
-        .container('#' + this.id)
+        .container(`#${this.id}`)
         .data(this.data)
         .type(this.type)
         .margin('10px 20px')
@@ -23,14 +25,10 @@ export default {
     },
 
     generate() {
-        this.type = 'bar';
-
-        if (!this.data) {
-            this.data = mockData;
-            this.columnKey = 'colonne';
-            this.rowKey = 'rangée';
-            this.valueKey = 'valeur';
-        }
+        this.data = this.data || mockData;
+        this.columnKey = this.columnKey || 'colonne';
+        this.rowKey = this.rowKey || 'rangée';
+        this.valueKey = this.valueKey || 'valeur';
 
         this.table = Table.create({
             tableType: '2D',
@@ -60,7 +58,7 @@ export default {
             data: this.data,
             rowKey: this.rowKey,
             type: this.type
-        }
+        };
     }
 
 };
