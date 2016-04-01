@@ -1,6 +1,6 @@
-var _ = require('../../lodash.js');
+const _ = require('../../lodash.js');
 
-var templates = {
+const templates = {
     table: '<table><%= content %></table>',
     thead: '<thead><%= content %></thead>',
     tbody: '<tbody><%= content %></tbody>',
@@ -8,182 +8,67 @@ var templates = {
     tr: '<tr><%= content %></tr>',
     th: '<th><%= content %></th>',
     td: '<td><%= content %></td>',
-    delete: '<button class="st-icon" data-icon="bin" data-type="<%= type %>" data-key="<%= key %>" type="button"></button>',
-    inner: '<input type="text" value="<%= value %>" data-old-value="<%= value %>" data-cell-type="<%= type %>" data-coord="<%= coord %>" />'
+    delete: '<button data-action="delete-<%= type %>" data-key="<%= key %>" type="button"><svg class="st-icon" style="width: 25px; height: 25px;"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="inc/icons.svg#icon-Bin"></use></svg></button>',
+    input: '<input type="text" value="<%= value %>" data-old-value="<%= value %>" data-cell-type="<%= type %>" data-coord="<%= coord %>" />'
 };
 
-function renderDelete(params) {
-    return _.template(templates.delete)({
-        key: params.key,
-        text: params.text,
-        type: params.type
+function renderElement({ type, content }) {
+    return _.template(templates[type])({ content });
+}
+
+export function renderDELETE({ key, text, type }) {
+    return _.template(templates.delete)({ key, text, type });
+}
+
+export function renderINPUT({ value, type, coord = '' }) {
+    return _.template(templates.input)({ value, type, coord });
+}
+
+export function renderTABLE(content) {
+    return renderElement({
+        type: 'table',
+        content
     });
 }
 
-function renderInner(params) {
-    return _.template(templates.inner)({
-        value: params.value,
-        type: params.type,
-        coord: params.coord || ''
-    });
-}
-
-function renderElement(params) {
-    return _.template(templates[params.type])({ content: params.content });
-}
-
-function renderTHEAD(content) {
+export function renderTHEAD(content) {
     return renderElement({
         type: 'thead',
-        content: content
+        content
     });
 }
 
-function renderTBODY(content) {
+export function renderTBODY(content) {
     return renderElement({
         type: 'tbody',
-        content: content
+        content
     });
 }
 
-function renderTFOOT(content) {
+export function renderTFOOT(content) {
     return renderElement({
         type: 'tfoot',
-        content: content
+        content
     });
 }
 
-function renderTH(content) {
+export function renderTH(content) {
     return renderElement({
         type: 'th',
-        content: content
+        content
     });
 }
 
-function renderTR(content) {
+export function renderTR(content) {
     return renderElement({
         type: 'tr',
-        content: content
+        content
     });
 }
 
-function renderTD(content) {
+export function renderTD(content) {
     return renderElement({
         type: 'td',
-        content: content
-    })
-}
-
-function render1DTable(tableData) {
-    var headerData = tableData.shift();
-
-    var table = renderTHEAD(renderTR(renderTH('') + renderTH(renderInner({ value: headerData[0], type: 'column-header' })) +  renderTH('')));
-
-    var rows = tableData.map((rowData, rowIndex) => {
-        return renderTR(
-            rowData.reduce((rowHeader, rowItem, innerIndex) => {
-                var markup = renderTD(renderInner({ value: rowHeader, type: 'row-header' }));
-
-                markup += renderTD(renderInner({ value: rowItem.value, type: 'standard', coord: rowItem.coord }));
-
-                if (rowIndex === 0) {
-                    markup += renderTD('');
-                }
-                else {
-                    markup += renderTD(renderDelete({ key: rowHeader, text: 'supprimer', type: 'row' }));
-                }
-
-                return markup;
-            })
-        );
-    });
-
-    table += renderTBODY(rows.reduce((previousRow, currentRow) => {
-        return previousRow += currentRow;
-    }));
-
-    return renderElement({
-        type: 'table',
-        content: table
+        content
     });
 }
-
-function render2DTable(tableData) {
-    var headerData = tableData.shift();
-
-    var table;
-
-    if (headerData.length === 1) {
-        table = renderTHEAD(renderTR(renderTH('') + renderTH(renderInner({ value: headerData[0], type: 'column-header' })) +  renderTH('')));
-    }
-    else {
-        table = renderTHEAD(renderTR(
-            headerData.reduce((previousItem, currentItem, index) => {
-                if (index === 1) {
-                    previousItem = renderTH('') + renderTH(renderInner({ value: previousItem, type: 'column-header' }));
-                }
-
-                var markup = previousItem + renderTH(renderInner({ value: currentItem, type: 'column-header' }));
-
-                if (index === headerData.length - 1) {
-                    markup += renderTH('');
-                }
-
-                return markup;
-            })
-        ));
-    }
-
-    var rows = tableData.map((rowData, rowIndex) => {
-        return renderTR(
-            rowData.reduce((previousItem, currentItem, innerIndex) => {
-                if (innerIndex === 1) {
-                    previousItem = renderTD(renderInner({ value: previousItem, type: 'row-header' }));
-                }
-
-                var markup = previousItem += renderTD(renderInner({ value: currentItem.value, type: 'standard', coord: currentItem.coord }));
-
-                if (rowIndex === 0 && innerIndex === rowData.length - 1) {
-                    markup += renderTD('');
-                }
-                else if (innerIndex === rowData.length - 1) {
-                    markup += renderTD(renderDelete({ key: rowData[0], text: 'supprimer', type: 'row' }));
-                }
-
-                return markup;
-            })
-        );
-    });
-
-    if (headerData.length > 1) {
-        rows.push(
-            renderTFOOT(renderTR(
-                headerData.reduce((previousItem, currentItem, index) => {
-                    if (index === 1) {
-                        previousItem = renderTD('') + renderTD('');
-                    }
-
-                    var markup = previousItem + renderTD(renderDelete({ key: currentItem, text: 'supprimer', type: 'column' }));
-
-                    if (index === headerData.length - 1) {
-                        markup += renderTD('');
-                    }
-
-                    return markup;
-                })
-            ))
-        );
-    }
-
-    table += renderTBODY(rows.reduce((previousRow, currentRow) => {
-        return previousRow += currentRow;
-    }));
-
-    return renderElement({
-        type: 'table',
-        content: table
-    });
-}
-
-exports.render1DTable = render1DTable;
-exports.render2DTable = render2DTable;

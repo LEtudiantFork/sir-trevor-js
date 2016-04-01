@@ -1,25 +1,13 @@
-var _ = require('../../lodash.js');
+import * as _ from '../../lodash.js';
 
-function dataKeyIsUnique(newKey, tableData) {
-    return Object.keys(tableData[0]).every(function(tableDataItemKey) {
-        return tableDataItemKey !== newKey;
-    });
+export function dataKeyIsUnique(key, data) {
+    return Object.keys(data[0]).every(item => item !== key);
 }
 
-function getHeaderNames(tableData, headerKey) {
-    return _.uniq(
-        tableData.map(function(tableDataItem) {
-            return tableDataItem[headerKey];
-        })
-    );
+export function getHeaderNames(data, key) {
+    return _.uniq(data.map(item => item[key]));
 }
 
-function headerValueIsUnique(newValue, headerKey, tableData) {
-    return tableData.every(function(tableDataItem) {
-        return tableDataItem[headerKey] !== newValue;
-    });
+export function headerValueIsUnique(value, key, data) {
+    return data.every(item => item[key] !== value);
 }
-
-exports.dataKeyIsUnique = dataKeyIsUnique;
-exports.getHeaderNames = getHeaderNames;
-exports.headerValueIsUnique = headerValueIsUnique;

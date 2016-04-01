@@ -1,87 +1,123 @@
-var $                 = require('etudiant-mod-dom').default;
-var _                 = require('../../lodash.js');
-var renderTable       = require('./render.js').render2DTable;
-var renderTableFooter = require('./render.js').renderTableFooter;
-var getHeaderNames    = require('./lib.js').getHeaderNames;
+import $                  from 'etudiant-mod-dom';
+import * as _             from '../../lodash.js';
+import {
+    renderDELETE,
+    renderINPUT,
+    renderTABLE,
+    renderTHEAD,
+    renderTBODY,
+    renderTFOOT,
+    renderTR,
+    renderTH,
+    renderTD
+} from './render.js';
+import { getHeaderNames } from './lib.js';
 
-function renderTableControls(params) {
-    var template = [
-        '<div>',
-            '<div>',
-                '<label><%= xAxisLabel %></label>',
-                '<input type="text" data-cell-type="axis" data-axis-type="x-axis" value="<%= xAxisValue %>" data-old-value="<%= xAxisValue %>" />',
-            '</div>',
-            '<div>',
-                '<label><%= yAxisLabel %></label>',
-                '<input type="text" data-cell-type="axis" data-axis-type="y-axis" value="<%= yAxisValue %>" data-old-value="<%= yAxisValue %>" />',
-            '</div>',
-            '<button type="button" data-action="add-row">Ajouter une rangée</button>',
-            '<button type="button" data-action="add-column">Ajouter une colonne</button>',
-        '</div>'
-    ].join('\n');
+const AXIS = {
+    'x-axis': 'rowKey',
+    'y-axis': 'valueKey'
+};
 
-    return _.template(template)({
-        xAxisLabel: 'X Axis',
-        xAxisValue: params.xAxisValue,
-        yAxisLabel: 'Y Axis',
-        yAxisValue: params.yAxisValue
-    });
+function renderControls({ xAxis, yAxis }) {
+    return `<div>
+                <div>
+                    <label>${i18n.t('blocks:table2D:axisX')}</label>
+                    <input type="text" data-cell-type="axis" data-axis-type="x-axis" value="${xAxis}" data-old-value="${xAxis}" />
+                    <label>${i18n.t('blocks:table2D:axisY')}</label>
+                    <input type="text" data-cell-type="axis" data-axis-type="y-axis" value="${yAxis}" data-old-value="${yAxis}" />
+                </div>
+            </div>`;
 }
 
-function getValue(params) {
-    var result = params.rawData.filter(function(rawDataItem) {
-        return rawDataItem[params.rowKey] === params.rowProp && rawDataItem[params.columnKey] === params.columnProp;
-    })[0];
 
-    return result[params.valueKey];
+function renderTable(tableData) {
+    const headerData = tableData.shift();
+    const headerCount = headerData.length;
+    const headerLastIndex = headerCount - 1;
+    const rowsCount = tableData.length;
+
+    const thead = renderTHEAD(
+        renderTR(
+            headerData.reduce((markup, item, index) => `
+                ${markup}
+                ${renderTH(renderINPUT({ value: item, type: 'column-header' }))}
+                ${index === headerLastIndex ? renderTH(`<button type="button" data-action="add-column">${i18n.t('blocks:table1D:addColumn')}</button>`) : ''}
+            `,
+            renderTH(''))
+        )
+    );
+
+    const trows = tableData.map(rowData => {
+        const rowName = rowData.shift();
+        const colLastIndex = rowData.length - 1;
+
+        return renderTR(
+            rowData.reduce((markup, item, index) => `
+                ${markup}
+                ${renderTD(renderINPUT({ value: item.value, type: 'standard', coord: item.coord }))}
+                ${rowsCount > 1 && index === colLastIndex ? renderTD(renderDELETE({ key: rowName, text: i18n.t('blocks:table1D:delete'), type: 'row' })) : ''}
+            `,
+            renderTD(renderINPUT({ value: rowName, type: 'row-header' }))
+            )
+        );
+    })
+    .reduce((prev, curr) => `${prev}${curr}`);
+
+
+    const tbody = renderTBODY(trows);
+
+    const tfoot = renderTFOOT(renderTR(
+        headerData.reduce((markup, item, index) => `
+            ${markup}
+            ${renderTD(headerCount > 1 ? renderDELETE({ key: item, text: 'supprimer', type: 'column' }) : '')}
+            ${index === headerLastIndex ? renderTD('') : ''}
+        `,
+        renderTD(`<button type="button" data-action="add-row">${i18n.t('blocks:table1D:addRow')}</button>`))
+    ));
+
+    return renderTABLE(`
+        ${thead}
+        ${tbody}
+        ${tfoot}
+    `);
 }
 
-function prepareData(params) {
-    var prepared = params.rowNames.map(function(rowName) {
-        var preparedRow = [];
+function getValue({ data, rowKey, rowName, columnKey, columnName, valueKey }) {
+    const result = data.filter(item => item[rowKey] === rowName && item[columnKey] === columnName).shift();
 
-        preparedRow.push(rowName);
+    return result[valueKey];
+}
 
-        params.columnNames.forEach(function(columnName) {
-            preparedRow.push({
-                coord: rowName + '$' + columnName,
-                value: getValue({
-                    rawData: params.tableData,
-                    rowKey: params.rowKey,
-                    rowProp: rowName,
-                    columnKey: params.columnKey,
-                    columnProp: columnName,
-                    valueKey: params.valueKey
-                })
-            });
-        });
+function prepareData({ data, columnNames, rowNames, rowKey, columnKey, valueKey }) {
+    const prepared = rowNames.map(rowName => {
+        const preparedRow = columnNames.map(columnName => ({
+            coord: `${rowName}$${columnName}`,
+            value: getValue({ data, rowKey, rowName, columnKey, columnName, valueKey })
+        }));
+
+        preparedRow.unshift(rowName);
 
         return preparedRow;
     });
 
-    prepared.unshift(params.columnNames);
+    prepared.unshift(columnNames);
 
     return prepared;
 }
 
-var twoDimensionalTablePrototype = {
-    addColumn: function() {
-        var rowNames = getHeaderNames(this.tableData, this.rowKey);
-
-        if (this._newColumnName) {
-            this._newColumnCount++;
+export default {
+    addColumn() {
+        if (!this.newColumnIndex) {
+            this.newColumnIndex = getHeaderNames(this.tableData, this.columnKey).length;
         }
-        else {
-            this._newColumnName = 'Nouvelle Colonne';
-            this._newColumnCount = 1;
-        }
+        this.newColumnIndex++;
 
-        var newColumn = rowNames.map((rowName) => {
-            var newItem = {};
+        const newColumn = getHeaderNames(this.tableData, this.rowKey).map(name => {
+            const newItem = {};
 
             newItem[this.valueKey] = 0;
-            newItem[this.rowKey] = rowName;
-            newItem[this.columnKey] = this._newColumnName + ' ' + this._newColumnCount;
+            newItem[this.rowKey] = name;
+            newItem[this.columnKey] = `${i18n.t('blocks:table2D:newColumn')} ${this.newColumnIndex}`;
 
             return newItem;
         });
@@ -92,23 +128,18 @@ var twoDimensionalTablePrototype = {
         this.render();
     },
 
-    addRow: function() {
-        var columnNames = getHeaderNames(this.tableData, this.columnKey);
-
-        if (this._newRowName) {
-            this._newRowCount++;
+    addRow() {
+        if (!this.newRowIndex) {
+            this.newRowIndex = getHeaderNames(this.tableData, this.rowKey).length;
         }
-        else {
-            this._newRowName = 'Nouvelle Rangée';
-            this._newRowCount = 1;
-        }
+        this.newRowIndex++;
 
-        var newRow = columnNames.map((columnName) => {
-            var newItem = {};
+        const newRow = getHeaderNames(this.tableData, this.columnKey).map(name => {
+            const newItem = {};
 
             newItem[this.valueKey] = 0;
-            newItem[this.columnKey] = columnName;
-            newItem[this.rowKey] = this._newRowName + ' ' + this._newRowCount;
+            newItem[this.columnKey] = name;
+            newItem[this.rowKey] = `${i18n.t('blocks:table2D:newRow')} ${this.newRowIndex}`;
 
             return newItem;
         });
@@ -119,128 +150,101 @@ var twoDimensionalTablePrototype = {
         this.render();
     },
 
-    deleteColumn: function(columnName) {
-        var columnNames = getHeaderNames(this.tableData, this.columnKey);
-
-        if (columnNames.length > 1) {
-            this.tableData = this.tableData.filter((tableDataItem) => {
-                return tableDataItem[this.columnKey] !== columnName;
-            });
-
-            this.trigger('update', this.tableData);
-            this.render();
-        }
+    deleteColumn(columnName) {
+        this.tableData = this.tableData.filter(item => item[this.columnKey] !== columnName);
+        this.trigger('update', this.tableData);
+        this.render();
     },
 
-    deleteRow: function(rowName) {
-        var rowNames = getHeaderNames(this.tableData, this.rowKey);
-
-        if (rowNames.length > 1) {
-            this.tableData = this.tableData.filter((tableDataItem) => {
-                return tableDataItem[this.rowKey] !== rowName;
-            });
-
-            this.trigger('update', this.tableData);
-            this.render();
-        }
+    deleteRow(rowName) {
+        this.tableData = this.tableData.filter(item => item[this.rowKey] !== rowName);
+        this.trigger('update', this.tableData);
+        this.render();
     },
 
-    render: function() {
-        var rowNames = getHeaderNames(this.tableData, this.rowKey);
-        var columnNames = getHeaderNames(this.tableData, this.columnKey);
-
+    render() {
         this.$elem.empty();
 
-        var preparedData = prepareData({
-            tableData: this.tableData,
-            columnNames: columnNames,
-            rowNames: rowNames,
-            rowKey: this.rowKey,
+        this.$elem.append(renderControls({
+            xAxis: this.rowKey,
+            yAxis: this.valueKey
+        }));
+
+        const preparedData = prepareData({
+            data: this.tableData,
+            columnNames: getHeaderNames(this.tableData, this.columnKey),
+            rowNames: getHeaderNames(this.tableData, this.rowKey),
             columnKey: this.columnKey,
+            rowKey: this.rowKey,
             valueKey: this.valueKey
         });
-
-        this.$elem.append(renderTableControls({
-            xAxisValue: this.rowKey,
-            yAxisValue: this.valueKey
-        }));
 
         this.$elem.append(renderTable(preparedData));
     },
 
-    registerKeyUpListeners: function() {
+    registerKeyUpListeners() {
         if (this.hasRegisteredKeyUp) {
             return false;
         }
 
         this.hasRegisteredKeyUp = true;
 
-        this.$elem.on('keyup', _.debounce((e) => {
-            var $srcElement = $(e.originalEvent.srcElement);
+        this.$elem.on('keyup', _.debounce(e => {
+            const $srcElement = $(e.originalEvent.srcElement);
 
-            var cellType = $srcElement.data('cellType');
+            const newValue = $srcElement.val().toString();
+            const oldValue = $srcElement.data('oldValue').toString();
 
-            if (cellType === 'row-header') {
-                this.updateHeader({
-                    headerKey: this.rowKey,
-                    newValue: $srcElement.val().toString(),
-                    oldValue: $srcElement.data('oldValue').toString()
-                });
-            }
-            else if (cellType === 'column-header') {
-                this.updateHeader({
-                    headerKey: this.columnKey,
-                    newValue: $srcElement.val().toString(),
-                    oldValue: $srcElement.data('oldValue').toString()
-                });
-            }
-            else if (cellType === 'axis') {
-                var type;
-
-                if ($srcElement.data('axisType') === 'x-axis') {
-                    type = 'rowKey'
-                }
-                else if ($srcElement.data('axisType') === 'y-axis') {
-                    type = 'valueKey'
-                }
-
-                this.updateDataKey({
-                    type: type,
-                    newKey: $srcElement.val(),
-                    oldKey: $srcElement.data('oldValue').toString()
-                });
-            }
-            else {
-                this.updateCell({
-                    newValue: parseInt($srcElement.val()),
-                    row: $srcElement.data('coord').split('$')[0].toString(),
-                    column: $srcElement.data('coord').split('$')[1].toString()
-                });
+            switch ($srcElement.data('cellType')) {
+                case 'row-header':
+                    this.updateHeader({
+                        key: this.rowKey,
+                        newValue,
+                        oldValue
+                    });
+                    break;
+                case 'column-header':
+                    this.updateHeader({
+                        key: this.columnKey,
+                        newValue,
+                        oldValue
+                    });
+                    break;
+                case 'axis':
+                    this.updateDataKey({
+                        type: AXIS[$srcElement.data('axisType')],
+                        newKey: newValue,
+                        oldKey: oldValue
+                    });
+                    break;
+                default:
+                    const [ row, column ] = $srcElement.data('coord').split('$');
+                    this.updateCell({
+                        newValue: parseInt(newValue),
+                        row,
+                        column
+                    });
             }
         }, 400));
     },
 
-    updateCell: function(params) {
-        if (params.newValue === '') {
+    updateCell({ newValue, column, row }) {
+        if (newValue === '') {
             this.trigger('error', 'empty');
             this.render();
         }
-        else if (isNaN(params.newValue)) {
+        else if (isNaN(newValue)) {
             this.trigger('error', 'number');
             this.render();
         }
         else {
-            this.tableData = this.tableData.map(function(tableDataItem) {
-                if (tableDataItem[this.rowKey] === params.row && tableDataItem[this.columnKey] === params.column) {
-                    tableDataItem[this.valueKey] = params.newValue;
+            this.tableData.forEach(item => {
+                if (item[this.rowKey] === row && item[this.columnKey] === column) {
+                    item[this.valueKey] = newValue;
                 }
-
-                return tableDataItem;
-            }.bind(this));
+            });
 
             this.trigger('update', this.tableData);
         }
     }
 };
-
-module.exports = twoDimensionalTablePrototype;

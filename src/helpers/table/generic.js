@@ -1,50 +1,34 @@
-var $                   = require('etudiant-mod-dom').default;
-var dataKeyIsUnique     = require('./lib.js').dataKeyIsUnique;
-var headerValueIsUnique = require('./lib.js').headerValueIsUnique;
+import $ from 'etudiant-mod-dom';
+import { dataKeyIsUnique, headerValueIsUnique } from './lib.js';
 
-var genericTablePrototype = {
-    registerClickListeners: function() {
+export default {
+    registerClickListeners() {
         if (this.hasRegisteredClick) {
             return false;
         }
 
         this.hasRegisteredClick = true;
 
-        this.$elem.on('click', 'button[data-action="add-column"]', (e) => {
-            this.addColumn();
-        });
-
-        this.$elem.on('click', 'button[data-action="add-row"]', (e) => {
-            this.addRow();
-        });
-
-        this.$elem.on('click', 'button[data-type="row"]', (e) => {
-            this.deleteRow($(e.currentTarget).data('key').toString());
-        });
-
-        this.$elem.on('click', 'button[data-type="column"]', (e) => {
-            this.deleteColumn($(e.currentTarget).data('key').toString());
-        });
+        this.$elem.on('click', 'button[data-action="add-row"]', () => this.addRow());
+        this.$elem.on('click', 'button[data-action="add-column"]', () => this.addColumn());
+        this.$elem.on('click', 'button[data-action="delete-row"]', e => this.deleteRow($(e.currentTarget).data('key')));
+        this.$elem.on('click', 'button[data-action="delete-column"]', e => this.deleteColumn($(e.currentTarget).data('key')));
     },
 
-    updateDataKey: function(params) {
-        if (dataKeyIsUnique(params.newKey, this.tableData)) {
+    updateDataKey({ type, oldKey, newKey }) {
+        if (dataKeyIsUnique(newKey, this.tableData)) {
 
-            this[params.type] = params.newKey;
+            this[type] = newKey;
 
             this.trigger('update:key', {
-                type: params.type,
-                value: this[params.type]
+                type: type,
+                value: this[type]
             });
 
-            this.tableData = this.tableData.map(function(tableDataItem) {
-                var newTableDataItem = Object.assign({}, tableDataItem);
+            this.tableData.forEach(item => {
+                item[newKey] = item[oldKey];
 
-                delete newTableDataItem[params.oldKey];
-
-                newTableDataItem[params.newKey] = tableDataItem[params.oldKey];
-
-                return newTableDataItem;
+                delete item[oldKey];
             });
 
             this.trigger('update', this.tableData);
@@ -55,20 +39,18 @@ var genericTablePrototype = {
         }
     },
 
-    updateHeader: function(params) {
-        if (!headerValueIsUnique(params.newValue, params.headerKey, this.tableData)) {
+    updateHeader({ key, oldValue, newValue }) {
+        if (!headerValueIsUnique(newValue, key, this.tableData)) {
             this.trigger('error', 'unique');
         }
-        else if (params.newValue === '') {
-            this.trigger('error', 'empty')
+        else if (newValue === '') {
+            this.trigger('error', 'empty');
         }
         else {
-            this.tableData = this.tableData.map((tableDataItem) => {
-                if (tableDataItem[params.headerKey] === params.oldValue) {
-                    tableDataItem[params.headerKey] = params.newValue;
+            this.tableData.forEach(item => {
+                if (item[key] === oldValue) {
+                    item[key] = newValue;
                 }
-
-                return tableDataItem;
             });
 
             this.trigger('update', this.tableData);
@@ -77,5 +59,3 @@ var genericTablePrototype = {
         this.render();
     }
 };
-
-module.exports = genericTablePrototype;

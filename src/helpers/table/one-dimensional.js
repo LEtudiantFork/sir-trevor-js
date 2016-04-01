@@ -1,47 +1,73 @@
-var $                 = require('etudiant-mod-dom').default;
-var _                 = require('../../lodash.js');
-var renderTable       = require('./render.js').render1DTable;
-var renderTableFooter = require('./render.js').renderTableFooter;
-var getHeaderNames    = require('./lib.js').getHeaderNames;
+import $ from 'etudiant-mod-dom';
+import * as _ from '../../lodash.js';
+import {
+    renderDELETE,
+    renderINPUT,
+    renderTABLE,
+    renderTHEAD,
+    renderTBODY,
+    renderTFOOT,
+    renderTR,
+    renderTH,
+    renderTD
+} from './render.js';
+import { getHeaderNames as getHeaderNames } from './lib.js';
 
-function renderTableControls() {
-    return [
-        '<div>',
-            '<button type="button" data-action="add-row">Ajouter une rangée</button>',
-        '</div>'
-    ].join('\n');
+function renderTable(tableData) {
+    const headerData = tableData.shift();
+    const rowsCount = tableData.length;
+
+    const thead = renderTHEAD(
+        renderTR(`
+            ${renderTH('')}
+            ${renderTH(renderINPUT({ value: headerData[0], type: 'column-header' }))}
+        `)
+    );
+
+    const trows = tableData.map(([ name, data ], index) => renderTR(
+            `${renderTD(renderINPUT({ value: name, type: 'row-header' }))}
+            ${renderTD(renderINPUT({ value: data.value, type: 'standard', coord: data.coord }))}
+            ${renderTD(rowsCount > 1 ? renderDELETE({ key: name, text: i18n.t('blocks:table1D:delete'), type: 'row' }) : '')}`
+        )
+    )
+    .reduce((prev, curr) => `${prev}${curr}`);
+
+    const tbody = renderTBODY(trows);
+
+    const tfoot = renderTFOOT(
+        renderTR(renderTD(`<button type="button" data-action="add-row">${i18n.t('blocks:table1D:addRow')}</button>`))
+    );
+
+    return renderTABLE(`
+        ${thead}
+        ${tbody}
+        ${tfoot}
+    `);
 }
 
-function prepareData(params) {
-    var prepared = params.rowNames.map(function(rowName, index) {
+function prepareData({ rowNames, valueKey, data }) {
+    var prepared = rowNames.map(function(rowName, index) {
         return [
             rowName,
             {
-                coord: rowName + '$' + params.valueKey,
-                value: params.tableData[index][params.valueKey]
+                coord: `${rowName}$${valueKey}`,
+                value: data[index][valueKey]
             }
         ];
     });
 
-    prepared.unshift([params.valueKey]);
+    prepared.unshift([ valueKey ]);
 
     return prepared;
 }
 
-var oneDimensionalTablePrototype = {
-    addRow: function() {
-        var newRow = {};
-
-        if (this._newRowName) {
-            this._newRowCount++;
-        }
-        else {
-            this._newRowName = 'Nouvelle Section'; // @todo i18n
-            this._newRowCount = 1;
-        }
+export default {
+    addRow() {
+        const newRow = {};
+        this.newRowIndex = this.newRowIndex || this.tableData.length;
 
         newRow[this.valueKey] = 0;
-        newRow[this.rowKey] = this._newRowName + ' ' + this._newRowCount;
+        newRow[this.rowKey] = `${i18n.t('blocks:table1D:newRow')} ${++this.newRowIndex}`;
 
         this.tableData.push(newRow);
 
@@ -49,51 +75,39 @@ var oneDimensionalTablePrototype = {
         this.render();
     },
 
-    deleteRow: function(rowName) {
-        this.tableData = this.tableData.filter((tableDataItem) => {
-            if (tableDataItem[this.rowKey] === rowName) {
-                return false;
-            }
-            else {
-                return true;
-            }
-        });
-
+    deleteRow(rowName) {
+        this.tableData = this.tableData.filter(item => item[this.rowKey] !== rowName);
         this.trigger('update', this.tableData);
         this.render();
     },
 
-    render: function() {
-        var rowNames = getHeaderNames(this.tableData, this.rowKey);
-
+    render() {
         this.$elem.empty();
 
-        var preparedData = prepareData({
-            tableData: this.tableData,
-            rowNames: rowNames,
+        const data = prepareData({
+            data: this.tableData,
+            rowNames: getHeaderNames(this.tableData, this.rowKey),
             valueKey: this.valueKey
         });
 
-        this.$elem.append(renderTableControls());
-
-        this.$elem.append(renderTable(preparedData));
+        this.$elem.append(renderTable(data));
     },
 
-    registerKeyUpListeners: function() {
+    registerKeyUpListeners() {
         if (this.hasRegisteredKeyUp) {
             return false;
         }
 
         this.hasRegisteredKeyUp = true;
 
-        this.$elem.on('keyup', _.debounce((e) => {
-            var $srcElement = $(e.originalEvent.srcElement);
+        this.$elem.on('keyup', _.debounce(e => {
+            const $srcElement = $(e.originalEvent.srcElement);
 
-            var cellType = $srcElement.data('cellType');
+            const cellType = $srcElement.data('cellType');
 
             if (cellType === 'row-header') {
                 this.updateHeader({
-                    headerKey: this.rowKey,
+                    key: this.rowKey,
                     newValue: $srcElement.val().toString(),
                     oldValue: $srcElement.data('oldValue').toString()
                 });
@@ -115,7 +129,7 @@ var oneDimensionalTablePrototype = {
         }, 400));
     },
 
-    updateCell: function(params) {
+    updateCell(params) {
         if (params.newValue === '') {
             this.trigger('error', 'empty');
             this.render();
@@ -125,17 +139,15 @@ var oneDimensionalTablePrototype = {
             this.render();
         }
         else {
-            this.tableData = this.tableData.map((tableDataItem) => {
-                if (tableDataItem[this.rowKey] === params.row) {
-                    tableDataItem[this.valueKey] = params.newValue;
+            this.tableData = this.tableData.map(item => {
+                if (item[this.rowKey] === params.row) {
+                    item[this.valueKey] = params.newValue;
                 }
 
-                return tableDataItem;
+                return item;
             });
 
             this.trigger('update', this.tableData);
         }
     }
 };
-
-module.exports = oneDimensionalTablePrototype;
