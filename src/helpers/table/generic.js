@@ -1,5 +1,24 @@
-import $ from 'etudiant-mod-dom';
-import { dataKeyIsUnique, headerValueIsUnique } from './lib.js';
+import { debounce } from '../../lodash.js';
+
+import * as EVENTS from '../events';
+
+import {
+    dataKeyIsUnique,
+    headerValueIsUnique
+} from './lib.js';
+
+const AXIS = {
+    'prop-axis': 'propKey',
+    'value-axis': 'valueKey',
+    'pie': 'valueKey'
+};
+
+const HEADERS = {
+    'ref-header': 'refKey',
+    'prop-header': 'propKey'
+};
+
+const DEBOUNCE = 500;
 
 export default {
     registerClickListeners() {
@@ -9,53 +28,151 @@ export default {
 
         this.hasRegisteredClick = true;
 
-        this.$elem.on('click', 'button[data-action="add-row"]', () => this.addRow());
-        this.$elem.on('click', 'button[data-action="add-column"]', () => this.addColumn());
-        this.$elem.on('click', 'button[data-action="delete-row"]', e => this.deleteRow($(e.currentTarget).data('key')));
-        this.$elem.on('click', 'button[data-action="delete-column"]', e => this.deleteColumn($(e.currentTarget).data('key')));
+        this.$elem.on('click', 'button[data-action="add-prop"]', () => this.addProp());
+        this.$elem.on('click', 'button[data-action="add-ref"]', () => this.addRef());
+        this.$elem.on('click', 'button[data-action="delete-prop"]', e => this.deleteProp(e.currentTarget.dataset.key));
+        this.$elem.on('click', 'button[data-action="delete-ref"]', e => this.deleteRef(e.currentTarget.dataset.key));
     },
 
-    updateDataKey({ type, oldKey, newKey }) {
-        if (dataKeyIsUnique(newKey, this.tableData)) {
-
-            this[type] = newKey;
-
-            this.trigger('update:key', {
-                type: type,
-                value: this[type]
-            });
-
-            this.tableData.forEach(item => {
-                item[newKey] = item[oldKey];
-
-                delete item[oldKey];
-            });
-
-            this.trigger('update', this.tableData);
-            this.render();
+    registerInputListeners() {
+        if (this.hasRegisteredKeyUp) {
+            return false;
         }
-        else {
-            this.trigger('error', 'unique');
-        }
+
+        this.hasRegisteredKeyUp = true;
+
+        this.$elem.on('input', 'input[data-type="prop-header"], input[data-type="ref-header"]', debounce(e => {
+            const input = e.currentTarget;
+            const { type, oldValue } = input.dataset;
+            const newValue = input.value.trim();
+            const key = this[HEADERS[type]];
+
+            if (newValue === '') {
+                return this.trigger(EVENTS.errorEmpty);
+            }
+            if (!headerValueIsUnique(newValue, key, this.data)) {
+                input.value = oldValue;
+                return this.trigger(EVENTS.errorUniq);
+            }
+
+            this.updateHeader({
+                key,
+                oldValue,
+                newValue
+            });
+        }, DEBOUNCE));
+
+        this.$elem.on('input', 'input[data-type="prop-axis"], input[data-type="value-axis"], input[data-type="pie"]', debounce(e => {
+            const input = e.currentTarget;
+            const { type, oldValue } = input.dataset;
+            const newValue = input.value.trim();
+
+            if (newValue === '') {
+                return this.trigger(EVENTS.errorEmpty);
+            }
+            if (!dataKeyIsUnique(newValue, this.data)) {
+                input.value = oldValue;
+                return this.trigger(EVENTS.errorUniq);
+            }
+
+            this.updateKey({
+                type: AXIS[type],
+                oldValue,
+                newValue
+            });
+            input.dataset.oldValue = newValue;
+        }, DEBOUNCE));
+
+        this.$elem.on('input', 'input[data-type="color"]', debounce(e => {
+            const input = e.currentTarget;
+            const { prop, ref } = input.dataset;
+            const newValue = input.value.trim();
+
+            this.updateColor({
+                prop,
+                ref,
+                newValue
+            });
+            input.dataset.oldValue = newValue;
+        }, DEBOUNCE));
+
+        this.$elem.on('input', 'input[data-type="number"]', debounce(e => {
+            const input = e.currentTarget;
+            const { oldValue, prop, ref } = input.dataset;
+            const rawValue = input.value.trim();
+            const newValue = parseFloat(rawValue.replace(',', '.'));
+
+            if (rawValue === '') {
+                return this.trigger(EVENTS.errorEmpty);
+            }
+            if (isNaN(newValue)) {
+                input.value = oldValue;
+                return this.trigger(EVENTS.errorNumber);
+            }
+
+            this.updateCell({
+                prop,
+                ref,
+                newValue
+            });
+            this.trigger(EVENTS.updateData);
+            input.value = newValue;
+            input.dataset.oldValue = newValue;
+        }, DEBOUNCE));
+    },
+
+    getData() {
+        return this.data;
+    },
+
+    getColors() {
+        return this.colors;
+    },
+
+    updateKey({ type, oldValue, newValue }) {
+        this[type] = newValue;
+
+        this.trigger(EVENTS.updateKey, {
+            type,
+            value: this[type]
+        });
+
+        this.data.forEach(item => {
+            item[newValue] = item[oldValue];
+
+            delete item[oldValue];
+        });
+
+        this.trigger(EVENTS.updateData);
+        this.render();
+    },
+
+    updateColor({ ref, newValue }) {
+        this.colors.forEach(item => {
+            if (item[this.refKey] === ref) {
+                item.color = newValue;
+            }
+        });
+
+        this.trigger(EVENTS.updateColor);
     },
 
     updateHeader({ key, oldValue, newValue }) {
-        if (!headerValueIsUnique(newValue, key, this.tableData)) {
-            this.trigger('error', 'unique');
-        }
-        else if (newValue === '') {
-            this.trigger('error', 'empty');
-        }
-        else {
-            this.tableData.forEach(item => {
-                if (item[key] === oldValue) {
-                    item[key] = newValue;
+        if (key === this.refKey) {
+            this.colors.forEach(item => {
+                if (item[this.refKey] === oldValue) {
+                    item[this.refKey] = newValue;
                 }
             });
-
-            this.trigger('update', this.tableData);
         }
 
+        this.data.forEach(item => {
+            if (item[key] === oldValue) {
+                item[key] = newValue;
+            }
+        });
+
+        this.trigger(EVENTS.updateData);
         this.render();
     }
 };

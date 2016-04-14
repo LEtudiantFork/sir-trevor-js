@@ -1,0 +1,37 @@
+{
+    "type": "bar",
+    "refKey": "ref",
+    "propKey": "group",
+    "valueKey": "value",
+    "colors": [
+        {
+            "ref": "Colonne 1",
+            "color": "#aa2222"
+        },
+        {
+            "ref": "Colonne 2",
+            "color": "#22aa22"
+        },
+        {
+            "ref": "Colonne 3",
+            "color": "#2222aa"
+        }
+    ],
+    "data": [
+        {
+            "ref": "Colonne 1",
+            "group": "Rangée 1",
+            "value": 5
+        },
+        {
+            "ref": "Colonne 2",
+            "group": "Rangée 1",
+            "value": 10
+        },
+        {
+            "ref": "Colonne 3",
+            "group": "Rangée 1",
+            "value": 15
+        }
+    ]
+}

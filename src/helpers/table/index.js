@@ -1,36 +1,15 @@
-import $           from 'etudiant-mod-dom';
-import eventablejs from 'eventablejs';
+import OneDimentional from './one-dimensional.js';
+import TwoDimensional from './two-dimensional.js';
 
-import prototype from './generic.js';
-import oneDimensionalTablePrototype from './one-dimensional.js';
-import twoDimensionalTablePrototype from './two-dimensional.js';
-
-module.exports = {
-    create(options) {
-        var instance;
-
-        if (options.tableType === '1D') {
-            function OneDimensionalTable() {}
-
-            instance = new OneDimensionalTable();
-
-            instance = Object.assign(instance, prototype, oneDimensionalTablePrototype, eventablejs, options);
+export default {
+    create(params) {
+        if (params.type === '1D') {
+            const instance = OneDimentional.create(params);
+            return instance;
         }
-        else if (options.tableType === '2D') {
-            function TwoDimensionalTable() {}
-
-            instance = new TwoDimensionalTable();
-
-            instance = Object.assign(instance, prototype, twoDimensionalTablePrototype, eventablejs, options);
+        else if (params.type === '2D') {
+            const instance = TwoDimensional.create(params);
+            return instance;
         }
-
-        instance.$elem = $('<div class="st-table"></div>');
-
-        instance.registerKeyUpListeners();
-        instance.registerClickListeners();
-
-        instance.render();
-
-        return instance;
     }
 };

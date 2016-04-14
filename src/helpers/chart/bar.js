@@ -1,41 +1,46 @@
 import Table from '../table/index.js';
 
-const mockData = [
-    { colonne: 'Colonne 1', rangée:'Rangée 1', valeur: 15 },
-    { colonne: 'Colonne 1', rangée:'Rangée 2', valeur: 10 },
-    { colonne: 'Colonne 1', rangée:'Rangée 3', valeur: 5 },
-    { colonne: 'Colonne 2', rangée:'Rangée 1', valeur: 20 },
-    { colonne: 'Colonne 2', rangée:'Rangée 2', valeur: 10 },
-    { colonne: 'Colonne 2', rangée:'Rangée 3', valeur: 0 }
-];
+import MODEL from './model/bar';
+import * as EVENTS from '../events';
 
 export default {
-    type: 'bar',
-
     drawChart() {
-        window.d3plus.viz()
-        .container(`#${this.id}`)
+        this.visualization = this.visualization || window.d3plus.viz().container(`#${this.id}`).type(this.type);
+
+        this.visualization
         .data(this.data)
-        .type(this.type)
-        .margin('10px 20px')
-        .id(this.columnKey)
-        .x(this.rowKey)
+        .x(this.propKey)
         .y(this.valueKey)
+        .id(this.refKey)
+        .height(this.$chartArea.outerWidth() * 0.75)
+        .legend({
+            align: 'start',
+            order: {
+                sort: 'asc',
+                value: 'id'
+            }
+        })
+        .attrs(this.colors)
+        .color('color')
         .draw();
     },
 
-    generate() {
-        this.data = this.data || mockData;
-        this.columnKey = this.columnKey || 'colonne';
-        this.rowKey = this.rowKey || 'rangée';
-        this.valueKey = this.valueKey || 'valeur';
+
+    generate({ refKey, propKey, valueKey, data, colors }) {
+        this.type = MODEL.type;
+        this.refKey = refKey || MODEL.refKey;
+        this.propKey = propKey || MODEL.propKey;
+        this.valueKey = valueKey || MODEL.valueKey;
+        this.data = data || MODEL.data;
+        this.colors = colors || MODEL.colors;
 
         this.table = Table.create({
-            tableType: '2D',
-            tableData: this.data,
-            columnKey: this.columnKey,
-            rowKey: this.rowKey,
-            valueKey: this.valueKey
+            type: '2D',
+            refKey: this.refKey,
+            propKey: this.propKey,
+            valueKey: this.valueKey,
+            data: this.data,
+            colors: this.colors
         });
 
         this.$tableArea.append(this.table.$elem);
@@ -43,20 +48,26 @@ export default {
         // need to wait for redraw otherwise d3plus doesn't find element
         setTimeout(() => this.drawChart(), 0);
 
-        this.table.on('update:key', data => this[data.type] = data.value);
+        this.table.on(EVENTS.updateKey, data => this[data.type] = data.value);
 
-        this.table.on('update', data => {
-            this.data = data;
+        this.table.on(EVENTS.updateColor, () => {
+            this.colors = this.table.getColors();
+            this.drawChart();
+        });
+
+        this.table.on(EVENTS.updateData, () => {
+            this.colors = this.table.getColors();
+            this.data = this.table.getData();
             this.drawChart();
         });
     },
 
     getData() {
         return {
-            columnKey: this.columnKey,
+            refKey: this.refKey,
             valueKey: this.valueKey,
             data: this.data,
-            rowKey: this.rowKey,
+            propKey: this.propKey,
             type: this.type
         };
     }

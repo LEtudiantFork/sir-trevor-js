@@ -1,8 +1,13 @@
-import $                  from 'etudiant-mod-dom';
-import * as _             from '../../lodash.js';
+import $           from 'etudiant-mod-dom';
+import eventablejs from 'eventablejs';
+
+import * as EVENTS from '../events';
+
 import {
+    renderADD,
     renderDELETE,
     renderINPUT,
+    renderCOLOR,
     renderTABLE,
     renderTHEAD,
     renderTBODY,
@@ -11,69 +16,81 @@ import {
     renderTH,
     renderTD
 } from './render.js';
-import { getHeaderNames } from './lib.js';
 
-const AXIS = {
-    'x-axis': 'rowKey',
-    'y-axis': 'valueKey'
-};
+import prototype from './generic.js';
+import { getHeaderNames, getColor } from './lib.js';
 
-function renderControls({ xAxis, yAxis }) {
-    return `<div>
-                <div>
-                    <label>${i18n.t('blocks:table2D:axisX')}</label>
-                    <input type="text" data-cell-type="axis" data-axis-type="x-axis" value="${xAxis}" data-old-value="${xAxis}" />
-                    <label>${i18n.t('blocks:table2D:axisY')}</label>
-                    <input type="text" data-cell-type="axis" data-axis-type="y-axis" value="${yAxis}" data-old-value="${yAxis}" />
-                </div>
-            </div>`;
+function renderControls({ prop, value }) {
+    return `
+    <hr/>
+    <div>
+        <label>${i18n.t('blocks:table2D:axisX')}</label>
+        ${renderINPUT({ value: prop, cell: 'prop-axis' })}
+        <label>${i18n.t('blocks:table2D:axisY')}</label>
+        ${renderINPUT({ value: value, cell: 'value-axis' })}
+    </div>
+    <hr/>
+    `;
 }
 
+function getItem({ data, propKey, prop, refKey, ref }) {
+    return data.filter(item => item[propKey] === prop && item[refKey] === ref).shift();
+}
 
-function renderTable(tableData) {
-    const headerData = tableData.shift();
-    const headerCount = headerData.length;
-    const headerLastIndex = headerCount - 1;
-    const rowsCount = tableData.length;
+function renderTable({ data, colors, refKey, propKey, valueKey }) {
+    const props = getHeaderNames(data, propKey);
+    const propsCount = props.length;
+    const lastProp = propsCount - 1;
 
-    const thead = renderTHEAD(
-        renderTR(
-            headerData.reduce((markup, item, index) => `
-                ${markup}
-                ${renderTH(renderINPUT({ value: item, type: 'column-header' }))}
-                ${index === headerLastIndex ? renderTH(`<button type="button" data-action="add-column">${i18n.t('blocks:table1D:addColumn')}</button>`) : ''}
-            `,
-            renderTH(''))
-        )
+    const trowHead = renderTR(
+        props.reduce((prev, prop, index) => {
+            return `
+            ${prev}
+            ${renderTH(renderINPUT({ value: prop, cell: 'prop-header' }))}
+            ${index === lastProp ? renderTH(renderADD({ action: 'prop', content: i18n.t('blocks:table2D:addProp') })) : ''}
+            `;
+        }, renderTH('', 'colspan="2"'))
     );
 
-    const trows = tableData.map(rowData => {
-        const rowName = rowData.shift();
-        const colLastIndex = rowData.length - 1;
+    const thead = renderTHEAD(trowHead);
 
-        return renderTR(
-            rowData.reduce((markup, item, index) => `
-                ${markup}
-                ${renderTD(renderINPUT({ value: item.value, type: 'standard', coord: item.coord }))}
-                ${rowsCount > 1 && index === colLastIndex ? renderTD(renderDELETE({ key: rowName, text: i18n.t('blocks:table1D:delete'), type: 'row' })) : ''}
-            `,
-            renderTD(renderINPUT({ value: rowName, type: 'row-header' }))
-            )
-        );
-    })
-    .reduce((prev, curr) => `${prev}${curr}`);
-
-
-    const tbody = renderTBODY(trows);
-
-    const tfoot = renderTFOOT(renderTR(
-        headerData.reduce((markup, item, index) => `
-            ${markup}
-            ${renderTD(headerCount > 1 ? renderDELETE({ key: item, text: 'supprimer', type: 'column' }) : '')}
-            ${index === headerLastIndex ? renderTD('') : ''}
-        `,
-        renderTD(`<button type="button" data-action="add-row">${i18n.t('blocks:table1D:addRow')}</button>`))
+    const trowFoot = renderTR(
+        props.reduce((prev, prop) => {
+            return `
+            ${prev}
+            ${renderTD(propsCount > 1 ? renderDELETE({ key: prop, action: 'prop' }) : '')}
+            `;
+        }, renderTD(renderADD({ action: 'ref', content: i18n.t('blocks:table2D:addRef') }), 'colspan="2"')
     ));
+
+    const tfoot = renderTFOOT(trowFoot);
+
+    const refs = getHeaderNames(data, refKey);
+    const refsCount = refs.length;
+
+    /* */
+    const trows = refs.reduce((prev, ref) => {
+        const color = getColor(colors, refKey, ref);
+
+        return `
+        ${prev}
+        ${renderTR(`
+            ${renderTD(renderINPUT({ value: ref, cell: 'ref-header' }))}
+            ${renderTD(renderCOLOR({ value: color, ref: ref }))}
+            ${props.reduce((prev, prop) => {
+                const item = getItem({ data, refKey, ref, propKey, prop });
+                const value = item[valueKey];
+
+                return `
+                ${prev}
+                ${renderTD(renderINPUT({ type: 'number', value, ref, prop }))}
+                `;
+            }, '')}
+            ${renderTD(refsCount > 1 ? renderDELETE({ key: ref, action: 'ref' }) : '')}
+        `)}`;
+    }, '');
+    /* */
+    const tbody = renderTBODY(trows);
 
     return renderTABLE(`
         ${thead}
@@ -82,169 +99,111 @@ function renderTable(tableData) {
     `);
 }
 
-function getValue({ data, rowKey, rowName, columnKey, columnName, valueKey }) {
-    const result = data.filter(item => item[rowKey] === rowName && item[columnKey] === columnName).shift();
-
-    return result[valueKey];
-}
-
-function prepareData({ data, columnNames, rowNames, rowKey, columnKey, valueKey }) {
-    const prepared = rowNames.map(rowName => {
-        const preparedRow = columnNames.map(columnName => ({
-            coord: `${rowName}$${columnName}`,
-            value: getValue({ data, rowKey, rowName, columnKey, columnName, valueKey })
-        }));
-
-        preparedRow.unshift(rowName);
-
-        return preparedRow;
-    });
-
-    prepared.unshift(columnNames);
-
-    return prepared;
-}
+function TwoDimensionalTable() {}
 
 export default {
-    addColumn() {
-        if (!this.newColumnIndex) {
-            this.newColumnIndex = getHeaderNames(this.tableData, this.columnKey).length;
-        }
-        this.newColumnIndex++;
+    create({ refKey, propKey, valueKey, data, colors }) {
+        const instance = Object.assign(new TwoDimensionalTable(), eventablejs, prototype, this.prototype);
 
-        const newColumn = getHeaderNames(this.tableData, this.rowKey).map(name => {
-            const newItem = {};
+        instance.refKey = refKey;
+        instance.propKey = propKey;
+        instance.valueKey = valueKey;
+        instance.data = data;
+        instance.colors = colors;
 
-            newItem[this.valueKey] = 0;
-            newItem[this.rowKey] = name;
-            newItem[this.columnKey] = `${i18n.t('blocks:table2D:newColumn')} ${this.newColumnIndex}`;
+        instance.$elem = $('<div class="st-two-dimensional"></div>');
 
-            return newItem;
-        });
+        instance.registerInputListeners();
+        instance.registerClickListeners();
 
-        this.tableData = [].concat(this.tableData, newColumn);
+        instance.render();
 
-        this.trigger('update', this.tableData);
-        this.render();
+        return instance;
     },
 
-    addRow() {
-        if (!this.newRowIndex) {
-            this.newRowIndex = getHeaderNames(this.tableData, this.rowKey).length;
-        }
-        this.newRowIndex++;
 
-        const newRow = getHeaderNames(this.tableData, this.columnKey).map(name => {
-            const newItem = {};
+    prototype: {
+        addRef() {
+            this.newRefIndex = this.newRefIndex + 1 || getHeaderNames(this.data, this.refKey).length;
 
-            newItem[this.valueKey] = 0;
-            newItem[this.columnKey] = name;
-            newItem[this.rowKey] = `${i18n.t('blocks:table2D:newRow')} ${this.newRowIndex}`;
+            const ref = `${i18n.t('blocks:table2D:newRef')} ${this.newRefIndex}`;
+            const value = 0;
+            const color = '#222222';
 
-            return newItem;
-        });
+            getHeaderNames(this.data, this.propKey).forEach(prop => {
+                this.data.push({
+                    [this.propKey]: prop,
+                    [this.refKey]: ref,
+                    [this.valueKey]: value
+                });
+            });
 
-        this.tableData = [].concat(this.tableData, newRow);
+            this.colors.push({
+                [this.refKey]: ref,
+                color
+            });
 
-        this.trigger('update', this.tableData);
-        this.render();
-    },
-
-    deleteColumn(columnName) {
-        this.tableData = this.tableData.filter(item => item[this.columnKey] !== columnName);
-        this.trigger('update', this.tableData);
-        this.render();
-    },
-
-    deleteRow(rowName) {
-        this.tableData = this.tableData.filter(item => item[this.rowKey] !== rowName);
-        this.trigger('update', this.tableData);
-        this.render();
-    },
-
-    render() {
-        this.$elem.empty();
-
-        this.$elem.append(renderControls({
-            xAxis: this.rowKey,
-            yAxis: this.valueKey
-        }));
-
-        const preparedData = prepareData({
-            data: this.tableData,
-            columnNames: getHeaderNames(this.tableData, this.columnKey),
-            rowNames: getHeaderNames(this.tableData, this.rowKey),
-            columnKey: this.columnKey,
-            rowKey: this.rowKey,
-            valueKey: this.valueKey
-        });
-
-        this.$elem.append(renderTable(preparedData));
-    },
-
-    registerKeyUpListeners() {
-        if (this.hasRegisteredKeyUp) {
-            return false;
-        }
-
-        this.hasRegisteredKeyUp = true;
-
-        this.$elem.on('keyup', _.debounce(e => {
-            const $srcElement = $(e.originalEvent.srcElement);
-
-            const newValue = $srcElement.val().toString();
-            const oldValue = $srcElement.data('oldValue').toString();
-
-            switch ($srcElement.data('cellType')) {
-                case 'row-header':
-                    this.updateHeader({
-                        key: this.rowKey,
-                        newValue,
-                        oldValue
-                    });
-                    break;
-                case 'column-header':
-                    this.updateHeader({
-                        key: this.columnKey,
-                        newValue,
-                        oldValue
-                    });
-                    break;
-                case 'axis':
-                    this.updateDataKey({
-                        type: AXIS[$srcElement.data('axisType')],
-                        newKey: newValue,
-                        oldKey: oldValue
-                    });
-                    break;
-                default:
-                    const [ row, column ] = $srcElement.data('coord').split('$');
-                    this.updateCell({
-                        newValue: parseInt(newValue),
-                        row,
-                        column
-                    });
-            }
-        }, 400));
-    },
-
-    updateCell({ newValue, column, row }) {
-        if (newValue === '') {
-            this.trigger('error', 'empty');
+            this.trigger(EVENTS.updateData);
             this.render();
-        }
-        else if (isNaN(newValue)) {
-            this.trigger('error', 'number');
+        },
+
+        deleteRef(ref) {
+            this.data = this.data.filter(item => item[this.refKey] !== ref);
+            this.colors = this.colors.filter(item => item[this.refKey] !== ref);
+            this.trigger(EVENTS.updateData);
             this.render();
-        }
-        else {
-            this.tableData.forEach(item => {
-                if (item[this.rowKey] === row && item[this.columnKey] === column) {
+        },
+
+        addProp() {
+            this.newPropIndex = this.newPropIndex + 1 || getHeaderNames(this.data, this.propKey).length;
+
+            const prop = `${i18n.t('blocks:table2D:newProp')} ${this.newPropIndex}`;
+            const value = 0;
+
+            getHeaderNames(this.data, this.refKey).forEach(ref => {
+                this.data.push({
+                    [this.propKey]: prop,
+                    [this.refKey]: ref,
+                    [this.valueKey]: value
+                });
+            });
+
+            this.trigger(EVENTS.updateData);
+            this.render();
+        },
+
+        deleteProp(prop) {
+            this.data = this.data.filter(item => item[this.propKey] !== prop);
+            this.trigger(EVENTS.updateData);
+            this.render();
+        },
+
+        render() {
+            const content = `
+                ${renderControls({
+                    prop: this.propKey,
+                    value: this.valueKey
+                })}
+                <div class="st-chart_table">
+                ${renderTable({
+                    data: this.data,
+                    colors: this.colors,
+                    refKey: this.refKey,
+                    propKey: this.propKey,
+                    valueKey: this.valueKey
+                })}
+                </div>
+            `;
+
+            this.$elem.html(content);
+        },
+
+        updateCell({ ref, prop, newValue }) {
+            this.data.forEach(item => {
+                if (item[this.refKey] === ref && item[this.propKey] === prop) {
                     item[this.valueKey] = newValue;
                 }
             });
-
-            this.trigger('update', this.tableData);
         }
     }
 };

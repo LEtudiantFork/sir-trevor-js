@@ -63,18 +63,18 @@ var Locales = {
                 title: 'Tableau'
             },
             table1D: {
-                addRow: 'Ajouter une rangée',
-                delete: 'Supprimer',
-                newRow: 'Nouvelle Section'
+                addRef: 'Ajouter une Section',
+                newRef: 'Nouvelle Section',
+                delete: 'Supprimer'
             },
             table2D: {
-                axisX: 'X Axis',
-                axisY: 'Y Axis',
-                addRow: 'Ajouter une rangée',
-                addColumn: 'Ajouter une rangée',
-                delete: 'Supprimer',
-                newColumn: 'Nouvelle Colonne',
-                newRow: 'Nouvelle Rangée'
+                axisX: 'Axe Horizontal',
+                axisY: 'Axe Vertical',
+                addProp: 'Ajouter une Colonne',
+                newProp: 'Nouvelle Colonne',
+                addRef: 'Ajouter une Rangée',
+                newRef: 'Nouvelle Rangée',
+                delete: 'Supprimer'
             },
             image: {
                 title: 'Image'

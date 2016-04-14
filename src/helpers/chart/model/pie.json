@@ -1,0 +1,15 @@
+{
+    "type": "pie",
+    "refKey": "ref",
+    "valueKey": "valeur",
+    "colors": [
+        { "ref": "Section 1", "color": "#aa2222" },
+        { "ref": "Section 2", "color": "#22aa22" },
+        { "ref": "Section 3", "color": "#2222aa" }
+    ],
+    "data": [
+        { "ref": "Section 1", "valeur": 5 },
+        { "ref": "Section 2", "valeur": 10 },
+        { "ref": "Section 3", "valeur": 15 }
+    ]
+}

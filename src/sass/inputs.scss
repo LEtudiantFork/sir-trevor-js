@@ -1,45 +1,88 @@
+$input-box-sizing: border-box;
+$input-border: 0.1em solid #d4d4d4;
+$input-width: 11em;
+$input-height: 2.5em;
+$input-padding: 0.6em;
+$input-color: #42474b;
+$input-font-size: inherit;
+$input-background: #fff;
+$input-align: middle;
+
 // Reset all our input styles
 .st-input-label {
-  display: block;
-  margin-bottom: 0.5em;
-  font-size: 13px;
-  text-transform: uppercase;
+    display: block;
+    margin-bottom: 0.5em;
+
+    font-size: 13px;
+    text-transform: uppercase;
 }
 
 // Generic styles
 @mixin st-input {
-  font-size: inherit;
-  margin: 0;
-  /*padding: 0.3em 0;*/
+    margin: 0;
+
+    font-size: inherit;
+    /*padding: 0.3em 0;*/
 }
 
-.st-block input[type="text"],
+.st-block input[type='text'],
 .st-block textarea {
-  @include st-input;
+    @include st-input;
 }
 
 // Focus / Active styles
 @mixin st-input-active {
-  outline: none;
-  border: none;
+    outline: none;
+    border: none;
 }
 
-.st-block [contenteditable="true"],
-.st-block [contenteditable="true"]:active,
-.st-block [contenteditable="true"]:focus,
-.st-block input[type="text"],
-.st-block input[type="text"]:active,
-.st-block input[type="text"]:focus,
+.st-block [contenteditable='true'],
+.st-block [contenteditable='true']:active,
+.st-block [contenteditable='true']:focus,
+.st-block input[type='text'],
+.st-block input[type='text']:active,
+.st-block input[type='text']:focus,
 .st-block textarea,
 .st-block textarea:hover,
 .st-block textarea:active {
-  @include st-input-active;
+    @include st-input-active;
 }
 
-.st-block input[type="text"],
-.st-block input[type="text"]:active,
-.st-block input[type="text"]:focus {
-  color: #42474b;
-  border: 0.1em solid #d4d4d4;
-  padding:.6em;
+.st-block input[type='text'],
+.st-block input[type='text']:active,
+.st-block input[type='text']:focus {
+    box-sizing: $input-box-sizing;
+    border: $input-border;
+    padding: $input-padding;
+    width: $input-width;
+    height: $input-height;
+
+    color: $input-color;
+    font-size: $input-font-size;
+
+    background: $input-background;
+
+    vertical-align: $input-align;
+}
+
+.st-block input[type='color'] {
+    box-sizing: $input-box-sizing;
+    border: $input-border;
+    padding: 0.2em;
+    width: $input-height;
+    height: $input-height;
+
+    font-size: $input-font-size;
+
+    background: $input-background;
+
+    vertical-align: $input-align;
+}
+
+.st-block input[type='color']::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.st-block input[type='color']::-webkit-color-swatch {
+    border: none;
 }

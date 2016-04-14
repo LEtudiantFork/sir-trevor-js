@@ -1,0 +1,34 @@
+.st-chart-area {
+    display: block;
+}
+
+.st-chart_table {
+    overflow-x: auto;
+
+    button {
+        overflow: hidden;
+
+        box-sizing: $input-box-sizing;
+        border: $input-border;
+        padding: $input-padding;
+        width: $input-width;
+        height: $input-height;
+
+        color: $input-color;
+        font-size: $input-font-size;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        background: $input-background;
+
+        vertical-align: $input-align;
+        cursor: pointer;
+
+        .st-icon {
+            width: 1.2em;
+            height: 1.2em;
+
+            vertical-align: middle;
+        }
+    }
+}
