@@ -49,7 +49,7 @@ function renderTable({ data, refKey, valueKey, colors }) {
 
     const tfoot = renderTFOOT(
         renderTR(`
-            ${renderTD(renderADD({ action: 'ref', content: i18n.t('blocks:table1D:addRef') }))}
+            ${renderTD(renderADD({ action: 'ref', content: i18n.t('blocks:table1D:addRef') }), 'colspan="2"')}
         `)
     );
 
@@ -71,7 +71,7 @@ export default {
         instance.data = data;
         instance.colors = colors;
 
-        instance.$elem = $('<div class="st-chart_table"></div>');
+        instance.$elem = $('<div class="st-block--table st-chart__table"></div>');
 
         instance.registerInputListeners();
         instance.registerClickListeners();

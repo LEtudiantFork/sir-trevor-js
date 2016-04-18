@@ -1,11 +1,9 @@
-'use strict';
-
 const _     = require('../lodash');
 const Block = require('../block');
 const IconPicker = require('../helpers/iconpicker.class.js');
 
 const template = _.template(`
-    <img src="" width="100" height="100" />
+    <img class="st-utils__v-middle" src="" width="100" height="100" />
     <input type="text" name="title" />
     <input type="color" name="color" />
     <div class="st-required st-text-block" contenteditable="true"></div>

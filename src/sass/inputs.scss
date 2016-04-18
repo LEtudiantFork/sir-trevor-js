@@ -1,11 +1,14 @@
 $input-box-sizing: border-box;
-$input-border: 0.1em solid #d4d4d4;
+$input-border: 1px solid #d4d4d4;
+$input-border--active: 1px solid #a6aac4;
+$input-border-radius: 2px;
 $input-width: 11em;
 $input-height: 2.5em;
+$input-margin: 0;
 $input-padding: 0.6em;
 $input-color: #42474b;
 $input-font-size: inherit;
-$input-background: #fff;
+$input-background: transparent;
 $input-align: middle;
 
 // Reset all our input styles
@@ -17,45 +20,23 @@ $input-align: middle;
     text-transform: uppercase;
 }
 
-// Generic styles
-@mixin st-input {
-    margin: 0;
-
-    font-size: inherit;
-    /*padding: 0.3em 0;*/
-}
-
-.st-block input[type='text'],
-.st-block textarea {
-    @include st-input;
-}
-
 // Focus / Active styles
 @mixin st-input-active {
-    outline: none;
-    border: none;
+    &:active,
+    &:focus {
+        outline: none;
+        border-color: nth($input-border--active, 3);
+    }
 }
 
-.st-block [contenteditable='true'],
-.st-block [contenteditable='true']:active,
-.st-block [contenteditable='true']:focus,
-.st-block input[type='text'],
-.st-block input[type='text']:active,
-.st-block input[type='text']:focus,
-.st-block textarea,
-.st-block textarea:hover,
-.st-block textarea:active {
+// Generic styles
+@mixin st-input {
     @include st-input-active;
-}
 
-.st-block input[type='text'],
-.st-block input[type='text']:active,
-.st-block input[type='text']:focus {
     box-sizing: $input-box-sizing;
+    margin: $input-margin;
     border: $input-border;
     padding: $input-padding;
-    width: $input-width;
-    height: $input-height;
 
     color: $input-color;
     font-size: $input-font-size;
@@ -65,24 +46,63 @@ $input-align: middle;
     vertical-align: $input-align;
 }
 
-.st-block input[type='color'] {
+[contenteditable='true'] {
+    @include st-input-active;
+
     box-sizing: $input-box-sizing;
-    border: $input-border;
-    padding: 0.2em;
-    width: $input-height;
-    height: $input-height;
-
-    font-size: $input-font-size;
-
-    background: $input-background;
-
-    vertical-align: $input-align;
-}
-
-.st-block input[type='color']::-webkit-color-swatch-wrapper {
+    margin: $input-margin;
     padding: 0;
 }
 
-.st-block input[type='color']::-webkit-color-swatch {
+input[type='text'],
+input[type='number'],
+input[type='color'],
+textarea,
+button {
+    @include st-input;
+}
+
+button {
+    @include st-input;
+
+    overflow: hidden;
+
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    .st-icon {
+        width: 1.2em;
+        height: 1.2em;
+
+        vertical-align: middle;
+    }
+}
+
+textarea {
+    min-height: calc(1.3em * 5);
+
+    resize: vertical;
+}
+
+input[type='text'],
+input[type='number'] {
+    width: $input-width;
+    height: $input-height;
+}
+
+input[type='color'] {
+    padding: 0.2em;
+    width: $input-height;
+    height: $input-height;
+}
+
+input[type='color']::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+input[type='color']::-webkit-color-swatch {
     border: none;
 }

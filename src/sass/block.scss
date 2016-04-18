@@ -140,10 +140,9 @@
 }
 
 .st-text-block {
-    @include st-input;
-    @include st-input-active;
+    @include scroll-shadows-horizontal;
 
-    overflow: visible;
+    overflow: auto;
 
     font-size: $text-block-font-size;
     line-height: 1.45;
@@ -173,6 +172,7 @@
         border-collapse: collapse;
     }
 
+    th,
     td {
         border: 1px solid #ccc;
         padding: 10px;
@@ -181,6 +181,8 @@
 
 .st-text-block--quote {
     margin-bottom: 1.8em;
+    border-left: 3px nth($input-border, 2) nth($input-border, 3);
+    padding-left: 0.5em;
 
     font-size: 1.875em;
     line-height: 1.3;

@@ -1,5 +1,3 @@
-'use strict';
-
 const Block = require('../block');
 
 const ScribeTableBlockPlugin = require('./scribe-plugins/scribe-table-plugin');
@@ -28,7 +26,6 @@ module.exports = Block.extend({
 
     configureScribe: function(scribe) {
         scribe.use(new ScribeTableBlockPlugin(this));
-
         scribe.use(new ScribeTextBlockPlugin(this));
     },
 

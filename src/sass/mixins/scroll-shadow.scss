@@ -1,0 +1,41 @@
+// http://lea.verou.me/2012/04/background-attachment-local/
+// Mixin http://codepen.io/laustdeleuran/pen/DBaAu
+$scroll-shadow-alpha: 0.15 !default;
+$scroll-shadow-size: 14px !default;
+$scroll-shadow-cover: 40px !default;
+$scroll-shadow-color: rgba(#333, 0.5) !default;
+$scroll-shadow-background: #fff !default;
+
+@mixin scroll-shadows-vertical($background-color: $scroll-shadow-background, $shadow-intensity: $scroll-shadow-alpha, $shadow-color: $scroll-shadow-color, $cover-size: $scroll-shadow-cover, $shadow-size: $scroll-shadow-size) {
+    background:
+        // Shadow covers
+        linear-gradient($background-color 30%, rgba($background-color,0)),
+        linear-gradient(rgba($background-color,0), $background-color 70%) 0 100%,
+
+        // Shadows
+        radial-gradient(farthest-side at 50% 0, rgba($shadow-color,$shadow-intensity), rgba($shadow-color,0)),
+        radial-gradient(farthest-side at 50% 100%, rgba($shadow-color,$shadow-intensity), rgba($shadow-color,0)) 0 100%;
+    background-repeat: no-repeat;
+    background-color: $background-color;
+    background-size: 100% $cover-size, 100% $cover-size, 100% $shadow-size, 100% $shadow-size;
+
+    // Opera doesn't support this in the shorthand
+    background-attachment: local, local, scroll, scroll;
+}
+
+@mixin scroll-shadows-horizontal($background-color: $scroll-shadow-background, $shadow-intensity: $scroll-shadow-alpha, $shadow-color: $scroll-shadow-color, $cover-size: $scroll-shadow-cover, $shadow-size: $scroll-shadow-size) {
+    background:
+        // Shadow covers
+        linear-gradient(90deg, $background-color 30%, rgba($background-color,0)),
+        linear-gradient(90deg, rgba($background-color,0), $background-color 70%) 100% 0,
+        // Shadows
+        radial-gradient(farthest-side at 0 50%, rgba($shadow-color,$shadow-intensity), rgba($shadow-color,0)),
+        radial-gradient(farthest-side at 100% 50%, rgba($shadow-color,$shadow-intensity), rgba($shadow-color,0)) 100% 0;
+
+    background-repeat: no-repeat;
+    background-color: $background-color;
+    background-size: $cover-size 100%, $cover-size 100%, $shadow-size 100%, $shadow-size 100%;
+
+    // Opera doesn't support this in the shorthand
+    background-attachment: local, local, scroll, scroll;
+}

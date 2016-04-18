@@ -184,7 +184,7 @@ export default {
                     prop: this.propKey,
                     value: this.valueKey
                 })}
-                <div class="st-chart_table">
+                <div class="st-block--table st-chart__table">
                 ${renderTable({
                     data: this.data,
                     colors: this.colors,

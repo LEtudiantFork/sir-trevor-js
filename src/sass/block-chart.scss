@@ -2,33 +2,24 @@
     display: block;
 }
 
-.st-chart_table {
+.st-chart__table {
+    @include scroll-shadows-horizontal;
+
     overflow-x: auto;
 
+    font-size: 0.875rem;
+
+    th,
+    td {
+        padding: 0;
+    }
+
+    input,
     button {
-        overflow: hidden;
+        border: none;
+    }
 
-        box-sizing: $input-box-sizing;
-        border: $input-border;
-        padding: $input-padding;
-        width: $input-width;
-        height: $input-height;
-
-        color: $input-color;
-        font-size: $input-font-size;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        background: $input-background;
-
-        vertical-align: $input-align;
-        cursor: pointer;
-
-        .st-icon {
-            width: 1.2em;
-            height: 1.2em;
-
-            vertical-align: middle;
-        }
+    button {
+        width: 100%;
     }
 }

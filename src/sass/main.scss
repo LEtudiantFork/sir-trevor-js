@@ -1,8 +1,10 @@
 @import '../../node_modules/etudiant-mod-sass/mixins/valign';
 @import '../../node_modules/etudiant-mod-sass/utility/clearfix';
 
-@import '_variables';
-@import '_icons';
+@import 'variables';
+@import 'icons';
+
+@import 'mixins/scroll-shadow';
 
 @import 'patterns/ui-popup';
 @import 'utils';
