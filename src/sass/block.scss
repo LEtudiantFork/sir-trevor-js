@@ -346,3 +346,20 @@ ul.st-text-block {
 .st-msg--error {
     color: $error-color;
 }
+
+.icon-picker-container {
+    display: flex;
+}
+
+.st-illustrated-icon {
+    margin: 5px;
+
+    font-size: 5rem;
+
+    cursor: pointer;
+}
+
+.st-illustrated-icon img {
+    display: block;
+    width: 1em;
+}

@@ -26,8 +26,8 @@ module.exports = Block.extend({
     loadData(data){
         this.setTextBlockHTML(data.text);
         this.$('img')[0].src = data.image;
-        this.$('[name="title"]')[0].value = data.title;
-        this.$('[name="color"]')[0].value = data.color;
+        this.$('input[name="title"]')[0].value = data.title;
+        this.$('input[name="color"]')[0].value = data.color;
     },
 
     onBlockRender() {
@@ -37,12 +37,12 @@ module.exports = Block.extend({
         this.iconPicker = IconPicker.create();
         this.iconPicker.on('selected', icon => this.setIcon(icon));
 
-        this.$('[name="color"]')[0].addEventListener('input', () => this.setColor());
+        this.$('input[name="color"]')[0].addEventListener('input', () => this.setColor());
         this.$('img')[0].addEventListener('click', () => this.iconPicker.open());
     },
 
     setColor() {
-        this.$('[name="title"]')[0].style.color = this.$('[name="color"]')[0].value;
+        this.$('input[name="title"]')[0].style.color = this.$('input[name="color"]')[0].value;
     },
 
     setIcon(icon) {

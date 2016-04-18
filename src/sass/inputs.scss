@@ -34,9 +34,7 @@ $input-align: middle;
     @include st-input-active;
 
     box-sizing: $input-box-sizing;
-    margin: $input-margin;
     border: $input-border;
-    padding: $input-padding;
 
     color: $input-color;
     font-size: $input-font-size;
@@ -51,7 +49,7 @@ $input-align: middle;
 
     box-sizing: $input-box-sizing;
     margin: $input-margin;
-    padding: 0;
+    padding: 0.2em;
 }
 
 input[type='text'],
@@ -60,6 +58,9 @@ input[type='color'],
 textarea,
 button {
     @include st-input;
+
+    margin: $input-margin;
+    padding: $input-padding;
 }
 
 button {

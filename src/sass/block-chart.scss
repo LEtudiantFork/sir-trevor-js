@@ -3,8 +3,6 @@
 }
 
 .st-chart__table {
-    @include scroll-shadows-horizontal;
-
     overflow-x: auto;
 
     font-size: 0.875rem;
