@@ -1,18 +1,18 @@
-const _     = require('../lodash');
 const Block = require('../block');
 const IconPicker = require('../helpers/iconpicker.class.js');
 
-const template = _.template(`
-    <img class="st-utils__v-middle" src="" width="100" height="100" />
-    <input type="text" name="title" />
-    <input type="color" name="color" />
-    <div class="st-required st-text-block" contenteditable="true"></div>
-`);
+const template = () => `
+    <div class="st-block--illustated">
+        <img class="st-utils__v-middle" src="" width="100" height="100" />
+        <input type="text" name="title" />
+        <input type="color" name="color" />
+        <div class="st-required st-text-block" contenteditable="true"></div>
+    </div>
+`;
 
 module.exports = Block.extend({
     type: 'illustrated',
 
-    textable: true,
     toolbarEnabled: true,
 
     title() { return i18n.t('blocks:illustrated:title'); },
@@ -20,7 +20,7 @@ module.exports = Block.extend({
     icon_name: 'illustrated-value',
 
     editorHTML() {
-        return template(this);
+        return template();
     },
 
     loadData(data){

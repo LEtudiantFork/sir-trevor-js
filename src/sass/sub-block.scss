@@ -3,27 +3,17 @@
 
     position: relative;
 
-    background-color: $white;
-
     cursor: pointer;
 }
 
 .st-sub-block-size-small {
     margin: 10px;
-    padding: 10px 40px 10px 10px;
+    padding: 10px;
 
     transition: background-color 0.1s ease-in-out;
 
-    .st-icon {
-        transition: color 0.1s ease-in-out;
-    }
-
     &:hover {
         background-color: $blocks-control-bg-color;
-
-        .st-icon {
-            color: $accent-color;
-        }
     }
 
     .st-sub-block-image {
@@ -44,6 +34,8 @@
         right: 10px;
 
         font-size: 20px;
+
+        transition: color 0.1s ease-in-out;
     }
 
     h3 {
@@ -60,7 +52,7 @@
     .st-sub-block-site {
         display: inline-block;
         border-radius: 10px;
-        padding: 3px;
+        padding: 3px 7px;
 
         color: $white;
         font-size: 12px;
@@ -146,6 +138,8 @@
 
 .st-sub-block-link {
     display: block;
+    width: 25px;
+    height: 25px;
 
     position: absolute;
 
@@ -154,6 +148,10 @@
 
     &:hover {
         color: $accent-color;
+    }
+
+    .st-icon {
+        pointer-events: none;
     }
 }
 
@@ -190,8 +188,6 @@
 
 .st-sub-block-poll {
     meter {
-        appearance: none;
-
         display: block;
         margin: 0 auto;
         border: none;
@@ -199,6 +195,8 @@
 
         background: none;
         background-color: $light-ui-color;
+
+        appearance: none;
 
         .meter-gauge {
             display: block;

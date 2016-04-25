@@ -2,15 +2,11 @@ import SubBlock from './basic.js';
 
 export default {
     getSubBlockByID(subBlockArray, id) {
-        return subBlockArray.filter(subBlock => {
-            return subBlock.id.toString() === id.toString();
-        })[0];
+        return subBlockArray.filter(subBlock => subBlock.id.toString() === id.toString()).shift();
     },
 
     renderMultiple(subBlocks) {
-        return subBlocks.map(subBlock => {
-            return subBlock.render();
-        });
+        return subBlocks.map(subBlock => subBlock.render());
     },
 
     buildSingle(params) {
@@ -18,12 +14,10 @@ export default {
     },
 
     buildMultiple(params) {
-        return params.contents.map(singleContent => {
-            return this.buildSingle({
-                content: singleContent,
-                parentID: params.parentID,
-                type: params.type
-            });
-        });
+        return params.contents.map(singleContent => this.buildSingle({
+            content: singleContent,
+            parentID: params.parentID,
+            type: params.type
+        }));
     }
 };

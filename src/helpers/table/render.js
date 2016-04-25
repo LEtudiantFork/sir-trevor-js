@@ -1,5 +1,7 @@
+import config from '../../config.js';
+
 const assets = {
-    iconBin: '<svg class="st-icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="inc/icons.svg#icon-Bin"></use></svg>'
+    iconBin: `<svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-Bin"/></svg>`
 };
 
 export function renderBUTTON({ action = '', key = '', content = '' }) {

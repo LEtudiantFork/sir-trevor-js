@@ -1,7 +1,16 @@
-'use strict';
+import Dom    from '../packages/dom';
+import Block  from '../block';
+import config from '../config.js';
 
-const _     = require('../lodash');
-const Block = require('../block');
+const template = ({ title, description, thumbnail, url }) => `
+    <h4>${ i18n.t('blocks:personality:title') }</h4>
+    <img class="st-utils__v-middle" src="${ thumbnail }" width="100" height="100" />
+    <strong>${ title }</strong>
+    <p>${ description }</p>
+    <a class="st-block-link" href="${ url }" target="_blank">
+        <svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-fmt-link"/></svg>
+    </a>
+`;
 
 module.exports = Block.extend({
 
@@ -14,7 +23,13 @@ module.exports = Block.extend({
     icon_name: 'personality',
 
     loadData(data){
-        console.log(data);
+        let quizElem = Dom.createElement('div', {
+            'class': 'st-block--personality'
+        });
+
+        quizElem.innerHTML = template(data);
+
+        this.inner.appendChild(quizElem);
     },
 
     onBlockRender() {}

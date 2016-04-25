@@ -44,7 +44,10 @@ var Locales = {
                 title: 'Diaporama'
             },
             embed: {
-                title: 'Embed'
+                title: 'Embed',
+                defaultOption: 'Aucune Thematique',
+                next: 'Suivant',
+                prev: 'Précédent'
             },
             chart: {
                 title: 'Charte'

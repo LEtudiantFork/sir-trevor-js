@@ -48,14 +48,14 @@ export default {
         // need to wait for redraw otherwise d3plus doesn't find element
         setTimeout(() => this.drawChart(), 0);
 
-        this.table.on(EVENTS.updateKey, data => this[data.type] = data.value);
+        this.table.on(EVENTS.UPDATE.KEY, data => this[data.type] = data.value);
 
-        this.table.on(EVENTS.updateColor, () => {
+        this.table.on(EVENTS.UPDATE.COLOR, () => {
             this.colors = this.table.getColors();
             this.drawChart();
         });
 
-        this.table.on(EVENTS.updateData, () => {
+        this.table.on(EVENTS.UPDATE.DATA, () => {
             this.colors = this.table.getColors();
             this.data = this.table.getData();
             this.drawChart();

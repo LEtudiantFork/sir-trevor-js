@@ -1,43 +1,54 @@
 .st-block-replacer {
-  position: absolute;
-  text-align: center;
-  transform: translateY(-50%);
-  outline:none;
-  border:none;
-  font-size:1.3em;
-  display:none;
-  background-color:transparent;
-  padding:0;
-  z-index: 2;
-  top: 50%;
-  left: 35px;
-  
-  &::-moz-focus-inner {
-    padding:0;
-    margin:0;
-    margin-left:-1px;
-  }
+    z-index: 2;
 
-  .st-block--textable.st-block--empty & {
-    display: block;
-  }
+    display: none;
+    outline: none;
+    border: none;
+    padding: 0;
 
+    position: absolute;
+    top: 50%;
+    left: 35px;
+
+    font-size: 1.3em;
+    text-align: center;
+
+    transform: translateY(-50%);
+
+    background-color: transparent;
+
+    &::-moz-focus-inner {
+        margin: 0;
+        margin-left: -1px;
+        padding: 0;
+    }
+
+    .st-block--textable.st-block--empty & {
+        display: block;
+    }
 }
 
 .st-block-replacer__button {
-  transition: all $animation-speed ease-in-out;
-  color: $accent-color;
-  position:relative;
-  box-sizing:border-box;
-  display: inline-block;
-  margin: 0 auto;
-  width: 41px;
-  height: 41px;
-  cursor: pointer;
-  
-  transform:translateZ(0);
+    display: inline-block;
+    box-sizing: border-box;
+    margin: 0 auto;
+    width: 41px;
+    height: 41px;
 
-  .st-block--controls-active & {
-    transform: rotate(45deg);
-  }
+    position: relative;
+
+    color: $accent-color;
+
+    transition: all $animation-speed ease-in-out;
+    transform: translateZ(0);
+
+    cursor: pointer;
+
+    .st-block--controls-active & {
+        transform: rotate(45deg);
+    }
+    .st-icon {
+        width: 100%;
+        height: 100%;
+    }
 }

@@ -3,10 +3,10 @@ import $ from 'etudiant-mod-dom';
 import Slider from './slider.class.js';
 import FilterBar from './filterbar.class.js';
 
-import subBlockManager from './sub-blocks/index.js';
+import subBlockManager from './sub-blocks/index';
 
-const eventablejs = require('eventablejs');
-const EventBus    = require('../event-bus.js');
+import eventablejs from 'eventablejs';
+import EventBus    from '../event-bus.js';
 
 function init(params) {
     this.id = Date.now();
@@ -35,22 +35,16 @@ function init(params) {
         }
     });
 
-    this.filterBar.once('search:result', () => {
-        this.trigger('ready');
-    });
+    this.filterBar.once('search:result', () => this.trigger('ready'));
 
     this.filterBar.on('search:result', searchResults => this.showResults(searchResults));
-
-    this.filterBar.on('search:no-result', () => {
-        this.subBlocks = [];
-        this.slider.reset();
-    });
-
-    this.slider.on('progress', () => this.filterBar.moreResults());
+    this.filterBar.on('search:no-result', () => this.resetResults());
 
     this.filterBar.on('update:result', updateResults => this.updateResults(updateResults));
 
     this.filterBar.search();
+
+    this.slider.on('progress', () => this.filterBar.moreResults());
 }
 
 export default {
@@ -63,27 +57,30 @@ export default {
     },
 
     prototype: {
+        resetResults() {
+            this.subBlocks = [];
+            this.slider.reset();
+        },
+
         showResults(searchResults) {
-            if (this.subBlockPreProcess) {
-                searchResults = this.subBlockPreProcess(searchResults);
-            }
+            const contents = (this.subBlockPreProcess) ? this.subBlockPreProcess(searchResults) : searchResults;
 
             this.subBlocks = subBlockManager.buildMultiple({
-                contents: searchResults,
+                contents,
                 parentID: this.id,
                 type: this.subBlockType
             });
 
-            this.slider.reset(subBlockManager.renderMultiple(this.subBlocks));
+            this.slider.reset(
+                subBlockManager.renderMultiple(this.subBlocks)
+            );
         },
 
         updateResults(updateResults) {
-            if (this.subBlockPreProcess) {
-                updateResults = this.subBlockPreProcess(updateResults);
-            }
+            const contents = (this.subBlockPreProcess) ? this.subBlockPreProcess(updateResults) : updateResults;
 
-            let additionalSubBlocks = subBlockManager.buildMultiple({
-                contents: updateResults,
+            const additionalSubBlocks = subBlockManager.buildMultiple({
+                contents,
                 parentID: this.id,
                 type: this.subBlockType
             });
@@ -102,6 +99,7 @@ export default {
 
         destroy: function() {
             this.$elem.remove();
+            this.$elem = null;
         }
     }
 };

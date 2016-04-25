@@ -7,7 +7,7 @@ const fieldHelper = require('../helpers/field');
 import filterDataFetcher from '../helpers/filter-data-fetcher';
 import PandoraSearch from '../helpers/pandora-search.class';
 
-const chooseableConfig = {
+const CHOICES = {
     name: 'type',
     options: [
         {
@@ -43,7 +43,7 @@ module.exports = Block.extend({
     icon_name: 'Image',
 
     onBlockRender() {
-        this.createChoices(chooseableConfig, choices => {
+        this.createChoices(CHOICES, choice => {
             const sliderConfig = {
                 controls: {
                     next: 'Next',
@@ -77,14 +77,14 @@ module.exports = Block.extend({
                         }
                     ],
                     limit: 20,
-                    type: choices.type
+                    type: choice.type
                 };
 
                 this.pandoraSearch = PandoraSearch.create({
                     container: this.editor,
                     filterConfig: filterConfig,
                     sliderConfig: sliderConfig,
-                    subBlockType: choices.type
+                    subBlockType: choice.type
                 });
 
                 this.pandoraSearch.on('selected', selectedSubBlock => {

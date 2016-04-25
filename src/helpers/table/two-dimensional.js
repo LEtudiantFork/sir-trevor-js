@@ -143,14 +143,14 @@ export default {
                 color
             });
 
-            this.trigger(EVENTS.updateData);
+            this.trigger(EVENTS.UPDATE.DATA);
             this.render();
         },
 
         deleteRef(ref) {
             this.data = this.data.filter(item => item[this.refKey] !== ref);
             this.colors = this.colors.filter(item => item[this.refKey] !== ref);
-            this.trigger(EVENTS.updateData);
+            this.trigger(EVENTS.UPDATE.DATA);
             this.render();
         },
 
@@ -168,13 +168,13 @@ export default {
                 });
             });
 
-            this.trigger(EVENTS.updateData);
+            this.trigger(EVENTS.UPDATE.DATA);
             this.render();
         },
 
         deleteProp(prop) {
             this.data = this.data.filter(item => item[this.propKey] !== prop);
-            this.trigger(EVENTS.updateData);
+            this.trigger(EVENTS.UPDATE.DATA);
             this.render();
         },
 

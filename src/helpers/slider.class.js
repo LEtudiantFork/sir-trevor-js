@@ -31,7 +31,6 @@ const noSlidesTemplate = `
 
 function init(params) {
     this.slides = [];
-    this.template = sliderTemplate;
 
     this.config = {
         itemsPerSlide: params.itemsPerSlide,
@@ -95,13 +94,12 @@ function checkProgress() {
 }
 
 function prepareSlides(slideContents, itemsPerSlide, indexModifier) {
-    return _.chunk(slideContents, itemsPerSlide).map((slideContentItem, index) => {
-        return Slide.create(
+    return _.chunk(slideContents, itemsPerSlide)
+        .map((slideContentItem, index) => Slide.create(
             indexModifier ? indexModifier + index : index,
             slideContentItem,
             itemsPerSlide
-        );
-    });
+        ));
 }
 
 function registerButtons() {

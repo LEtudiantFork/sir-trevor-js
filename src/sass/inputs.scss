@@ -1,6 +1,8 @@
 $input-box-sizing: border-box;
-$input-border: 1px solid #d4d4d4;
-$input-border--active: 1px solid #a6aac4;
+$input-border-color: rgba(0,0,0,0.2);
+$input-border-color--active: rgba(0, 0, 0, 0.4);
+$input-border: 1px solid $input-border-color;
+$input-border--active: 1px solid $input-border-color--active;
 $input-border-radius: 2px;
 $input-width: 11em;
 $input-height: 2.5em;
@@ -25,7 +27,7 @@ $input-align: middle;
     &:active,
     &:focus {
         outline: none;
-        border-color: nth($input-border--active, 3);
+        border-color: $input-border-color--active;
     }
 }
 
@@ -38,8 +40,6 @@ $input-align: middle;
 
     color: $input-color;
     font-size: $input-font-size;
-
-    background: $input-background;
 
     vertical-align: $input-align;
 }
@@ -54,50 +54,33 @@ $input-align: middle;
 
 input[type='text'],
 input[type='number'],
+input[type='search'],
 input[type='color'],
+select,
 textarea,
 button {
     @include st-input;
 
     margin: $input-margin;
     padding: $input-padding;
-}
 
-button {
-    @include st-input;
-
-    overflow: hidden;
-
-    font-weight: 600;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-
-    cursor: pointer;
-
-    .st-icon {
-        width: 1.2em;
-        height: 1.2em;
-
-        vertical-align: middle;
-    }
-}
-
-textarea {
-    min-height: calc(1.3em * 5);
-
-    resize: vertical;
+    background: $input-background;
 }
 
 input[type='text'],
-input[type='number'] {
+input[type='number'],
+input[type='search'],
+select {
     width: $input-width;
     height: $input-height;
 }
 
 input[type='color'] {
-    padding: 0.2em;
+    padding: 0;
     width: $input-height;
     height: $input-height;
+
+    cursor: cell;
 }
 
 input[type='color']::-webkit-color-swatch-wrapper {
@@ -106,4 +89,29 @@ input[type='color']::-webkit-color-swatch-wrapper {
 
 input[type='color']::-webkit-color-swatch {
     border: none;
+}
+
+textarea {
+    min-height: $input-height;
+
+    resize: vertical;
+}
+
+button {
+    overflow: hidden;
+
+    min-height: $input-height;
+
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    cursor: pointer;
+
+    .st-icon {
+        width: 1.4em;
+        height: 1.4em;
+
+        vertical-align: middle;
+    }
 }

@@ -1,29 +1,32 @@
-'use strict';
-
-const Block = require('../block');
-
-const fieldHelper = require('../helpers/field');
+import Block from '../block';
+import fieldHelper from '../helpers/field';
 
 import xhr from 'etudiant-mod-xhr';
 
 import PandoraSearch from '../helpers/pandora-search.class';
 
-const chooseableConfig = {
+const CHOICES = {
     name: 'type',
     options: [
         {
             title: i18n.t('blocks:quiz:title'),
             icon: 'quiz',
-            value: 'quiz'
-        }, {
+            value: 'quiz',
+            api: 'quizzes'
+        },
+        {
             title: i18n.t('blocks:personality:title'),
             icon: 'personality',
-            value: 'personality'
-        }, {
+            value: 'personality',
+            api: 'personalities'
+        },
+        {
             title: i18n.t('blocks:poll:title'),
             icon: 'Poll',
-            value: 'poll'
-        }, {
+            value: 'poll',
+            api: 'sondage'
+        },
+        {
             title: i18n.t('blocks:script:title'),
             icon: 'script',
             value: 'script'
@@ -31,17 +34,11 @@ const chooseableConfig = {
     ]
 };
 
-const apiJCSNames = {
-    poll: 'sondage',
-    quiz: 'quizzes',
-    personality: 'personalities'
-};
-
 module.exports = Block.extend({
 
     type: 'embed',
 
-    title: function() { return i18n.t('blocks:embed:title'); },
+    title: () => { return i18n.t('blocks:embed:title'); },
 
     chooseable: true,
 
@@ -57,17 +54,18 @@ module.exports = Block.extend({
     },
 
     onBlockRender() {
-        this.createChoices(chooseableConfig, choices => {
-            if (choices.type === 'script') {
-                this.mediator.trigger('block:replace', this.el, choices.type, {});
+        this.createChoices(CHOICES, choice => {
+            if (choice.type === 'script') {
+                this.mediator.trigger('block:replace', this.el, choice.type, {});
+                return;
             }
 
-            const thematicOptionsUrl = `${this.globalConfig.apiUrl}/jcs/thematics/list/${choices.type}`;
+            const thematicOptionsUrl = `${this.globalConfig.apiUrl}/jcs/thematics/list/${choice.api}`;
 
             const sliderConfig = {
                 controls: {
-                    next: 'Next',
-                    prev: 'Prev'
+                    next: i18n.t('blocks:embed:next'),
+                    prev: i18n.t('blocks:embed:prev')
                 },
                 itemsPerSlide: 2,
                 increment: 2
@@ -78,22 +76,14 @@ module.exports = Block.extend({
                     access_token: this.globalConfig.accessToken
                 }
             })
-            .then(result => {
-                const filterOptions = result.content.map(filterOption => {
-                    return {
-                        value: filterOption.id,
-                        label: filterOption.label
-                    };
-                });
+            .then(({ content = [] }) => {
+                const filterOptions = content.map(({ id: value, label }) => ({ value, label }));
 
-                return fieldHelper.addNullOptionToArray(filterOptions, 'Aucune Thematique');
-            })
-            .catch(err => {
-                console.error(err);
+                return fieldHelper.addNullOptionToArray(filterOptions, i18n.t('blocks:embed:defaultOption'));
             })
             .then(thematics => {
                 const filterConfig = {
-                    url: this.globalConfig.apiUrl + '/jcs/' + apiJCSNames[choices.type] + '/search',
+                    url: `${this.globalConfig.apiUrl}/jcs/${choice.api}/search`,
                     accessToken: this.globalConfig.accessToken,
                     fields: [
                         {
@@ -113,9 +103,9 @@ module.exports = Block.extend({
 
                 this.pandoraSearch = PandoraSearch.create({
                     container: this.editor,
-                    filterConfig: filterConfig,
-                    sliderConfig: sliderConfig,
-                    subBlockType: choices.type
+                    filterConfig,
+                    sliderConfig,
+                    subBlockType: choice.type
                 });
 
 
@@ -125,9 +115,7 @@ module.exports = Block.extend({
                     this.pandoraSearch.destroy();
                 });
             })
-            .catch(function(err) {
-                console.error(err);
-            });
+            .catch(err => console.error(err));
         });
     }
 });

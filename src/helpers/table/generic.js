@@ -48,11 +48,11 @@ export default {
             const key = this[HEADERS[type]];
 
             if (newValue === '') {
-                return this.trigger(EVENTS.errorEmpty);
+                return this.trigger(EVENTS.ERROR.EMPTY);
             }
             if (!headerValueIsUnique(newValue, key, this.data)) {
                 input.value = oldValue;
-                return this.trigger(EVENTS.errorUniq);
+                return this.trigger(EVENTS.ERROR.UNIQ);
             }
 
             this.updateHeader({
@@ -68,11 +68,11 @@ export default {
             const newValue = input.value.trim();
 
             if (newValue === '') {
-                return this.trigger(EVENTS.errorEmpty);
+                return this.trigger(EVENTS.ERROR.EMPTY);
             }
             if (!dataKeyIsUnique(newValue, this.data)) {
                 input.value = oldValue;
-                return this.trigger(EVENTS.errorUniq);
+                return this.trigger(EVENTS.ERROR.UNIQ);
             }
 
             this.updateKey({
@@ -103,11 +103,11 @@ export default {
             const newValue = parseFloat(rawValue.replace(',', '.'));
 
             if (rawValue === '') {
-                return this.trigger(EVENTS.errorEmpty);
+                return this.trigger(EVENTS.ERROR.EMPTY);
             }
             if (isNaN(newValue)) {
                 input.value = oldValue;
-                return this.trigger(EVENTS.errorNumber);
+                return this.trigger(EVENTS.ERROR.NUMBER);
             }
 
             this.updateCell({
@@ -115,7 +115,7 @@ export default {
                 ref,
                 newValue
             });
-            this.trigger(EVENTS.updateData);
+            this.trigger(EVENTS.UPDATE.DATA);
             input.value = newValue;
             input.dataset.oldValue = newValue;
         }, DEBOUNCE));
@@ -132,7 +132,7 @@ export default {
     updateKey({ type, oldValue, newValue }) {
         this[type] = newValue;
 
-        this.trigger(EVENTS.updateKey, {
+        this.trigger(EVENTS.UPDATE.KEY, {
             type,
             value: this[type]
         });
@@ -143,7 +143,7 @@ export default {
             delete item[oldValue];
         });
 
-        this.trigger(EVENTS.updateData);
+        this.trigger(EVENTS.UPDATE.DATA);
         this.render();
     },
 
@@ -154,7 +154,7 @@ export default {
             }
         });
 
-        this.trigger(EVENTS.updateColor);
+        this.trigger(EVENTS.UPDATE.COLOR);
     },
 
     updateHeader({ key, oldValue, newValue }) {
@@ -172,7 +172,7 @@ export default {
             }
         });
 
-        this.trigger(EVENTS.updateData);
+        this.trigger(EVENTS.UPDATE.DATA);
         this.render();
     }
 };

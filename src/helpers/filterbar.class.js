@@ -1,8 +1,6 @@
-var _           = require('../lodash.js');
-var eventablejs = require('eventablejs');
-
-var fieldHelper = require('./field.js');
-
+import * as _ from '../lodash.js';
+import eventablejs from 'eventablejs';
+import fieldHelper from './field.js';
 import xhr from 'etudiant-mod-xhr';
 
 const filterBarTemplate = `
@@ -20,7 +18,6 @@ function init(params) {
     this.fields = params.fields;
     this.limit = params.limit;
     this.subType = params.subType;
-    this.template = filterBarTemplate;
     this.type = params.type;
     this.url = params.url;
 
@@ -60,7 +57,7 @@ export default {
 
     prototype: {
 
-        render: function() {
+        render() {
             var fieldMarkup = '';
 
             this.fields.forEach(function(field) {
@@ -70,63 +67,46 @@ export default {
             return _.template(filterBarTemplate)({ fields: fieldMarkup });
         },
 
-        bindToDOM: function(container) {
+        bindToDOM(container) {
             this.$elem = container.find('.st-block__filter');
 
-            this.$elem.on('keyup', 'input', _.debounce(() => {
-                this.search();
-            }, 300));
-
-            this.$elem.on('change', 'select', () => {
-                this.search();
-            });
+            this.$elem.on('keyup', 'input', _.debounce(() => this.search(), 300));
+            this.$elem.on('change', 'select', () => this.search());
         },
 
-        search: function(search, eventName) {
-            search = search || {};
-            eventName = eventName || 'search';
-
+        search(search = {}, eventName = 'search') {
             this.trigger(eventName + ':start');
 
-            search = Object.assign(search, searchBuilder(this.$elem), {
+            const data = Object.assign({}, search, searchBuilder(this.$elem), {
                 access_token: this.accessToken,
                 limit: this.limit,
-                application: this.app
+                application: this.application || this.app
             });
 
             if (this.type) {
-                search.type = this.type;
+                data.type = this.type;
             }
 
-            if (this.application) {
-                search.application = this.application;
-            }
+            this.nextSearch = data;
 
-
-            this.nextSearch = search;
-
-            xhr.get(this.url, {
-                data: search
-            })
-            .then((searchResult) => {
-                if (searchResult.content) {
-                    this.trigger(eventName + ':result', searchResult.content);
-                    this.nextSearch.offset = this.nextSearch.offset ? this.nextSearch.offset += searchResult.content.length : searchResult.content.length;
+            xhr.get(this.url, { data })
+            .then(({ content }) => {
+                if (content) {
+                    this.trigger(eventName + ':result', content);
+                    this.nextSearch.offset = (this.nextSearch.offset || 0) + content.length;
                 }
                 else {
                     this.trigger(eventName + ':no-result');
                 }
             })
-            .catch((err) => {
-                this.trigger(eventName + ':error', err);
-            });
+            .catch(err => this.trigger(eventName + ':error', err));
         },
 
-        moreResults: function() {
+        moreResults() {
             this.search(this.nextSearch, 'update');
         },
 
-        destroy: function() {
+        destroy() {
             this.$elem.parent().remove();
         }
 

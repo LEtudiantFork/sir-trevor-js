@@ -1,7 +1,14 @@
-export const updateData = 'update:data';
-export const updateColor = 'update:color';
-export const updateKey = 'update;key';
+export const UPDATE = {
+    DATA: 'update:data',
+    COLOR: 'update:color',
+    KEY: 'update:key'
+};
 
-export const errorEmpty = 'error:emtpy';
-export const errorNumber = 'error:number';
-export const errorUniq = 'error:uniq';
+export const ERROR = {
+    EMPTY: 'error:empty',
+    NUMBER: 'error:number',
+    UNIQ: 'error:uniq'
+};
+
+Object.freeze(UPDATE);
+Object.freeze(ERROR);

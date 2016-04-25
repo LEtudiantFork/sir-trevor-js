@@ -5,10 +5,6 @@
 }
 
 .st-block {
-    overflow: hidden;
-
-    min-height: 70px;
-
     position: relative;
 
     align-items: center;
@@ -18,12 +14,18 @@
     margin: 0 110px;
     margin-top: 1em;
     margin-bottom: 1em;
+    min-height: 110px;
 
     position: relative;
 
     .st-block--textable & {
         margin-top: 0;
         margin-bottom: 0;
+    }
+
+    .st-block--with-errors &,
+    .st-block--delete-active & {
+        border-color: $error-color;
     }
 }
 
@@ -40,20 +42,6 @@
         outline: none;
         border-color: $accent-color;
     }
-}
-
-.st-block__inner {
-    .st-block[data-type='quote'] & {
-        margin-top: 2em;
-        margin-right: 155px;
-        margin-bottom: 2em;
-        margin-left: 155px;
-    }
-}
-
-.st-block--with-errors .st-block__inner,
-.st-block--delete-active .st-block__inner {
-    border-color: $error-color;
 }
 
 .st-block--with-plus:after,
@@ -140,34 +128,45 @@
 }
 
 .st-text-block {
-    @include scroll-shadows-horizontal;
-
     overflow: auto;
 
     font-size: $text-block-font-size;
     line-height: 1.45;
+
+    p {
+        margin: 0;
+    }
 }
 
-.st-text-block p {
-    vertical-align: 14%;
+.st-block--heading,
+.st-block--table,
+.st-block--illustated,
+.st-block--quiz,
+.st-block--personality,
+.st-block--poll {
+    padding: 0.2rem;
 }
 
 .st-block--heading {
-    overflow: visible;
-
-    margin: 0.58em 0;
     min-height: 1em;
 
     font-size: 1.5em;
     font-weight: 700;
     line-height: 1.45;
-}
 
-.st-block--heading p {
-    margin: 0.5em 0;
+    h1,
+    h2,
+    h3,
+    p {
+        margin: 0;
+    }
 }
 
 .st-block--table {
+    @include scroll-shadows-horizontal;
+
+    overflow: auto;
+
     table {
         border-collapse: collapse;
     }
@@ -180,7 +179,7 @@
 }
 
 .st-text-block--quote {
-    margin-bottom: 1.8em;
+    margin-bottom: 1rem;
     border-left: 3px nth($input-border, 2) nth($input-border, 3);
     padding-left: 0.5em;
 
@@ -362,4 +361,26 @@ ul.st-text-block {
 .st-illustrated-icon img {
     display: block;
     width: 1em;
+}
+
+
+.st-block-link {
+    display: block;
+    width: 25px;
+    height: 25px;
+
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    color: $base-ui-color;
+    text-decoration: none;
+
+    &:hover {
+        color: $accent-color;
+    }
+
+    .st-icon {
+        pointer-events: none;
+    }
 }
