@@ -28,9 +28,7 @@ module.exports = Block.extend({
 
     type: 'Chart',
 
-    title() {
-        return i18n.t('blocks:chart:title');
-    },
+    title: () => i18n.t('blocks:chart:title'),
 
     editorHTML: '<div class="st-block__chart"></div>',
 

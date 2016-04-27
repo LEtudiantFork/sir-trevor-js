@@ -1,4 +1,4 @@
-import $script from 'scriptjs';
+import scriptjs from 'scriptjs';
 
 const chartLibs = [
     'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.min.js',
@@ -9,7 +9,7 @@ let fetchChartPromise;
 
 export default () => {
     fetchChartPromise = fetchChartPromise || new Promise(resolve => {
-        $script.order(chartLibs, () => resolve());
+        scriptjs.order(chartLibs.slice(0), () => resolve());
     });
 
     return fetchChartPromise;

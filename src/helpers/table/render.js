@@ -5,7 +5,7 @@ const assets = {
 };
 
 export function renderBUTTON({ action = '', key = '', content = '' }) {
-    return `<button type="button"
+    return `<button class="st-btn" type="button"
         data-action="${action}"
         ${key ? `data-key="${key}"` : ''} >${content}</button>`;
 }

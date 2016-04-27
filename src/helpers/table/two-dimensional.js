@@ -124,7 +124,7 @@ export default {
 
     prototype: {
         addRef() {
-            this.newRefIndex = this.newRefIndex + 1 || getHeaderNames(this.data, this.refKey).length;
+            this.newRefIndex = this.newRefIndex + 1 || getHeaderNames(this.data, this.refKey).length + 1;
 
             const ref = `${i18n.t('blocks:table2D:newRef')} ${this.newRefIndex}`;
             const value = 0;
@@ -155,7 +155,7 @@ export default {
         },
 
         addProp() {
-            this.newPropIndex = this.newPropIndex + 1 || getHeaderNames(this.data, this.propKey).length;
+            this.newPropIndex = this.newPropIndex + 1 || getHeaderNames(this.data, this.propKey).length + 1;
 
             const prop = `${i18n.t('blocks:table2D:newProp')} ${this.newPropIndex}`;
             const value = 0;

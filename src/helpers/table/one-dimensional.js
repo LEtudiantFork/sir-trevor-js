@@ -83,7 +83,7 @@ export default {
 
     prototype: {
         addRef() {
-            this.newRefIndex = this.newRefIndex + 1 || this.data.length;
+            this.newRefIndex = this.newRefIndex + 1 || this.data.length + 1;
 
             const ref = `${i18n.t('blocks:table1D:newRef')} ${this.newRefIndex}`;
             const value = 0;
