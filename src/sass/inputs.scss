@@ -49,6 +49,7 @@ $input-align: middle;
 
     box-sizing: $input-box-sizing;
     margin: $input-margin;
+    border-color: $input-border-color;
     padding: 0.2em;
 }
 
@@ -58,7 +59,7 @@ input[type='search'],
 input[type='color'],
 select,
 textarea,
-button {
+.st-btn {
     @include st-input;
 
     margin: $input-margin;
@@ -97,7 +98,7 @@ textarea {
     resize: vertical;
 }
 
-button {
+.st-btn {
     overflow: hidden;
 
     min-height: $input-height;

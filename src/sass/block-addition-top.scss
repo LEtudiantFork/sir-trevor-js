@@ -53,11 +53,6 @@
         opacity: 1;
     }
 
-    .st-block--textable &,
-    .st-block[data-type='list'] & {
-        top: -1.5em;
-    }
-
     .st-block:nth-child(3) & {
         display: none;
     }

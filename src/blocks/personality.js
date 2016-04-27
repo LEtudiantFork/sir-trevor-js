@@ -18,7 +18,7 @@ module.exports = Block.extend({
 
     toolbarEnabled: false,
 
-    title() { return i18n.t('blocks:personality:title'); },
+    title: () => i18n.t('blocks:personality:title'),
 
     icon_name: 'personality',
 

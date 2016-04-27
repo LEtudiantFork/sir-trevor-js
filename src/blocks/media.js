@@ -1,8 +1,5 @@
-'use strict';
-
-const Block = require('../block');
-
-const fieldHelper = require('../helpers/field');
+import Block from '../block';
+import fieldHelper from '../helpers/field';
 
 import filterDataFetcher from '../helpers/filter-data-fetcher';
 import PandoraSearch from '../helpers/pandora-search.class';
@@ -36,7 +33,7 @@ module.exports = Block.extend({
 
     type: 'media',
 
-    title() { return i18n.t('blocks:media:title'); },
+    title: () => i18n.t('blocks:media:title'),
 
     chooseable: true,
 
@@ -60,10 +57,12 @@ module.exports = Block.extend({
             })
             .then(filterData => {
 
-                let filterConfig = {
-                    url: this.globalConfig.apiUrl + '/edt/media',
+                const filterConfig = {
+                    url: `${ this.globalConfig.apiUrl }/edt/media`,
                     accessToken: this.globalConfig.accessToken,
                     application: this.globalConfig.application,
+                    limit: 20,
+                    type: choice.type,
                     fields: [
                         {
                             type: 'search',
@@ -75,27 +74,22 @@ module.exports = Block.extend({
                             placeholder: 'Categorie',
                             options: fieldHelper.addNullOptionToArray(filterData.categories, 'Aucune categorie')
                         }
-                    ],
-                    limit: 20,
-                    type: choice.type
+                    ]
                 };
 
-                this.pandoraSearch = PandoraSearch.create({
+                const pandoraSearch = PandoraSearch.create({
                     container: this.editor,
-                    filterConfig: filterConfig,
-                    sliderConfig: sliderConfig,
+                    filterConfig,
+                    sliderConfig,
                     subBlockType: choice.type
-                });
-
-                this.pandoraSearch.on('selected', selectedSubBlock => {
+                })
+                .on('selected', selectedSubBlock => {
                     this.mediator.trigger('block:replace', this.el, subBlockMap[selectedSubBlock.type], selectedSubBlock.content);
 
-                    this.pandoraSearch.destroy();
+                    pandoraSearch.destroy();
                 });
             })
-            .catch(function(err) {
-                console.error(err);
-            });
+            .catch((err) => console.error(err));
         });
     }
 });

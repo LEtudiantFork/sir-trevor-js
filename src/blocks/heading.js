@@ -1,24 +1,22 @@
-'use strict';
-
 /*
     Heading Block
 */
 
-const Block    = require('../block');
-const stToHTML = require('../to-html');
+import Block from '../block';
+import stToHTML from '../to-html';
 
-const scribeBuild           = require('../scribe.build.js');
-const ScribeTextBlockPlugin = require('./scribe-plugins/scribe-text-block-plugin');
+import scribeBuild from '../scribe.build.js';
+import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 
 module.exports = Block.extend({
 
     type: 'heading',
 
-    title: function(){ return i18n.t('blocks:heading:title'); },
+    title: () => i18n.t('blocks:heading:title'),
 
     editorHTML: '<div class="st-required st-text-block st-block--heading" contenteditable="true"></div>',
 
-    configureScribe: function(scribe) {
+    configureScribe(scribe) {
         scribe.use(new ScribeTextBlockPlugin(this));
 
         // add H1, H2 and H3 support
@@ -26,7 +24,7 @@ module.exports = Block.extend({
         scribe.use(scribeBuild.scribePluginHeadingCommand(2));
         scribe.use(scribeBuild.scribePluginHeadingCommand(3));
 
-        scribe.on('content-changed', this.toggleEmptyClass.bind(this));
+        scribe.on('content-changed', () => this.toggleEmptyClass());
     },
 
     controllable: true,
@@ -37,19 +35,20 @@ module.exports = Block.extend({
     controls: {
         heading1(e) {
             e.preventDefault();
-            this._scribe.el.focus();
+            this.focus();
             this._scribe.commands.h1.execute();
         },
         heading2(e) {
             e.preventDefault();
-            this._scribe.el.focus();
+            this.focus();
             this._scribe.commands.h2.execute();
         },
         heading3(e) {
             e.preventDefault();
-            this._scribe.el.focus();
+            this.focus();
             this._scribe.commands.h3.execute();
-        },
+        }
+        /* * /,
         extra: {
             event: 'change',
             html: '<select><option value="yep">yep</option><option value="nope">nope</option></select>',
@@ -57,6 +56,7 @@ module.exports = Block.extend({
                 alert('This should be set off by the select');
             }
         }
+        /* */
     },
 
     scribeOptions: {
@@ -68,7 +68,7 @@ module.exports = Block.extend({
 
     icon_name: 'Header',
 
-    loadData: function(data){
+    loadData(data) {
         if (this.options.convertFromMarkdown && data.format !== 'html') {
             this.setTextBlockHTML(stToHTML(data.text, this.type));
         }
@@ -77,12 +77,19 @@ module.exports = Block.extend({
         }
     },
 
-    onBlockRender: function() {
-        this.focus();
+    onBlockRender() {
+        if (this.isEmpty()) {
+            this.focus();
+            this._scribe.commands.h1.execute();
+        }
         this.toggleEmptyClass();
     },
 
-    toggleEmptyClass: function() {
-        this.el.classList.toggle('st-block--empty', this._scribe.getTextContent().length === 0);
+    isEmpty() {
+        return this._scribe.getTextContent() === '';
+    },
+
+    toggleEmptyClass() {
+        this.el.classList.toggle('st-block--empty', this.isEmpty());
     }
 });

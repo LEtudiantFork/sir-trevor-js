@@ -3,9 +3,11 @@ import config from '../../config.js';
 const iconLink = `<svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-fmt-link"/></svg>`;
 
 export const diaporama = `
+    <% if (data.thumbnail) { %>
     <figure class="st-sub-block-image">
         <img src="<%= data.thumbnail %>" />
     </figure>
+    <% } %>
     <h3><%= data.legend %></h3>
     <a class="st-sub-block-link" href="<%= data.file %>" target="_blank">${iconLink}</a>
 `;

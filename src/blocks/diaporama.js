@@ -1,6 +1,13 @@
-'use strict';
+import * as _ from '../lodash';
+import Dom    from '../packages/dom';
+import Block  from '../block';
 
-const Block = require('../block');
+const template = `
+    <figure>
+        <img src="<%= file %>" />
+    </figure>
+    <input type="text" name="legend" value="<%= legend %>" />
+`;
 
 module.exports = Block.extend({
 
@@ -8,16 +15,19 @@ module.exports = Block.extend({
 
     toolbarEnabled: false,
 
-    editorHTML: '<div class="st-block--diaporama"></div>',
-
-    title() { return i18n.t('blocks:diaporama:title'); },
+    title: () => i18n.t('blocks:diaporama:title'),
 
     icon_name: 'Diaporama',
 
     loadData(data){
-        console.log(data);
+        const imageElem = Dom.createElement('div', {
+            'class': 'st-block--diaporama'
+        });
+
+        imageElem.innerHTML = _.template(template)(data);
+
+        this.inner.appendChild(imageElem);
     },
 
-    onBlockRender() {
-    }
+    onBlockRender() {}
 });

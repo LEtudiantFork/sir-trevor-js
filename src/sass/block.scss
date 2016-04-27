@@ -5,22 +5,21 @@
 }
 
 .st-block {
+    overflow: auto;
+
     position: relative;
 
     align-items: center;
 }
 
 .st-block__inner {
-    margin: 0 110px;
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin: 1em 110px;
     min-height: 110px;
 
     position: relative;
 
     .st-block--textable & {
-        margin-top: 0;
-        margin-bottom: 0;
+        min-height: 54px;
     }
 
     .st-block--with-errors &,
@@ -127,17 +126,6 @@
     }
 }
 
-.st-text-block {
-    overflow: auto;
-
-    font-size: $text-block-font-size;
-    line-height: 1.45;
-
-    p {
-        margin: 0;
-    }
-}
-
 .st-block--heading,
 .st-block--table,
 .st-block--illustated,
@@ -147,11 +135,10 @@
     padding: 0.2rem;
 }
 
-.st-block--heading {
-    min-height: 1em;
+.st-text-block {
+    overflow: auto;
 
-    font-size: 1.5em;
-    font-weight: 700;
+    font-size: $text-block-font-size;
     line-height: 1.45;
 
     h1,
@@ -160,12 +147,48 @@
     p {
         margin: 0;
     }
+
+    &::after {
+        display: block;
+        margin-top: -2px;
+        border: 1px solid;
+        border-color: inherit;
+        border-top-color: transparent;
+        height: 2px;
+        content: '';
+
+        .st-block--controls-active & {
+            display: none;
+        }
+    }
+}
+
+.st-block--heading {
+    min-height: 1em;
+
+    font-weight: 700;
+}
+
+.st-text-block--quote {
+    margin-bottom: 1rem;
+    border-left: 3px nth($input-border, 2) nth($input-border, 3);
+    padding-left: 0.5em;
+
+    font-size: 1.5em;
+
+    &::after {
+        display: none;
+    }
 }
 
 .st-block--table {
     @include scroll-shadows-horizontal;
 
     overflow: auto;
+
+    &::after {
+        display: none;
+    }
 
     table {
         border-collapse: collapse;
@@ -176,15 +199,6 @@
         border: 1px solid #ccc;
         padding: 10px;
     }
-}
-
-.st-text-block--quote {
-    margin-bottom: 1rem;
-    border-left: 3px nth($input-border, 2) nth($input-border, 3);
-    padding-left: 0.5em;
-
-    font-size: 1.875em;
-    line-height: 1.3;
 }
 
 ul.st-text-block {
@@ -383,4 +397,8 @@ ul.st-text-block {
     .st-icon {
         pointer-events: none;
     }
+}
+
+.st-block--image img {
+    max-width: 100%;
 }

@@ -18,7 +18,7 @@ module.exports = Block.extend({
 
     toolbarEnabled: false,
 
-    title() { return i18n.t('blocks:poll:title'); },
+    title: () => i18n.t('blocks:poll:title'),
 
     icon_name: 'poll',
 

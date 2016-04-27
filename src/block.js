@@ -217,7 +217,11 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
   _onBlur: function() {},
 
-  onBlockRender: function() {},
+  onBlockRender: function() {
+    if (this.isEmpty()) {
+        this.focus();
+    }
+  },
 
   onDrop: function(dataTransferObj) {},
 

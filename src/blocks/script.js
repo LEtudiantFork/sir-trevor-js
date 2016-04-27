@@ -10,7 +10,7 @@ module.exports = Block.extend({
 
     toolbarEnabled: false,
 
-    title() { return i18n.t('blocks:script:title'); },
+    title: () => i18n.t('blocks:script:title'),
 
     icon_name: 'script',
 

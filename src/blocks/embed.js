@@ -77,14 +77,16 @@ module.exports = Block.extend({
                 }
             })
             .then(({ content = [] }) => {
-                const filterOptions = content.map(({ id: value, label }) => ({ value, label }));
+                const options = content.map(({ id: value, label }) => ({ value, label }));
 
-                return fieldHelper.addNullOptionToArray(filterOptions, i18n.t('blocks:embed:defaultOption'));
+                return fieldHelper.addNullOptionToArray(options, i18n.t('blocks:embed:defaultOption'));
             })
             .then(thematics => {
                 const filterConfig = {
                     url: `${this.globalConfig.apiUrl}/jcs/${choice.api}/search`,
                     accessToken: this.globalConfig.accessToken,
+                    application: this.globalConfig.application,
+                    limit: 20,
                     fields: [
                         {
                             type: 'search',
@@ -96,23 +98,19 @@ module.exports = Block.extend({
                             placeholder: 'Thematique',
                             options: thematics
                         }
-                    ],
-                    limit: 20,
-                    application: this.globalConfig.application
+                    ]
                 };
 
-                this.pandoraSearch = PandoraSearch.create({
+                const pandoraSearch = PandoraSearch.create({
                     container: this.editor,
                     filterConfig,
                     sliderConfig,
                     subBlockType: choice.type
-                });
-
-
-                this.pandoraSearch.on('selected', selectedSubBlock => {
+                })
+                .on('selected', selectedSubBlock => {
                     this.mediator.trigger('block:replace', this.el, selectedSubBlock.type, selectedSubBlock.content);
 
-                    this.pandoraSearch.destroy();
+                    pandoraSearch.destroy();
                 });
             })
             .catch(err => console.error(err));

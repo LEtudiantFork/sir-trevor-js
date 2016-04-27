@@ -1,21 +1,19 @@
-'use strict';
-
 /*
     Text Block
 */
 
-var Block = require('../block');
-var stToHTML = require('../to-html');
+import Block from '../block';
+import stToHTML from '../to-html';
 
-var ScribeTextBlockPlugin = require('./scribe-plugins/scribe-text-block-plugin');
-var ScribePastePlugin = require('./scribe-plugins/scribe-paste-plugin');
-var ScribeQuotePlugin = require('./scribe-plugins/scribe-quote-plugin');
+import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
+import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
+import ScribeQuotePlugin from './scribe-plugins/scribe-quote-plugin';
 
 module.exports = Block.extend({
 
     type: 'text',
 
-    title() { return i18n.t('blocks:text:title'); },
+    title: () => i18n.t('blocks:text:title'),
 
     editorHTML: '<div class="st-text-block" contenteditable="true"></div>',
 
@@ -30,7 +28,7 @@ module.exports = Block.extend({
         scribe.use(new ScribePastePlugin(this));
         scribe.use(new ScribeQuotePlugin(this));
 
-        scribe.on('content-changed', this.toggleEmptyClass.bind(this));
+        scribe.on('content-changed', () => this.toggleEmptyClass());
     },
 
     scribeOptions: {
@@ -50,6 +48,9 @@ module.exports = Block.extend({
     },
 
     onBlockRender() {
+        if (this.isEmpty()) {
+            this.focus();
+        }
         this.toggleEmptyClass();
     },
 

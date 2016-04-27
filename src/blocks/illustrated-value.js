@@ -15,7 +15,7 @@ module.exports = Block.extend({
 
     toolbarEnabled: true,
 
-    title() { return i18n.t('blocks:illustrated:title'); },
+    title: () => i18n.t('blocks:illustrated:title'),
 
     icon_name: 'illustrated-value',
 
@@ -31,8 +31,11 @@ module.exports = Block.extend({
     },
 
     onBlockRender() {
+        if (this.isEmpty()) {
+            this.focus();
+        }
+
         this.setColor();
-        this.focus();
 
         this.iconPicker = IconPicker.create();
         this.iconPicker.on('selected', icon => this.setIcon(icon));
