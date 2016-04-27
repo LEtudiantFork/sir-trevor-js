@@ -1,12 +1,12 @@
 import $ from 'etudiant-mod-dom';
 
-import Slider from './slider.class.js';
-import FilterBar from './filterbar.class.js';
+import Slider from './slider.class';
+import FilterBar from './filterbar.class';
 
-import subBlockManager from './sub-blocks/index';
+import subBlockManager from './sub-blocks';
 
 import eventablejs from 'eventablejs';
-import EventBus    from '../event-bus.js';
+import EventBus    from '../event-bus';
 
 function init(params) {
     this.id = Date.now();

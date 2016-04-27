@@ -1,9 +1,9 @@
 const Block = require('../block');
-const IconPicker = require('../helpers/iconpicker.class.js');
+const IconPicker = require('../helpers/iconpicker.class');
 
-const template = () => `
+const editorHTML = `
     <div class="st-block--illustated">
-        <img class="st-utils__v-middle" src="" width="100" height="100" />
+        <img class="st-block-img st-utils__v-middle" src="" width="100" height="100" />
         <input type="text" name="title" />
         <input type="color" name="color" />
         <div class="st-required st-text-block" contenteditable="true"></div>
@@ -19,15 +19,13 @@ module.exports = Block.extend({
 
     icon_name: 'illustrated-value',
 
-    editorHTML() {
-        return template();
-    },
+    editorHTML,
 
-    loadData(data){
-        this.setTextBlockHTML(data.text);
-        this.$('img')[0].src = data.image;
-        this.$('input[name="title"]')[0].value = data.title;
-        this.$('input[name="color"]')[0].value = data.color;
+    loadData({ title = '', color = '', text = '', image = '' }){
+        this.setTextBlockHTML(text);
+        this.$('img.st-block-img')[0].src = image;
+        this.$('input[name="title"]')[0].value = title;
+        this.$('input[name="color"]')[0].value = color;
     },
 
     onBlockRender() {
@@ -41,7 +39,7 @@ module.exports = Block.extend({
         this.iconPicker.on('selected', icon => this.setIcon(icon));
 
         this.$('input[name="color"]')[0].addEventListener('input', () => this.setColor());
-        this.$('img')[0].addEventListener('click', () => this.iconPicker.open());
+        this.$('img.st-block-img')[0].addEventListener('click', () => this.iconPicker.open());
     },
 
     setColor() {
@@ -49,7 +47,7 @@ module.exports = Block.extend({
     },
 
     setIcon(icon) {
-        this.$('img')[0].src = icon.src;
+        this.$('img.st-block-img')[0].src = icon.src;
         this.setData({ image: icon.src });
         this.iconPicker.close();
     }

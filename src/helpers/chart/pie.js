@@ -1,4 +1,4 @@
-import Table       from '../table/index.js';
+import Table       from '../table';
 import $           from 'etudiant-mod-dom';
 import eventablejs from 'eventablejs';
 

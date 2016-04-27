@@ -2,10 +2,10 @@
   Chart Block
 */
 
-import * as _        from '../lodash.js';
+import * as _        from '../lodash';
 import Block         from '../block';
-import Chart         from '../helpers/chart/index.js';
-import utils         from '../utils.js';
+import Chart         from '../helpers/chart';
+import utils         from '../utils';
 
 const chooseableConfig = {
     name: 'chartType',

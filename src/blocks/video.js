@@ -1,18 +1,17 @@
-import * as _ from '../lodash';
-import Dom    from '../packages/dom';
 import Block  from '../block';
 
 import $        from 'etudiant-mod-dom';
 import VidVideo from 'etudiant-mod-video';
 
-const template = `
-    <video class="c-video" data-vid-poster="<%= thumbnail %>">
-        <source src="<%= file %>" type="video/mp4" /><!-- Safari / iOS, IE9 -->
+const editorHTML = `
+    <div class="st-block--video">
+        <video class="c-video">
+            <source type="video/mp4" /><!-- Safari / iOS, IE9 -->
 
-        Désolé ! Votre navigateur ne vous permet pas de visualiser cette vidéo
-    </video>
+            Désolé ! Votre navigateur ne vous permet pas de visualiser cette vidéo
+        </video>
+    </div>
 `;
-
 
 module.exports = Block.extend({
 
@@ -24,22 +23,14 @@ module.exports = Block.extend({
 
     icon_name: 'Video',
 
-    loadData(data){
-        if (data) {
-            let renderedContent = _.template(template)(data);
+    editorHTML,
 
-            let videoElem = Dom.createElement('div', {
-                'class': 'st-block--video'
-            });
-
-            videoElem.innerHTML = renderedContent;
-
-            this.inner.appendChild(videoElem);
-        }
+    loadData({ file = '', thumbnail = '' }){
+        this.$('.c-video')[0].dataset.vidPoster = thumbnail;
+        this.$('source')[0].src = file;
     },
 
     onBlockRender() {
-        console.log(this.inner);
         VidVideo.initViaDOM($(this.inner));
     }
 });

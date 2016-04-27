@@ -5,7 +5,7 @@
 import Block from '../block';
 import stToHTML from '../to-html';
 
-import scribeBuild from '../scribe.build.js';
+import scribeBuild from '../scribe.build';
 import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 
 module.exports = Block.extend({

@@ -15,10 +15,10 @@ import {
     renderTR,
     renderTH,
     renderTD
-} from './render.js';
+} from './render';
 
-import prototype from './generic.js';
-import { getHeaderNames, getColor } from './lib.js';
+import prototype from './generic';
+import { getHeaderNames, getColor } from './lib';
 
 function renderControls({ prop, value }) {
     return `

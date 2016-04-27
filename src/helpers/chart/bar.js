@@ -1,9 +1,9 @@
-import Table       from '../table/index.js';
+import Table       from '../table';
 import $           from 'etudiant-mod-dom';
 import eventablejs from 'eventablejs';
 
-import fetchChartLibs from './library-fetcher.js';
-import prototype from './generic.js';
+import fetchChartLibs from './library-fetcher';
+import prototype from './generic';
 
 import MODEL from './model/bar';
 import * as EVENTS from '../events';

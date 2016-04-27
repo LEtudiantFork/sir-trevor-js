@@ -1,6 +1,6 @@
 import $ from 'etudiant-mod-dom';
 
-import Slide from './slide.class.js';
+import Slide from './slide.class';
 
 const _           = require('../lodash');
 const eventablejs = require('eventablejs');

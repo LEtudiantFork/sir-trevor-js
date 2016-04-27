@@ -1,12 +1,12 @@
-import * as _ from '../lodash';
-import Dom    from '../packages/dom';
 import Block  from '../block';
 
-const template = `
-    <figure>
-        <img src="<%= file %>" />
-    </figure>
-    <input type="text" name="legend" value="<%= legend %>" />
+const editorHTML = `
+    <div class="st-block--image">
+        <figure>
+            <img class="st-block-img" src="<%= file %>" />
+        </figure>
+        <input type="text" name="legend" />
+    </div>
 `;
 
 module.exports = Block.extend({
@@ -19,15 +19,10 @@ module.exports = Block.extend({
 
     icon_name: 'Image',
 
-    loadData(data){
-        const imageElem = Dom.createElement('div', {
-            'class': 'st-block--image'
-        });
+    editorHTML,
 
-        imageElem.innerHTML = _.template(template)(data);
-
-        this.inner.appendChild(imageElem);
-    },
-
-    onBlockRender() {}
+    loadData({ file = '', legend = '' }) {
+        this.$('input[name="legend"')[0].value = legend;
+        this.$('img.st-block-img')[0].src = file;
+    }
 });

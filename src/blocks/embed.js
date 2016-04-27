@@ -49,10 +49,6 @@ module.exports = Block.extend({
     toolbarEnabled: true,
     formatBarEnabled: false,
 
-    loadData(data) {
-        console.log(data);
-    },
-
     onBlockRender() {
         this.createChoices(CHOICES, choice => {
             if (choice.type === 'script') {
@@ -101,7 +97,7 @@ module.exports = Block.extend({
                     ]
                 };
 
-                const pandoraSearch = PandoraSearch.create({
+                let pandoraSearch = PandoraSearch.create({
                     container: this.editor,
                     filterConfig,
                     sliderConfig,
@@ -111,6 +107,7 @@ module.exports = Block.extend({
                     this.mediator.trigger('block:replace', this.el, selectedSubBlock.type, selectedSubBlock.content);
 
                     pandoraSearch.destroy();
+                    pandoraSearch = null; // to garbage collect
                 });
             })
             .catch(err => console.error(err));

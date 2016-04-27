@@ -1,15 +1,16 @@
-import Dom    from '../packages/dom';
 import Block  from '../block';
-import config from '../config.js';
+import config from '../config';
 
-const template = ({ title, description, thumbnail, url }) => `
-    <h4>${ i18n.t('blocks:poll:title') }</h4>
-    <img class="st-utils__v-middle" src="${ thumbnail }" width="100" height="100" />
-    <strong>${ title }</strong>
-    <p>${ description }</p>
-    <a class="st-block-link" href="${ url }" target="_blank">
-        <svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-fmt-link"/></svg>
-    </a>
+const editorHTML = `
+    <div class="st-block--poll">
+        <h4>${ i18n.t('blocks:poll:title') }</h4>
+        <img class="st-block-img st-utils__v-middle" src="" />
+        <h5 class="st-block-title"></h5>
+        <p class="st-block-description"></p>
+        <a class="st-block-link" href="" target="_blank">
+            <svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-fmt-link"/></svg>
+        </a>
+    </div>
 `;
 
 module.exports = Block.extend({
@@ -22,15 +23,12 @@ module.exports = Block.extend({
 
     icon_name: 'poll',
 
-    loadData(data){
-        let pollElem = Dom.createElement('div', {
-            'class': 'st-block--poll'
-        });
+    editorHTML,
 
-        pollElem.innerHTML = template(data);
-
-        this.inner.appendChild(pollElem);
-    },
-
-    onBlockRender() {}
+    loadData({ title = '', thumbnail = '', description = '', url = '' }) {
+        this.$('.st-block-title')[0].innerHTML = title;
+        this.$('img.st-block-img')[0].src = thumbnail;
+        this.$('.st-block-description')[0].innerHTML = description;
+        this.$('a.st-block-link')[0].href = url;
+    }
 });

@@ -1,5 +1,5 @@
-import PieChart from './pie.js';
-import BarChart from './bar.js';
+import PieChart from './pie';
+import BarChart from './bar';
 
 export default {
     create(params) {

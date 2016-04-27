@@ -1,6 +1,7 @@
 import * as _ from '../lodash';
 import Dom    from '../packages/dom';
 import Block  from '../block';
+import Slider from '../helpers/slider.class';
 
 const template = `
     <figure>
@@ -27,6 +28,8 @@ module.exports = Block.extend({
         imageElem.innerHTML = _.template(template)(data);
 
         this.inner.appendChild(imageElem);
+
+        // this.slider = Slider.create(params.sliderConfig);
     },
 
     onBlockRender() {}

@@ -5,7 +5,7 @@
 }
 
 .st-block {
-    overflow: auto;
+    overflow: visible;
 
     position: relative;
 
@@ -13,7 +13,8 @@
 }
 
 .st-block__inner {
-    margin: 1em 110px;
+    margin: 0 110px;
+    padding: 1em 0;
     min-height: 110px;
 
     position: relative;
@@ -29,9 +30,9 @@
 }
 
 .st-block__inner--droppable {
-    margin-top: 2em;
-    margin-bottom: 2em;
     border: 1px solid $blocks-control-border-color;
+    padding-top: 2em;
+    padding-bottom: 2em;
 
     background: $blocks-control-bg-color;
 

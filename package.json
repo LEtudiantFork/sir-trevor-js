@@ -20,6 +20,7 @@
     "etudiant-mod-video": "^1.0.0",
     "etudiant-mod-xhr": "^1.0.0",
     "eventablejs": "^1.0.5",
+    "handsontable": "^0.24.2",
     "jsonp-promise": "^0.1.2",
     "lodash.camelcase": "^3.0.1",
     "lodash.chunk": "^4.0.2",

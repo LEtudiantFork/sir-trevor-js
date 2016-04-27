@@ -15,10 +15,10 @@ import {
     renderTR,
     renderTH,
     renderTD
-} from './render.js';
+} from './render';
 
-import prototype from './generic.js';
-import { getColor } from './lib.js';
+import prototype from './generic';
+import { getColor } from './lib';
 
 function renderTable({ data, refKey, valueKey, colors }) {
     const rowsCount = data.length;

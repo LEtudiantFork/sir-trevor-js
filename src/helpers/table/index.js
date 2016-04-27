@@ -1,5 +1,5 @@
-import OneDimentional from './one-dimensional.js';
-import TwoDimensional from './two-dimensional.js';
+import OneDimentional from './one-dimensional';
+import TwoDimensional from './two-dimensional';
 
 export default {
     create(params) {

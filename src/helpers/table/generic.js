@@ -1,4 +1,4 @@
-import { debounce } from '../../lodash.js';
+import { debounce } from '../../lodash';
 
 import * as EVENTS from '../events';
 
