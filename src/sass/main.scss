@@ -1,9 +1,10 @@
+@import 'variables';
+@import 'icons';
+
 @import '../../node_modules/etudiant-mod-sass/mixins/valign';
 @import '../../node_modules/etudiant-mod-sass/utility/clearfix';
 @import '../../node_modules/etudiant-mod-video/scss/style';
-
-@import 'variables';
-@import 'icons';
+@import '../../node_modules/etudiant-mod-carousel/scss/carousel';
 
 @import 'mixins/scroll-shadow';
 

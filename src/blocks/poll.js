@@ -3,9 +3,8 @@ import config from '../config';
 
 const editorHTML = `
     <div class="st-block--poll">
-        <h4>${ i18n.t('blocks:poll:title') }</h4>
         <img class="st-block-img st-utils__v-middle" src="" />
-        <h5 class="st-block-title"></h5>
+        <h4 class="st-block-title"></h4>
         <p class="st-block-description"></p>
         <a class="st-block-link" href="" target="_blank">
             <svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-fmt-link"/></svg>

@@ -14,6 +14,7 @@
     "browserify-derequire": "^0.9.4",
     "core-js": "^2.1.5",
     "deamdify": "^0.2.0",
+    "etudiant-mod-carousel": "^2.16.1",
     "etudiant-mod-dom": "^1.0.0",
     "etudiant-mod-modal": "^3.0.0",
     "etudiant-mod-sass": "^1.0.0",

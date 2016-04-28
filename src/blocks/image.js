@@ -3,7 +3,7 @@ import Block  from '../block';
 const editorHTML = `
     <div class="st-block--image">
         <figure>
-            <img class="st-block-img" src="<%= file %>" />
+            <img class="st-block-img" />
         </figure>
         <input type="text" name="legend" />
     </div>
@@ -22,7 +22,7 @@ module.exports = Block.extend({
     editorHTML,
 
     loadData({ file = '', legend = '' }) {
-        this.$('input[name="legend"')[0].value = legend;
+        this.$('input[name="legend"]')[0].value = legend;
         this.$('img.st-block-img')[0].src = file;
     }
 });

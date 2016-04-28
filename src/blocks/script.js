@@ -1,6 +1,3 @@
-'use strict';
-
-const _     = require('../lodash');
 // const Dom   = require('../packages/dom');
 const Block = require('../block');
 

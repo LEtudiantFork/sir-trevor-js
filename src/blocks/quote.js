@@ -10,11 +10,11 @@ var Block = require('../block');
 var stToHTML = require('../to-html');
 var ScribeQuotePlugin = require('./scribe-plugins/scribe-quote-plugin');
 
-var template = _.template(`
+var editorHTML = `
     <blockquote class="st-required st-text-block st-text-block--quote" contenteditable="true"></blockquote>
-    <label class="st-input-label"> <%= i18n.t("blocks:quote:credit_field") %></label>
-    <input maxlength="140" name="cite" placeholder="<%= i18n.t("blocks:quote:credit_field") %>" class="st-input-string js-cite-input" type="text" />
-`);
+    <label class="st-input-label"> ${ i18n.t("blocks:quote:credit_field") }</label>
+    <input class="st-input-string" maxlength="140" name="cite" placeholder="${ i18n.t("blocks:quote:credit_field") }" type="text" />
+`;
 
 module.exports = Block.extend({
 
@@ -27,9 +27,7 @@ module.exports = Block.extend({
     textable: true,
     toolbarEnabled: true,
 
-    editorHTML: function() {
-        return template(this);
-    },
+    editorHTML,
 
     configureScribe: function(scribe) {
         scribe.use(new ScribeQuotePlugin(this));
@@ -44,7 +42,7 @@ module.exports = Block.extend({
         }
 
         if (data.cite) {
-            this.$('.js-cite-input')[0].value = data.cite;
+            this.$('input[name="cite"]')[0].value = data.cite;
         }
     }
 });

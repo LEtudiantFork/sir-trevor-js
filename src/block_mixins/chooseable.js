@@ -17,31 +17,29 @@ function choiceContainer(choices) {
     `;
 }
 
-function choiceButton({ icon, title, value }) {
+function choiceButton({ icon, name, type }) {
     return `
-    <button class="${CLASSES.button}" data-choice="${value}" type="button">
+    <button class="${CLASSES.button}" data-choice="${type}" type="button">
         <svg class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-${icon}"></use></svg>
-        ${title}
+        ${ name }
     </button>
     `;
 }
 
-function getChoice(choices, selected) {
-    const choice = choices.options.find(option => {
-        return matchChoice(option, selected);
+function _getChoice(choices, selected) {
+    const choice = choices.find(option => {
+        return _matchChoice(option, selected);
     });
 
-    if (choice) {
-        return Object.assign({}, choice, { [choices.name]: choice.value });
-    }
+    return choice;
 }
 
-function matchChoice(option, selected) {
-    let b = option.value === selected;
+function _matchChoice(option, selected) {
+    let b = option.type === selected;
 
     if (!b && option.subChoice) {
         b = option.subChoice.some(option => {
-            return matchChoice(option, selected);
+            return _matchChoice(option, selected);
         });
     }
 
@@ -59,7 +57,7 @@ const ChoiceBox = {
         instance.choices = choices;
         instance.callback = callback;
 
-        instance.$elem = $(choiceContainer(choices.options));
+        instance.$elem = $(choiceContainer(choices));
 
         instance.buttons = getButtons(instance);
 
@@ -80,12 +78,12 @@ const ChoiceBox = {
         },
 
         ready() {
-            this.$elem.on('click', `button.${CLASSES.button}`, (e) => {
+            this.$elem.on('click', `button.${CLASSES.button}`, e => {
                 e.preventDefault();
 
                 const selectedId = $(e.currentTarget).data('choice');
 
-                const choice = getChoice(this.choices, selectedId);
+                const choice = _getChoice(this.choices, selectedId);
 
                 if (choice && choice.subChoice) {
                     const choicesMarkup = choiceContainer(choice.subChoice.options);

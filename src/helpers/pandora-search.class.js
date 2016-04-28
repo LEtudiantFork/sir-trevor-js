@@ -29,15 +29,15 @@ function init(params) {
 
     this.$elem.appendTo(this.container);
 
-    EventBus.on('sub-block:selected', subBlock => {
-        if (subBlock.parentID === this.id) {
-            this.trigger('selected', subBlock);
+    EventBus.on('sub-block:selected', block => {
+        if (block.parentID === this.id) {
+            this.trigger('selected', block);
         }
     });
 
     this.filterBar.once('search:result', () => this.trigger('ready'));
 
-    this.filterBar.on('search:result', searchResults => this.showResults(searchResults));
+    this.filterBar.on('search:result', results => this.showResults(results));
     this.filterBar.on('search:no-result', () => this.resetResults());
 
     this.filterBar.on('update:result', updateResults => this.updateResults(updateResults));
@@ -62,8 +62,8 @@ export default {
             this.slider.reset();
         },
 
-        showResults(searchResults) {
-            const contents = (this.subBlockPreProcess) ? this.subBlockPreProcess(searchResults) : searchResults;
+        showResults(results) {
+            const contents = (this.subBlockPreProcess) ? this.subBlockPreProcess(results) : results;
 
             this.subBlocks = subBlockManager.buildMultiple({
                 contents,

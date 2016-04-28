@@ -1,8 +1,8 @@
 // @todo replace with etudiant-mod-carousel
 
-var $           = require('etudiant-mod-dom').default;
-var eventablejs = require('eventablejs');
-var Slider      = require('./slider.class.js');
+import $ from 'etudiant-mod-dom';
+import eventablejs from 'eventablejs';
+import Slider from './slider.class';
 
 function prepareThumbs(thumbs) {
     return thumbs.map(function(thumb, index) {
@@ -16,19 +16,15 @@ function prepareThumbs(thumbs) {
     });
 }
 
-var diaporamaPrototype = {
-    // @todo
-};
+var diaporamaPrototype = {};
 
-module.exports = {
-    create: function(params) {
-        var instance = {};
-
-        instance = Object.assign({}, diaporamaPrototype, eventablejs);
+export default {
+    create(params) {
+        const instance = Object.assign({}, eventablejs, diaporamaPrototype);
 
         instance.$elem = $('<div class="st-block__diaporama"></div>');
 
-        instance.mainSlider = new Slider({
+        instance.mainSlider = Slider.create({
             container: instance.$elem,
             contents: params.slides,
             controls: false,
@@ -36,9 +32,9 @@ module.exports = {
             itemsPerSlide: 1
         });
 
-        var thumbs = prepareThumbs(params.thumbs);
+        const thumbs = prepareThumbs(params.thumbs);
 
-        instance.thumbSlider = new Slider({
+        instance.thumbSlider = Slider.create({
             container: instance.$elem,
             contents: thumbs,
             controls: false,
@@ -46,13 +42,13 @@ module.exports = {
             itemsPerSlide: 5
         });
 
-        instance.thumbSlider.$elem.on('click', '[data-slide-index]', function(e) {
+        instance.thumbSlider.$elem.on('click', '[data-slide-index]', e => {
             var slideIndex = $(e.currentTarget).data('slideIndex');
 
             instance.mainSlider.goTo(slideIndex);
         });
 
-        setTimeout(function() {
+        setTimeout(() => {
             instance.mainSlider.refreshDimensions();
             instance.thumbSlider.refreshDimensions();
         }, 0);

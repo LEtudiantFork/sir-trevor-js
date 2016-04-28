@@ -1,38 +1,39 @@
+import xhr from 'etudiant-mod-xhr';
+
 import Block from '../block';
 import fieldHelper from '../helpers/field';
 
-import xhr from 'etudiant-mod-xhr';
-
 import PandoraSearch from '../helpers/pandora-search.class';
 
-const CHOICES = {
-    name: 'type',
-    options: [
-        {
-            title: i18n.t('blocks:quiz:title'),
-            icon: 'quiz',
-            value: 'quiz',
-            api: 'quizzes'
-        },
-        {
-            title: i18n.t('blocks:personality:title'),
-            icon: 'personality',
-            value: 'personality',
-            api: 'personalities'
-        },
-        {
-            title: i18n.t('blocks:poll:title'),
-            icon: 'Poll',
-            value: 'poll',
-            api: 'sondage'
-        },
-        {
-            title: i18n.t('blocks:script:title'),
-            icon: 'script',
-            value: 'script'
-        }
-    ]
-};
+const CHOOSEABLE = [
+    {
+        title: i18n.t('blocks:quiz:title'),
+        api: 'quizzes',
+        icon: 'quiz',
+        name: 'Quiz',
+        type: 'quiz'
+    },
+    {
+        title: i18n.t('blocks:personality:title'),
+        api: 'personalities',
+        icon: 'personality',
+        name: 'Personality',
+        type: 'personality'
+    },
+    {
+        title: i18n.t('blocks:poll:title'),
+        api: 'sondage',
+        icon: 'Poll',
+        name: 'Poll',
+        type: 'poll'
+    },
+    {
+        title: i18n.t('blocks:script:title'),
+        icon: 'script',
+        name: 'Script',
+        type: 'script'
+    }
+];
 
 module.exports = Block.extend({
 
@@ -50,7 +51,7 @@ module.exports = Block.extend({
     formatBarEnabled: false,
 
     onBlockRender() {
-        this.createChoices(CHOICES, choice => {
+        this.createChoices(CHOOSEABLE, choice => {
             if (choice.type === 'script') {
                 this.mediator.trigger('block:replace', this.el, choice.type, {});
                 return;
@@ -103,14 +104,15 @@ module.exports = Block.extend({
                     sliderConfig,
                     subBlockType: choice.type
                 })
-                .on('selected', selectedSubBlock => {
-                    this.mediator.trigger('block:replace', this.el, selectedSubBlock.type, selectedSubBlock.content);
+                .once('selected', selected => {
+                    const { name } = CHOOSEABLE.find(choice => choice.type === selected.type);
+                    this.mediator.trigger('block:replace', this.el, name, selected.content);
 
                     pandoraSearch.destroy();
                     pandoraSearch = null; // to garbage collect
                 });
             })
-            .catch(err => console.error(err));
+            .catch(err => console.error(err.stack));
         });
     }
 });

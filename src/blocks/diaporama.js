@@ -1,13 +1,49 @@
-import * as _ from '../lodash';
-import Dom    from '../packages/dom';
-import Block  from '../block';
-import Slider from '../helpers/slider.class';
+import $ from 'etudiant-mod-dom';
+import CarCarousel from 'etudiant-mod-carousel';
 
-const template = `
+import config from '../config';
+import Block  from '../block';
+
+const editorHTML = `
+    <div class="st-block--diaporama">
+        <h4 class="st-block-legend"></h4>
+    </div>
+`;
+
+const carousel = data => `
+    <div class="c-carousel ${ data.parentId ? 'c-carousel--thumbnails' : ''}"
+        data-car-carousel="${ data.parentId ? `${ data.parentId }-thumb` : data.id }"
+        data-car-rewind
+        ${ data.parentId ? `
+        data-car-thumbnails="${ data.parentId }"
+        data-car-slides="3"
+        ` : '' }>
+        <div class="c-carousel__frame">
+            <div class="c-carousel__slides">
+                ${ data.slides.reduce((prev, slide) => `
+                    ${ prev }
+                    <div class="c-carousel__slide">${ slide }</div>
+                `, '') }
+            </div>
+        </div>
+        <span class="c-carousel__nav c-carousel__nav--prev">
+            <svg class="st-icon c-icon-svg"><use xlink:href="${ config.defaults.iconUrl }#icon-chevron-left-thin" /></svg>
+        </span>
+        <span class="c-carousel__nav c-carousel__nav--next">
+            <svg class="st-icon c-icon-svg"><use xlink:href="${ config.defaults.iconUrl }#icon-chevron-right-thin" />></svg>
+        </span>
+    </div>
+`;
+
+const mainSlide = image => `
     <figure>
-        <img src="<%= file %>" />
+        <img class="st-block-img" src="${ image.file }" width="700" height="400" />
+        <figcaption>
+            <strong>${ image.title || ''}</strong><br/>
+            ${ image.description || ''}
+            <em>${ image.copyright || '' }</em>
+        </figcaption>
     </figure>
-    <input type="text" name="legend" value="<%= legend %>" />
 `;
 
 module.exports = Block.extend({
@@ -20,17 +56,20 @@ module.exports = Block.extend({
 
     icon_name: 'Diaporama',
 
-    loadData(data){
-        const imageElem = Dom.createElement('div', {
-            'class': 'st-block--diaporama'
-        });
+    editorHTML,
 
-        imageElem.innerHTML = _.template(template)(data);
+    loadData({ id, legend = '', images = [] }) {
+        this.$('.st-block-legend')[0].innerHTML = legend;
+        this.$elem = $(this.$('.st-block--diaporama')[0]);
+        this.$elem.append(carousel({
+            id,
+            slides: images.map(image => mainSlide(image))
+        }));
+        this.$elem.append(carousel({
+            parentId: id,
+            slides: images.map(image => `<img class="st-block-img" src="${ image.thumbnail }" width="80" height="80" />`)
+        }));
 
-        this.inner.appendChild(imageElem);
-
-        // this.slider = Slider.create(params.sliderConfig);
-    },
-
-    onBlockRender() {}
+        setTimeout(() => CarCarousel.initViaDOM(this.$elem), 10); // lory can't handle the speeeeeed
+    }
 });

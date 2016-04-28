@@ -7,20 +7,20 @@ import Block         from '../block';
 import Chart         from '../helpers/chart';
 import utils         from '../utils';
 
-const chooseableConfig = {
-    name: 'chartType',
-    options: [
-        {
-            title: 'Barre',
-            icon: 'bar-chart',
-            value: 'bar'
-        }, {
-            title: 'Camembert',
-            icon: 'pie-chart',
-            value: 'pie'
-        }
-    ]
-};
+const CHOOSEABLE = [
+    {
+        title: 'Barre',
+        icon: 'bar-chart',
+        name: 'Bar',
+        type: 'bar'
+    },
+    {
+        title: 'Camembert',
+        icon: 'pie-chart',
+        name: 'Pie',
+        type: 'pie'
+    }
+];
 
 module.exports = Block.extend({
 
@@ -51,8 +51,8 @@ module.exports = Block.extend({
 
     onBlockRender() {
         if (_.isEmpty(this.blockStorage.data)) {
-            this.createChoices(chooseableConfig, choice => {
-                this.chart = Chart.create({ type: choice.chartType });
+            this.createChoices(CHOOSEABLE, choice => {
+                this.chart = Chart.create({ type: choice.type });
                 this.editor.appendChild(this.chart.$elem[0]);
             });
         }
