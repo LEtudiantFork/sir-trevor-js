@@ -63,7 +63,16 @@ var Locales = {
                 placeholder: 'Place holder :D'
             },
             table: {
-                title: 'Tableau'
+                title: 'Tableau',
+                rowAbove: '+ une rangée au dessus',
+                rowBelow: '+ une rangée en dessous',
+                colLeft: '+ une colonne à gauche',
+                colRight: '+ une colonne à droite',
+                removeRow: 'Supprimer la rangée',
+                removeCol: 'Supprimer la colonne',
+                undo: 'Annuler',
+                redo: 'Rétablir',
+                mergeCells: 'Fusionner les cellules'
             },
             table1D: {
                 addRef: 'Ajouter une Section',
@@ -71,12 +80,12 @@ var Locales = {
                 delete: 'Supprimer'
             },
             table2D: {
-                axisX: 'Axe Horizontal',
-                axisY: 'Axe Vertical',
-                addProp: 'Ajouter une Colonne',
-                newProp: 'Nouvelle Colonne',
-                addRef: 'Ajouter une Rangée',
-                newRef: 'Nouvelle Rangée',
+                axisX: 'Axe horizontal',
+                axisY: 'Axe vertical',
+                addProp: 'Ajouter une colonne',
+                newProp: 'Nouvelle colonne',
+                addRef: 'Ajouter une rangée',
+                newRef: 'Nouvelle rangée',
                 delete: 'Supprimer'
             },
             image: {

@@ -11,7 +11,7 @@ export default Block.extend({
 
     title: () => i18n.t('blocks:script:title'),
 
-    icon_name: 'script',
+    'icon_name': 'script',
 
     toolbarEnabled: false,
 

@@ -36,7 +36,7 @@ export default Block.extend({
 
     title: () => i18n.t('blocks:media:title'),
 
-    icon_name: 'Image',
+    'icon_name': 'Image',
 
     chooseable: true,
 

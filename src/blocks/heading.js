@@ -16,7 +16,7 @@ export default Block.extend({
 
     editorHTML: '<div class="st-required st-text-block st-block--heading" contenteditable="true"></div>',
 
-    icon_name: 'Header',
+    'icon_name': 'Header',
 
     controllable: true,
 

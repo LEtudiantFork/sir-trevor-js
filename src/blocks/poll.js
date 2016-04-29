@@ -24,7 +24,7 @@ export default Block.extend({
 
     editorHTML,
 
-    icon_name: 'poll',
+    'icon_name': 'poll',
 
     toolbarEnabled: false,
 

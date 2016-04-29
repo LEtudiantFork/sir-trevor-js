@@ -25,7 +25,7 @@ export default Block.extend({
 
     editorHTML,
 
-    icon_name: 'Video',
+    'icon_name': 'Video',
 
     toolbarEnabled: false,
 

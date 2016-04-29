@@ -58,7 +58,7 @@ export default Block.extend({
 
     editorHTML,
 
-    icon_name: 'Diaporama',
+    'icon_name': 'Diaporama',
 
     toolbarEnabled: false,
 

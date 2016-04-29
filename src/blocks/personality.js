@@ -24,7 +24,7 @@ export default Block.extend({
 
     editorHTML,
 
-    icon_name: 'personality',
+    'icon_name': 'personality',
 
     toolbarEnabled: false,
 

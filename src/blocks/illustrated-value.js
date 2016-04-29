@@ -22,7 +22,7 @@ export default Block.extend({
 
     editorHTML,
 
-    icon_name: 'illustrated-value',
+    'icon_name': 'illustrated-value',
 
     toolbarEnabled: true,
 

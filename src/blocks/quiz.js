@@ -24,7 +24,7 @@ export default Block.extend({
 
     editorHTML,
 
-    icon_name: 'quiz',
+    'icon_name': 'quiz',
 
     toolbarEnabled: false,
 

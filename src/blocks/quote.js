@@ -20,7 +20,7 @@ export default Block.extend({
 
     editorHTML,
 
-    icon_name: 'fmt-quote',
+    'icon_name': 'fmt-quote',
 
     textable: true,
 

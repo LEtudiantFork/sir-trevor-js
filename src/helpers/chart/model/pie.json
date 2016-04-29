@@ -7,7 +7,7 @@
         { "ref": "Section 2", "color": "#22aa22" },
         { "ref": "Section 3", "color": "#2222aa" }
     ],
-    "data": [
+    "table": [
         { "ref": "Section 1", "valeur": 5 },
         { "ref": "Section 2", "valeur": 10 },
         { "ref": "Section 3", "valeur": 15 }

@@ -1,11 +1,6 @@
-.st-blocks {
-    overflow: hidden;
-
-    position: relative;
-}
-
 .st-block {
-    overflow: visible;
+    border-top: solid 1px transparent;
+    border-bottom: solid 1px transparent;
 
     position: relative;
 
@@ -13,8 +8,7 @@
 }
 
 .st-block__inner {
-    margin: 0 110px;
-    padding: 1em 0;
+    margin: 1em 110px;
     min-height: 110px;
 
     position: relative;
@@ -202,6 +196,10 @@
     }
 }
 
+.st-block--handsontable {
+    position: relative;
+}
+
 ul.st-text-block {
     margin-left: 1.875em;
 }
@@ -378,17 +376,17 @@ ul.st-text-block {
     width: 1em;
 }
 
-
 .st-block-link {
     display: block;
-    width: 25px;
-    height: 25px;
+    width: 1em;
+    height: 1em;
 
     position: absolute;
     top: 10px;
     right: 10px;
 
     color: $base-ui-color;
+    font-size: 25px;
     text-decoration: none;
 
     &:hover {

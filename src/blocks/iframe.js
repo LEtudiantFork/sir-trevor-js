@@ -2,8 +2,8 @@
     Iframe Block
 */
 
-var $     = require('etudiant-mod-dom').default;
-var Block = require('../block');
+import $     from 'etudiant-mod-dom';
+import Block from '../block';
 
 const getTemplate = function({ src = '', scrolling = '', height = '', visible = false }) {
     src = src.length > 0 ? `src="${src}"` : '';
@@ -26,13 +26,13 @@ export default Block.extend({
 
     editorHTML: '<div class="st-block--iframe"></div>',
 
-    icon_name: 'Code',
+    'icon_name': 'Code',
 
     pastable: true,
 
     controllable: true,
 
-    paste_options: {
+    'paste_options': {
         html: `<input type="text" placeholder="${i18n.t('blocks:iframe:placeholder')}" class="st-block__paste-input st-paste-block">`
     },
 
@@ -70,11 +70,11 @@ export default Block.extend({
         }
     },
 
-    onBlockRender: function() {
+    onBlockRender() {
         this.editor.appendChild(this.$iframeWrapper[0]);
     },
 
-    beforeBlockRender: function() {
+    beforeBlockRender() {
         let template = getTemplate({
             height: 300,
             scrolling: 'no',
@@ -85,7 +85,7 @@ export default Block.extend({
         this.$iframe = this.$iframeWrapper.find('iframe');
     },
 
-    loadData: function({ src, scrolling, height }) {
+    loadData({ src, scrolling, height }) {
         this.$iframe.attr('src', src);
 
         if (scrolling) {
@@ -111,7 +111,7 @@ export default Block.extend({
         this.$iframe.css('display', 'block');
     },
 
-    onContentPasted: function(event) {
+    onContentPasted(event) {
         this.setAndLoadData({
             src: $(event.target).val()
         });

@@ -283,8 +283,8 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.form = Dom.getClosest(this.el, 'form');
 
     var outer = Dom.createElement("div", {
-                  'id': this.ID, 
-                  'class': 'st-outer notranslate', 
+                  'id': this.ID,
+                  'class': 'st-outer notranslate',
                   'dropzone': 'copy link move'});
 
     var wrapper = Dom.createElement("div", {'class': 'st-blocks'});

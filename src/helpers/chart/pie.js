@@ -56,11 +56,11 @@ export default {
             .draw();
         },
 
-        generate({ refKey, valueKey, data, colors }) {
+        generate({ refKey, valueKey, table, colors }) {
             this.type = MODEL.type;
             this.refKey = refKey || MODEL.refKey;
             this.valueKey = valueKey || MODEL.valueKey;
-            this.data = data || MODEL.data;
+            this.data = table || MODEL.table;
             this.colors = colors || MODEL.colors;
 
             this.table = Table.create({
@@ -92,10 +92,10 @@ export default {
 
         getData() {
             return {
-                valueKey: this.valueKey,
-                data: this.data,
+                type: this.type,
                 refKey: this.refKey,
-                type: this.type
+                valueKey: this.valueKey,
+                table: this.data
             };
         }
     }

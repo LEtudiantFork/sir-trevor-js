@@ -17,7 +17,7 @@ export default Block.extend({
 
     editorHTML: '<div class="st-text-block" contenteditable="true"></div>',
 
-    icon_name: 'text',
+    'icon_name': 'text',
 
     textable: true,
 

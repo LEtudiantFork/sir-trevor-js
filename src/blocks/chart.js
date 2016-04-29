@@ -30,7 +30,7 @@ export default Block.extend({
 
     editorHTML: '<div class="st-block__chart"></div>',
 
-    icon_name: 'pie-chart',
+    'icon_name': 'pie-chart',
 
     chooseable: true,
 
@@ -50,7 +50,7 @@ export default Block.extend({
     },
 
     onBlockRender() {
-        if (_.isEmpty(this.blockStorage.data)) {
+        if (_.isEmpty(this.getBlockData())) {
             this.createChoices(CHOOSEABLE, choice => {
                 this.chart = Chart.create({ type: choice.type });
                 this.editor.appendChild(this.chart.$elem[0]);

@@ -21,7 +21,7 @@ export default Block.extend({
 
     editorHTML,
 
-    icon_name: 'Image',
+    'icon_name': 'Image',
 
     toolbarEnabled: false,
 

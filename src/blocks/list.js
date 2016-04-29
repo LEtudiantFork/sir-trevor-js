@@ -17,9 +17,9 @@ export default Block.extend({
 
     listItemEditorHTML: '<li class="st-block--list__item"><div class="st-block--list__editor st-block__editor"></div></li>',
 
-    icon_name: 'List',
+    'icon_name': 'List',
 
-    multi_editable: true,
+    'multi_editable': true,
 
     scribeOptions: {
         allowBlockElements: false,
@@ -82,14 +82,13 @@ export default Block.extend({
     },
 
     _serializeData() {
-        var data = { format: 'html', listItems: [] };
-
-        this.editorIds.forEach(function(editorId) {
-            var listItem = { content: this.getTextEditor(editorId).scribe.getContent() };
-            data.listItems.push(listItem);
-        }.bind(this));
-
-        return data;
+        return {
+            format: 'html',
+            listItems: this.editorIds.map(editorId => {
+                const content = this.getTextEditor(editorId).scribe.getContent();
+                return { content };
+            })
+        };
     },
 
     // List Items manipulation functions (add, remove, etc)
@@ -175,9 +174,8 @@ export default Block.extend({
         if (editorId !== undefined) {
             return this.getTextEditor(editorId);
         }
-        else {
-            return null;
-        }
+
+        return null;
     },
 
     previousListItem() {
@@ -187,9 +185,8 @@ export default Block.extend({
         if (editorId !== undefined) {
             return this.getTextEditor(editorId);
         }
-        else {
-            return null;
-        }
+
+        return null;
     }
 
 });

@@ -47,7 +47,7 @@ export default Block.extend({
 
     editorHTML: '<div class="st-block--embed"></div>',
 
-    icon_name: 'insert-template',
+    'icon_name': 'insert-template',
 
     chooseable: true,
 
@@ -75,7 +75,7 @@ export default Block.extend({
 
             xhr.get(thematicOptionsUrl, {
                 data: {
-                    access_token: this.globalConfig.accessToken
+                    'access_token': this.globalConfig.accessToken
                 }
             })
             .then(({ content = [] }) => {
