@@ -62,13 +62,12 @@ figcaption {
 }
 
 .c-carousel__slide {
+    display: flex;
+
+    align-items: flex-end;
+
     .st-block-img {
         width: 100%;
-    }
-
-    .c-carousel--thumbnails & {
-        margin-right: 20px;
-        margin-bottom: 0 !important;
-        width: 80px;
+        height: auto;
     }
 }
