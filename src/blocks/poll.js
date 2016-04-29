@@ -1,3 +1,7 @@
+/*
+    Poll Block
+*/
+
 import Block  from '../block';
 import config from '../config';
 
@@ -12,17 +16,17 @@ const editorHTML = `
     </div>
 `;
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'poll',
 
-    toolbarEnabled: false,
-
     title: () => i18n.t('blocks:poll:title'),
+
+    editorHTML,
 
     icon_name: 'poll',
 
-    editorHTML,
+    toolbarEnabled: false,
 
     loadData({ title = '', thumbnail = '', description = '', url = '' }) {
         this.$('.st-block-title')[0].innerHTML = title;

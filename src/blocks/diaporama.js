@@ -1,3 +1,7 @@
+/*
+    Diaporama Block
+*/
+
 import $ from 'etudiant-mod-dom';
 import CarCarousel from 'etudiant-mod-carousel';
 
@@ -46,17 +50,17 @@ const mainSlide = image => `
     </figure>
 `;
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'diaporama',
 
-    toolbarEnabled: false,
-
     title: () => i18n.t('blocks:diaporama:title'),
+
+    editorHTML,
 
     icon_name: 'Diaporama',
 
-    editorHTML,
+    toolbarEnabled: false,
 
     loadData({ id, legend = '', images = [] }) {
         this.$('.st-block-legend')[0].innerHTML = legend;

@@ -1,3 +1,7 @@
+/*
+    Image Block
+*/
+
 import Block  from '../block';
 
 const editorHTML = `
@@ -9,17 +13,17 @@ const editorHTML = `
     </div>
 `;
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'image',
 
-    toolbarEnabled: false,
-
     title: () => i18n.t('blocks:image:title'),
+
+    editorHTML,
 
     icon_name: 'Image',
 
-    editorHTML,
+    toolbarEnabled: false,
 
     loadData({ file = '', legend = '' }) {
         this.$('input[name="legend"]')[0].value = legend;

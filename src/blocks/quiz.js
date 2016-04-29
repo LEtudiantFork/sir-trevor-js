@@ -1,3 +1,7 @@
+/*
+    Quiz Block
+*/
+
 import Block  from '../block';
 import config from '../config';
 
@@ -12,17 +16,17 @@ const editorHTML = `
     </div>
 `;
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'quiz',
 
-    toolbarEnabled: false,
-
     title: () => i18n.t('blocks:quiz:title'),
+
+    editorHTML,
 
     icon_name: 'quiz',
 
-    editorHTML,
+    toolbarEnabled: false,
 
     loadData({ title = '', thumbnail = '', description = '', url = '' }) {
         this.$('.st-block-title')[0].innerHTML = title;

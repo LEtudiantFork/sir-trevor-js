@@ -8,13 +8,23 @@ import stToHTML from '../to-html';
 import scribeBuild from '../scribe.build';
 import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'heading',
 
     title: () => i18n.t('blocks:heading:title'),
 
     editorHTML: '<div class="st-required st-text-block st-block--heading" contenteditable="true"></div>',
+
+    icon_name: 'Header',
+
+    controllable: true,
+
+    textable: false,
+
+    toolbarEnabled: true,
+
+    formatBarEnabled: false,
 
     configureScribe(scribe) {
         scribe.use(new ScribeTextBlockPlugin(this));
@@ -26,11 +36,6 @@ module.exports = Block.extend({
 
         scribe.on('content-changed', () => this.toggleEmptyClass());
     },
-
-    controllable: true,
-    textable: false,
-    toolbarEnabled: true,
-    formatBarEnabled: false,
 
     controls: {
         heading1(e) {
@@ -65,8 +70,6 @@ module.exports = Block.extend({
             p: false
         }
     },
-
-    icon_name: 'Header',
 
     loadData(data) {
         if (this.options.convertFromMarkdown && data.format !== 'html') {

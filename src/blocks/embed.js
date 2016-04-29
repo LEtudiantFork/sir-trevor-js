@@ -1,3 +1,7 @@
+/*
+    Embeded selector Block
+*/
+
 import xhr from 'etudiant-mod-xhr';
 
 import Block from '../block';
@@ -35,19 +39,20 @@ const CHOOSEABLE = [
     }
 ];
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'embed',
 
     title: () => { return i18n.t('blocks:embed:title'); },
 
-    chooseable: true,
-
     editorHTML: '<div class="st-block--embed"></div>',
 
     icon_name: 'insert-template',
 
+    chooseable: true,
+
     toolbarEnabled: true,
+
     formatBarEnabled: false,
 
     onBlockRender() {

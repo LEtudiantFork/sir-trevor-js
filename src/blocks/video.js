@@ -1,3 +1,7 @@
+/*
+    Video Block
+*/
+
 import Block  from '../block';
 
 import $        from 'etudiant-mod-dom';
@@ -13,17 +17,17 @@ const editorHTML = `
     </div>
 `;
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'video',
 
-    toolbarEnabled: false,
-
     title: () => i18n.t('blocks:video:title'),
+
+    editorHTML,
 
     icon_name: 'Video',
 
-    editorHTML,
+    toolbarEnabled: false,
 
     loadData({ file = '', thumbnail = '' }){
         this.$('.c-video')[0].dataset.vidPoster = thumbnail;

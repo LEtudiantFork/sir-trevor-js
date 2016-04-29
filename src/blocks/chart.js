@@ -1,5 +1,5 @@
 /*
-  Chart Block
+    Chart Block
 */
 
 import * as _        from '../lodash';
@@ -22,9 +22,7 @@ const CHOOSEABLE = [
     }
 ];
 
-module.exports = Block.extend({
-
-    chooseable: true,
+export default Block.extend({
 
     type: 'Chart',
 
@@ -33,6 +31,8 @@ module.exports = Block.extend({
     editorHTML: '<div class="st-block__chart"></div>',
 
     icon_name: 'pie-chart',
+
+    chooseable: true,
 
     loadData(data) {
         this.chart = Chart.create(data);

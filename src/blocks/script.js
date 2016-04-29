@@ -1,17 +1,21 @@
-// const Dom   = require('../packages/dom');
-const Block = require('../block');
+/*
+    Script Block
+*/
 
-module.exports = Block.extend({
+// const Dom   = require('../packages/dom');
+import Block from '../block';
+
+export default Block.extend({
 
     type: 'script',
-
-    toolbarEnabled: false,
 
     title: () => i18n.t('blocks:script:title'),
 
     icon_name: 'script',
 
-    loadData(data){
+    toolbarEnabled: false,
+
+    loadData(data) {
         console.log(data);
     },
 

@@ -1,3 +1,7 @@
+/*
+    Media selector Block
+*/
+
 import xhr from 'etudiant-mod-xhr';
 
 import Block from '../block';
@@ -26,15 +30,15 @@ const CHOOSEABLE = [
     }
 ];
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'media',
 
     title: () => i18n.t('blocks:media:title'),
 
-    chooseable: true,
-
     icon_name: 'Image',
+
+    chooseable: true,
 
     onBlockRender() {
         this.createChoices(CHOOSEABLE, choice => {

@@ -1,39 +1,36 @@
-'use strict';
-
 /*
     Block Quote
 */
 
-var _ = require('../lodash');
+import Block from '../block';
+import stToHTML from '../to-html';
+import ScribeQuotePlugin from './scribe-plugins/scribe-quote-plugin';
 
-var Block = require('../block');
-var stToHTML = require('../to-html');
-var ScribeQuotePlugin = require('./scribe-plugins/scribe-quote-plugin');
-
-var editorHTML = `
+const editorHTML = `
     <blockquote class="st-required st-text-block st-text-block--quote" contenteditable="true"></blockquote>
-    <label class="st-input-label"> ${ i18n.t("blocks:quote:credit_field") }</label>
-    <input class="st-input-string" maxlength="140" name="cite" placeholder="${ i18n.t("blocks:quote:credit_field") }" type="text" />
+    <label class="st-input-label"> ${ i18n.t('blocks:quote:credit_field') }</label>
+    <input class="st-input-string" maxlength="140" name="cite" placeholder="${ i18n.t('blocks:quote:credit_field') }" type="text" />
 `;
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'quote',
 
-    title: function() { return i18n.t('blocks:quote:title'); },
+    title: () => i18n.t('blocks:quote:title'),
+
+    editorHTML,
 
     icon_name: 'fmt-quote',
 
     textable: true,
+
     toolbarEnabled: true,
 
-    editorHTML,
-
-    configureScribe: function(scribe) {
+    configureScribe(scribe) {
         scribe.use(new ScribeQuotePlugin(this));
     },
 
-    loadData: function(data){
+    loadData(data){
         if (this.options.convertFromMarkdown && data.format !== 'html') {
             this.setTextBlockHTML(stToHTML(data.text, this.type));
         }

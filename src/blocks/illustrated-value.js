@@ -1,5 +1,9 @@
-const Block = require('../block');
-const IconPicker = require('../helpers/iconpicker.class');
+/*
+    Illustrated Block
+*/
+
+import Block from '../block';
+import IconPicker from '../helpers/iconpicker.class';
 
 const editorHTML = `
     <div class="st-block--illustated">
@@ -10,16 +14,17 @@ const editorHTML = `
     </div>
 `;
 
-module.exports = Block.extend({
-    type: 'illustrated',
+export default Block.extend({
 
-    toolbarEnabled: true,
+    type: 'illustrated',
 
     title: () => i18n.t('blocks:illustrated:title'),
 
+    editorHTML,
+
     icon_name: 'illustrated-value',
 
-    editorHTML,
+    toolbarEnabled: true,
 
     loadData({ title = '', color = '', text = '', image = '' }){
         this.setTextBlockHTML(text);

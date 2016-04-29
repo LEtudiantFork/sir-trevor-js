@@ -1,21 +1,17 @@
-'use strict';
-
-module.exports = {
-    Text: require('./text'),
-    Heading: require('./heading'),
-    List: require('./list'),
-    Image: require('./image'),
-    Illustrated: require('./illustrated-value'),
-    Video: require('./video'),
-    Diaporama: require('./diaporama'),
-    Media: require('./media'),
-    Iframe: require('./iframe'),
-    Quote: require('./quote'),
-    Embed: require('./embed'),
-    Chart: require('./chart'),
-    Table: require('./table'),
-    Personality: require('./personality'),
-    Poll: require('./poll'),
-    Quiz: require('./quiz'),
-    Script: require('./script')
-};
+export { default as Text } from './text';
+export { default as Heading } from './heading';
+export { default as List } from './list';
+export { default as Image } from './image';
+export { default as Illustrated } from './illustrated-value';
+export { default as Video } from './video';
+export { default as Diaporama } from './diaporama';
+export { default as Media } from './media';
+export { default as Iframe } from './iframe';
+export { default as Quote } from './quote';
+export { default as Embed } from './embed';
+export { default as Chart } from './chart';
+export { default as Table } from './table';
+export { default as Personality } from './personality';
+export { default as Poll } from './poll';
+export { default as Quiz } from './quiz';
+export { default as Script } from './script';

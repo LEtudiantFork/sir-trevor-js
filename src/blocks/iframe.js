@@ -1,3 +1,7 @@
+/*
+    Iframe Block
+*/
+
 var $     = require('etudiant-mod-dom').default;
 var Block = require('../block');
 
@@ -14,16 +18,18 @@ const getTemplate = function({ src = '', scrolling = '', height = '', visible = 
     `;
 };
 
-module.exports = Block.extend({
-    title() {
-        return i18n.t('blocks:iframe:title');
-    },
+export default Block.extend({
 
     type: 'iframe',
+
+    title: () => i18n.t('blocks:iframe:title'),
+
+    editorHTML: '<div class="st-block--iframe"></div>',
 
     icon_name: 'Code',
 
     pastable: true,
+
     controllable: true,
 
     paste_options: {
@@ -63,8 +69,6 @@ module.exports = Block.extend({
             }
         }
     },
-
-    editorHTML: '<div class="st-block--iframe"></div>',
 
     onBlockRender: function() {
         this.editor.appendChild(this.$iframeWrapper[0]);

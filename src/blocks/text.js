@@ -9,7 +9,7 @@ import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
 import ScribeQuotePlugin from './scribe-plugins/scribe-quote-plugin';
 
-module.exports = Block.extend({
+export default Block.extend({
 
     type: 'text',
 
