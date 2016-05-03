@@ -1,0 +1,19 @@
+.st-block__ui-delete-controls {
+    @include ui-popup;
+
+    margin-top: -0.6em;
+    border-color: $error-color;
+    padding: 0.3em 0.5em;
+
+    top: $ui-btn-pos-v;
+    right: $ui-btn-pos-h + $ui-btn-size * 2;
+
+    font-size: 1rem;
+
+    &:before {
+        border-color: $error-color;
+
+        right: -0.3em;
+        left: auto;
+    }
+}

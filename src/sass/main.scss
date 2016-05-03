@@ -16,15 +16,16 @@
 @import 'errors';
 
 // Block Controls
+@import 'block-ui';
 @import 'block-addition';
 @import 'block-addition-top';
 @import 'block-controls';
 @import 'block-replacer';
+@import 'block-positioner';
+@import 'block-delete';
 
 // Blocks
 @import 'block';
-@import 'block-positioner';
-@import 'block-ui';
 @import 'block-chart';
 
 // Format Bar

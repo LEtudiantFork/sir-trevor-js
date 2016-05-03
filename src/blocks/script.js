@@ -2,8 +2,13 @@
     Script Block
 */
 
-// const Dom   = require('../packages/dom');
-import Block from '../block';
+import Block  from '../block';
+
+const editorHTML = `
+    <div class="st-block--script">
+        <textarea name="script"></textarea>
+    </div>
+`;
 
 export default Block.extend({
 
@@ -11,12 +16,14 @@ export default Block.extend({
 
     title: () => i18n.t('blocks:script:title'),
 
+    editorHTML,
+
     'icon_name': 'script',
 
     toolbarEnabled: false,
 
-    loadData(data) {
-        console.log(data);
+    loadData({ script = '' }) {
+        this.$('textarea')[0].value = script;
     },
 
     onBlockRender() {}

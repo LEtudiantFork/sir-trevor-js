@@ -1,3 +1,18 @@
+$ui-btn-size: 1em;
+$ui-btn-pos-v: 0.5em;
+$ui-btn-pos-h: 0.5em;
+
+%st-block-ui-btn {
+    @extend .st-icon;
+
+    display: block;
+
+    color: $block-controls-color;
+    font-size: 1rem;
+
+    cursor: pointer;
+}
+
 .st-block__control-ui {
     display: flex;
 
@@ -17,21 +32,6 @@
     font-size: 0.9em;
 
     background: none;
-
-    cursor: pointer;
-}
-
-$ui-btn-size: 1em;
-$ui-btn-pos-v: 0.5em;
-$ui-btn-pos-h: 0.5em;
-
-%st-block-ui-btn {
-    @extend .st-icon;
-
-    display: block;
-
-    color: $block-controls-color;
-    font-size: 1rem;
 
     cursor: pointer;
 }
@@ -66,6 +66,7 @@ $ui-btn-pos-h: 0.5em;
     .st-block {
         display: none;
     }
+
     .st-block[data-type='quote'] & {
         display: block;
     }
@@ -99,26 +100,6 @@ $ui-btn-pos-h: 0.5em;
         color: #fff;
 
         background-color: $error-color;
-    }
-}
-
-.st-block__ui-delete-controls {
-    @include ui-popup;
-
-    margin-top: -0.6em;
-    border-color: $error-color;
-    padding: 0.3em 0.5em;
-
-    top: $ui-btn-pos-v;
-    right: $ui-btn-pos-h + $ui-btn-size * 2;
-
-    font-size: 1.1rem;
-
-    &:before {
-        border-color: $error-color;
-
-        right: -0.3em;
-        left: auto;
     }
 }
 

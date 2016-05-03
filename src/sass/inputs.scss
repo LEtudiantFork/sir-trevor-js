@@ -93,7 +93,10 @@ input[type='color']::-webkit-color-swatch {
 }
 
 textarea {
-    min-height: $input-height;
+    width: 100%;
+    min-height: $input-height * 5;
+
+    line-height: 1.4;
 
     resize: vertical;
 }

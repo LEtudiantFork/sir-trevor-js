@@ -6,16 +6,12 @@ import $     from 'etudiant-mod-dom';
 import Block from '../block';
 
 const getTemplate = function({ src = '', scrolling = '', height = '', visible = false }) {
-    src = src.length > 0 ? `src="${src}"` : '';
-    scrolling = scrolling.length > 0 ? `scrolling="${scrolling}"` : '';
-    height = height.length > 0 ? `height="${height}px"` : '';
+    src = src.length > 0 ? `src="${ src }"` : '';
+    scrolling = scrolling.length > 0 ? `scrolling="${ scrolling }"` : '';
+    height = height.length > 0 ? `height="${ height }px"` : '';
     visible = visible ? 'style="display:none;"' : '';
 
-    return `
-        <div class="st-block__iframe">
-            <iframe ${src} ${scrolling} ${height} ${visible} frameborder="0" allowfullscreen></iframe>
-        </div>
-    `;
+    return `<iframe ${ src } ${ scrolling } ${ height } ${ visible } frameborder="0" allowfullscreen></iframe>`;
 };
 
 export default Block.extend({
@@ -33,21 +29,19 @@ export default Block.extend({
     controllable: true,
 
     'paste_options': {
-        html: `<input type="text" placeholder="${i18n.t('blocks:iframe:placeholder')}" class="st-block__paste-input st-paste-block">`
+        html: `<input type="text" placeholder="${ i18n.t('blocks:iframe:placeholder') }" class="st-block__paste-input st-paste-block">`
     },
 
     controls: {
         height: {
-            event: 'change',
-            html: '<input name="height" type="number" placeholder="Hauteur" />',
+            event: 'input',
+            html: '<input name="height" type="number" min="0" placeholder="Hauteur" />',
             cb(e) {
                 e.preventDefault();
 
                 this.$iframe.css('height', e.target.value);
 
-                this.setData({
-                    height: e.target.value
-                });
+                this.setData({ height: e.target.value });
             }
         },
         scrollToggle: {
@@ -71,7 +65,7 @@ export default Block.extend({
     },
 
     onBlockRender() {
-        this.editor.appendChild(this.$iframeWrapper[0]);
+        this.editor.appendChild(this.$iframe[0]);
     },
 
     beforeBlockRender() {
@@ -81,8 +75,7 @@ export default Block.extend({
             visible: false
         });
 
-        this.$iframeWrapper = $(template);
-        this.$iframe = this.$iframeWrapper.find('iframe');
+        this.$iframe = $(template);
     },
 
     loadData({ src, scrolling, height }) {

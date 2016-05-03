@@ -118,7 +118,7 @@
     }
 }
 
-.st-block--heading,
+.st-text-block--heading,
 .st-block--table,
 .st-block--illustated,
 .st-block--quiz,
@@ -155,7 +155,7 @@
     }
 }
 
-.st-block--heading {
+.st-text-block--heading {
     min-height: 1em;
 
     font-weight: 700;
@@ -397,4 +397,19 @@ ul.st-text-block {
 
 .st-block--image img {
     max-width: 100%;
+}
+
+.st-block--iframe iframe {
+    width: 100%;
+}
+
+.c-carousel__slide {
+    display: flex;
+
+    align-items: flex-end;
+
+    .st-block-img {
+        width: 100%;
+        height: auto;
+    }
 }
