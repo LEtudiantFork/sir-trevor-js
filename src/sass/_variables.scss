@@ -9,10 +9,6 @@ $blocks-control-border-color: #ddd;
 $error-color: #d70014;
 $selection-color: #b1f2d6;
 
-$inner-block-padding: 30px 30px 48px 30px;
-
-$block-controls-height: 164px;
-$block-add-height: 40px;
 $block-controls-color: #9b9b9b;
 
 $border-size: 2px;
@@ -21,3 +17,8 @@ $default-border: $border-size $border-style $accent-color;
 
 $white: #fff;
 $black: #222;
+
+$block-spacing-vertical: 25px;
+$block-spacing-horizontal: 80px;
+
+$button-addition-size: 2.5rem;

@@ -1,4 +1,5 @@
 .st-block {
+    margin: 0;
     border-top: solid 1px transparent;
     border-bottom: solid 1px transparent;
 
@@ -8,14 +9,10 @@
 }
 
 .st-block__inner {
-    margin: 1em 110px;
-    min-height: 110px;
+    margin: $block-spacing-vertical $block-spacing-horizontal;
+    min-height: 2.5rem;
 
     position: relative;
-
-    .st-block--textable & {
-        min-height: 54px;
-    }
 
     .st-block--with-errors &,
     .st-block--delete-active & {
@@ -386,7 +383,7 @@ ul.st-text-block {
     right: 10px;
 
     color: $base-ui-color;
-    font-size: 25px;
+    font-size: 1.5rem;
     text-decoration: none;
 
     &:hover {
