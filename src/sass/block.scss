@@ -176,7 +176,7 @@
 .st-block--table {
     @include scroll-shadows-horizontal;
 
-    overflow: auto;
+    overflow-x: auto;
 
     &::after {
         display: none;
@@ -194,7 +194,17 @@
 }
 
 .st-block--handsontable {
-    position: relative;
+}
+
+.st-block--handsontable table p {
+    margin: 0;
+}
+
+.handsontable {
+    th,
+    td {
+        background: none;
+    }
 }
 
 ul.st-text-block {

@@ -3,9 +3,36 @@
 */
 
 import Handsontable from 'handsontable/dist/handsontable.full'; // Handsontable require and pikaday as a global var if we don't do that ¯\_(ツ)_/¯
+import Marked from 'marked';
 import Block from '../block';
 import utils from '../utils';
-import { chunk as _chunk } from '../lodash';
+
+function noop() {}
+noop.exec = noop;
+
+/**
+ * Bypass Lexer's rules for Marked, that way markdown specific block are avoided
+ * @type {Marked}
+ */
+const Lexer = new Marked.Lexer({});
+Lexer.rules.blockquote = noop;
+Lexer.rules.code = noop;
+Lexer.rules.heading = noop;
+Lexer.rules.hr = noop;
+Lexer.rules.list = noop;
+
+const MRenderer = new Marked.Renderer();
+MRenderer.paragraph = text => text; // override paragraph
+MRenderer.link = (href, title, text) => `<a href="${ href }" ${ title ? `title="${ title }"` : '' } target="_blank">${ text }</a>`;
+
+const MARKED_OPTS = {
+    renderer: MRenderer,
+    gfm: true,
+    tables: false,
+    smartLists: false
+};
+
+Marked.setOptions(MARKED_OPTS);
 
 const TABLE = [
     [ null, 'Header 1', 'Header 2' ],
@@ -24,6 +51,14 @@ const DEFAULT_DATA = {
 const TABLE_PARAMS = {
     stretchH: 'all',
     mergeCells: MERGE_CELLS,
+    renderer(...args) {
+        const [ , td, , , , value ] = args;
+        Handsontable.renderers.TextRenderer(...args); // this => block.handsontable
+
+        td.innerHTML = Marked.parser(Lexer.lex(value || ''));
+
+        return td;
+    },
     contextMenu: {
         items: {
             'row_above': {
@@ -46,18 +81,20 @@ const TABLE_PARAMS = {
                 name: i18n.t('blocks:table:removeCol')
             },
             hsep2: '---------',
+            /* Do weard things with Marked * /
             'undo': {
                 name: i18n.t('blocks:table:undo')
             },
             'redo': {
                 name: i18n.t('blocks:table:redo')
             },
+            /* */
             hsep3: '---------',
-            'mergeCells': {
+            mergeCells: {
                 // name: i18n.t('blocks:table:mergeCells'), // we can't change the name for the unmerge
-                disabled: function() { // we need the scope
-                    let [ p1, p2 ] = _chunk(this.getSelected(), 2);
-                    return p1.length === p2.length && p1.every((v, i) => v === p2[i]);
+                disabled() {
+                    const [ row1, col1, row2, col2 ] = this.getSelected();
+                    return row1 === row2 && col1 === col2;
                 }
             }
         }
@@ -106,7 +143,16 @@ export default Block.extend({
         if (!this.handsontable) {
             this.handsontable = new Handsontable(
                 this.$('.handsontable-container')[0],
-                Object.assign({}, TABLE_PARAMS, { data, mergeCells })
+                Object.assign({}, TABLE_PARAMS, {
+                    data,
+                    mergeCells,
+
+                    afterChange: (changes, type) => {
+                        if (type === 'loadData') {
+                            //this.$('.st-block--handsontable')[0].classList.add('is-ready');
+                        }
+                    }
+                })
             );
 
             setTimeout(() => {

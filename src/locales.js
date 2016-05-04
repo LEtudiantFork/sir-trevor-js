@@ -72,7 +72,8 @@ var Locales = {
                 removeCol: 'Supprimer la colonne',
                 undo: 'Annuler',
                 redo: 'Rétablir',
-                mergeCells: 'Fusionner les cellules'
+                mergeCells: 'Fusionner les cellules',
+                unmergeCells: 'Séparer les cellules'
             },
             table1D: {
                 addRef: 'Ajouter une Section',
