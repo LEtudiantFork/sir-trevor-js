@@ -1,0 +1,26 @@
+.st-block--handsontable {
+}
+
+.st-block--handsontable table p {
+    margin: 0;
+}
+
+.st-block--handsontable table.htCore {
+    th,
+    td {
+        background: none;
+    }
+
+    td.visualy-TH {
+        color: $base-ui-color;
+    }
+
+    .visualy-THEAD td,
+    .visualy-TFOOT td {
+        border-color: lighten($base-ui-color, 8%);
+
+        color: $white;
+
+        background: $base-ui-color;
+    }
+}

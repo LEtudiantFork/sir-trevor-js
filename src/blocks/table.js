@@ -81,6 +81,41 @@ const TABLE_PARAMS = {
                 name: i18n.t('blocks:table:removeCol')
             },
             hsep2: '---------',
+            switchThead: {
+                name: i18n.t('blocks:table:setTHEAD'),
+                disabled() {
+                    const [ row1, , row2 ] = this.getSelected();
+                    return !(row1 === 0 && row2 === 0);
+                }
+            },
+            switchTh: {
+                name: i18n.t('blocks:table:setTH'),
+                disabled() {
+                    const [ row1, col1, row2, col2 ] = this.getSelected();
+                    return !(row1 === 0 && row2 === 0 || col1 === 0 && col2 === 0);
+                }
+            },
+            switchTfoot: {
+                name: i18n.t('blocks:table:setTFOOT'),
+                disabled() {
+                    const [ row1, , row2 ] = this.getSelected();
+                    const countRow = this.countRows() - 1;
+                    return !(row1 === countRow && row2 === countRow);
+                }
+            },
+            hsep3: '---------',
+            mergeCells: {
+                name() {
+                    const [ row, col ] = this.getSelected();
+                    const info = this.mergeCells.mergedCellInfoCollection.getInfo(row, col);
+                    return info ? i18n.t('blocks:table:splitCells'): i18n.t('blocks:table:mergeCells');
+                },
+                // name: i18n.t('blocks:table:mergeCells'), // we can't change the name for the unmerge
+                disabled() {
+                    const [ row1, col1, row2, col2 ] = this.getSelected();
+                    return row1 === row2 && col1 === col2;
+                }
+            }
             /* Do weard things with Marked * /
             'undo': {
                 name: i18n.t('blocks:table:undo')
@@ -89,17 +124,21 @@ const TABLE_PARAMS = {
                 name: i18n.t('blocks:table:redo')
             },
             /* */
-            hsep3: '---------',
-            mergeCells: {
-                // name: i18n.t('blocks:table:mergeCells'), // we can't change the name for the unmerge
-                disabled() {
-                    const [ row1, col1, row2, col2 ] = this.getSelected();
-                    return row1 === row2 && col1 === col2;
-                }
-            }
         }
     }
 };
+
+const editorHTML = `
+    <div class="st-block--handsontable">
+        <div class="handsontable-container"></div>
+        <div class="st-helper">
+            <span>${ i18n.t('help:format') } : </span>
+            <code>**<b>bold</b>**</code>
+            <code>_<i>italic</i>_</code>
+            <code>[link](http://www.google.com)</code>
+        </div>
+    </div>
+`;
 
 export default Block.extend({
 
@@ -107,7 +146,7 @@ export default Block.extend({
 
     title: () => i18n.t('blocks:table:title'),
 
-    editorHTML: '<div class="st-block--handsontable"><div class="handsontable-container"></div></div>',
+    editorHTML,
 
     'icon_name': 'table',
 

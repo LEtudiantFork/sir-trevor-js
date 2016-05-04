@@ -26,6 +26,9 @@ var Locales = {
             required_type_empty: 'Un bloc requis de type __type__ est vide',
             load_fail: 'Il y a un problème avec le chargement des données du document'
         },
+        help: {
+            format: 'Tips'
+        },
         blocks: {
             text: {
                 title: 'Texte'
@@ -73,7 +76,13 @@ var Locales = {
                 undo: 'Annuler',
                 redo: 'Rétablir',
                 mergeCells: 'Fusionner les cellules',
-                unmergeCells: 'Séparer les cellules'
+                splitCells: 'Séparer les cellules',
+                setTH: 'Mettre TH',
+                unsetTH: 'Retirer TH',
+                setTHEAD: 'Mettre THEAD',
+                unsetTHEAD: 'Retirer THEAD',
+                setTFOOT: 'Mettre TFOOT',
+                unsetTFOOT: 'Retirer TFOOT'
             },
             table1D: {
                 addRef: 'Ajouter une Section',

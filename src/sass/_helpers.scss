@@ -1,0 +1,18 @@
+.st-helper {
+    margin: 0.8em 0;
+
+    color: $block-controls-color;
+    font-size: 0.686rem;
+
+    span {
+        font-size: 1.3em;
+        font-weight: bold;
+    }
+
+    code {
+        margin: 0 0.25em;
+        border: solid 1px $blocks-control-border-color;
+        border-radius: 3px;
+        padding: 0.3em 0.5em;
+    }
+}
