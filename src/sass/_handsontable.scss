@@ -11,16 +11,13 @@
         background: none;
     }
 
-    td.visualy-TH {
-        color: $base-ui-color;
+    td.visualy-th {
+        background: $light-ui-color;
     }
 
-    .visualy-THEAD td,
-    .visualy-TFOOT td {
-        border-color: lighten($base-ui-color, 8%);
-
-        color: $white;
-
-        background: $base-ui-color;
+    td.visualy-thead,
+    td.visualy-tfoot {
+        border-color: $base-ui-color;
+        border-top: 1px solid $base-ui-color;
     }
 }

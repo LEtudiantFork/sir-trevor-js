@@ -2,131 +2,10 @@
     Table Block
 */
 
-import Handsontable from 'handsontable/dist/handsontable.full'; // Handsontable require and pikaday as a global var if we don't do that ¯\_(ツ)_/¯
-import Marked from 'marked';
 import Block from '../block';
 import utils from '../utils';
 
-function noop() {}
-noop.exec = noop;
-
-/**
- * Bypass Lexer's rules for Marked, that way markdown specific block are avoided
- * @type {Marked}
- */
-const Lexer = new Marked.Lexer({});
-Lexer.rules.blockquote = noop;
-Lexer.rules.code = noop;
-Lexer.rules.heading = noop;
-Lexer.rules.hr = noop;
-Lexer.rules.list = noop;
-
-const MRenderer = new Marked.Renderer();
-MRenderer.paragraph = text => text; // override paragraph
-MRenderer.link = (href, title, text) => `<a href="${ href }" ${ title ? `title="${ title }"` : '' } target="_blank">${ text }</a>`;
-
-const MARKED_OPTS = {
-    renderer: MRenderer,
-    gfm: true,
-    tables: false,
-    smartLists: false
-};
-
-Marked.setOptions(MARKED_OPTS);
-
-const TABLE = [
-    [ null, 'Header 1', 'Header 2' ],
-    [ 'Row 1', 'Data 1:1', 'Data 2:1' ],
-    [ 'Row 2', 'Data 1:2', 'Data 2:2' ]
-];
-
-const MERGE_CELLS = [];
-
-const DEFAULT_DATA = {
-    type: 'object',
-    table: TABLE,
-    mergeCells: MERGE_CELLS
-};
-
-const TABLE_PARAMS = {
-    stretchH: 'all',
-    mergeCells: MERGE_CELLS,
-    renderer(...args) {
-        const [ , td, , , , value ] = args;
-        Handsontable.renderers.TextRenderer(...args); // this => block.handsontable
-
-        td.innerHTML = Marked.parser(Lexer.lex(value || ''));
-
-        return td;
-    },
-    contextMenu: {
-        items: {
-            'row_above': {
-                name: i18n.t('blocks:table:rowAbove')
-            },
-            'row_below': {
-                name: i18n.t('blocks:table:rowBelow')
-            },
-            'col_left': {
-                name: i18n.t('blocks:table:colLeft')
-            },
-            'col_right': {
-                name: i18n.t('blocks:table:colRight')
-            },
-            hsep1: '---------',
-            'remove_row': {
-                name: i18n.t('blocks:table:removeRow')
-            },
-            'remove_col': {
-                name: i18n.t('blocks:table:removeCol')
-            },
-            hsep2: '---------',
-            switchThead: {
-                name: i18n.t('blocks:table:setTHEAD'),
-                disabled() {
-                    const [ row1, , row2 ] = this.getSelected();
-                    return !(row1 === 0 && row2 === 0);
-                }
-            },
-            switchTh: {
-                name: i18n.t('blocks:table:setTH'),
-                disabled() {
-                    const [ row1, col1, row2, col2 ] = this.getSelected();
-                    return !(row1 === 0 && row2 === 0 || col1 === 0 && col2 === 0);
-                }
-            },
-            switchTfoot: {
-                name: i18n.t('blocks:table:setTFOOT'),
-                disabled() {
-                    const [ row1, , row2 ] = this.getSelected();
-                    const countRow = this.countRows() - 1;
-                    return !(row1 === countRow && row2 === countRow);
-                }
-            },
-            hsep3: '---------',
-            mergeCells: {
-                name() {
-                    const [ row, col ] = this.getSelected();
-                    const info = this.mergeCells.mergedCellInfoCollection.getInfo(row, col);
-                    return info ? i18n.t('blocks:table:splitCells'): i18n.t('blocks:table:mergeCells');
-                },
-                // name: i18n.t('blocks:table:mergeCells'), // we can't change the name for the unmerge
-                disabled() {
-                    const [ row1, col1, row2, col2 ] = this.getSelected();
-                    return row1 === row2 && col1 === col2;
-                }
-            }
-            /* Do weard things with Marked * /
-            'undo': {
-                name: i18n.t('blocks:table:undo')
-            },
-            'redo': {
-                name: i18n.t('blocks:table:redo')
-            },
-            /* */
-        }
-    }
-};
+import { DEFAULT_DATA, getHandsontable } from './handsontable';
 
 const editorHTML = `
     <div class="st-block--handsontable">
@@ -161,42 +40,31 @@ export default Block.extend({
 
         if (this.handsontable) {
             const table = this.handsontable.getData();
-            const mergeCells = this.handsontable.mergeCells.mergedCellInfoCollection.map(m => m);
+            const mergeCells = this.handsontable.mergeCells.mergedCellInfoCollection;
+            const thCells = this.handsontable.headinger.thInfoCollection;
+            const theadActive = this.handsontable.headinger.theadActive;
+            const tfootActive = this.handsontable.headinger.tfootActive;
 
-            return { table, mergeCells };
+            return { table, mergeCells, thCells, theadActive, tfootActive };
         }
 
         return DEFAULT_DATA;
     },
 
-    loadData({ table, mergeCells }) {
-        this.setHandsontable(table, mergeCells);
+    loadData({ table, mergeCells, thCells, theadActive, tfootActive }) {
+        this.setHandsontable(table, mergeCells, thCells, theadActive, tfootActive);
     },
 
     onBlockRender() {
-        const { data: { table, mergeCells } } = this.getData();
-        this.setHandsontable(table, mergeCells);
+        const { data: { table, mergeCells, thCells, theadActive, tfootActive } } = this.getData();
+        this.setHandsontable(table, mergeCells, thCells, theadActive, tfootActive);
     },
 
-    setHandsontable(data = TABLE, mergeCells = MERGE_CELLS) {
+    setHandsontable(table, mergeCells, thCells, theadActive, tfootActive) {
         if (!this.handsontable) {
-            this.handsontable = new Handsontable(
-                this.$('.handsontable-container')[0],
-                Object.assign({}, TABLE_PARAMS, {
-                    data,
-                    mergeCells,
+            this.handsontable = getHandsontable(this.$('.handsontable-container')[0], table, mergeCells, thCells, theadActive, tfootActive);
 
-                    afterChange: (changes, type) => {
-                        if (type === 'loadData') {
-                            //this.$('.st-block--handsontable')[0].classList.add('is-ready');
-                        }
-                    }
-                })
-            );
-
-            setTimeout(() => {
-                this.handsontable.render();
-            }, 25);
+            setTimeout(() => this.handsontable.render(), 25);
         }
     }
 
