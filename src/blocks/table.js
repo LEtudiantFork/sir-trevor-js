@@ -9,6 +9,9 @@ import { DEFAULT_DATA, getHandsontable } from './handsontable';
 
 const editorHTML = `
     <div class="st-block--handsontable">
+        <div class="st-actions">
+            <button type="button" class="import-xls st-btn">Import Excel</button>
+        </div>
         <div class="handsontable-container"></div>
         <div class="st-helper">
             <span>${ i18n.t('help:format') } : </span>
@@ -64,7 +67,7 @@ export default Block.extend({
         if (!this.handsontable) {
             this.handsontable = getHandsontable(this.$('.handsontable-container')[0], table, mergeCells, thCells, theadActive, tfootActive);
 
-            setTimeout(() => this.handsontable.render(), 25);
+            this.$('button.import-xls')[0].addEventListener('click', () => this.handsontable.xlsImport.open());
         }
     }
 

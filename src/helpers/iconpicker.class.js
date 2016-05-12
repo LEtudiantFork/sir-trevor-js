@@ -1,9 +1,9 @@
-const $           = require('etudiant-mod-dom').default;
-const eventablejs = require('eventablejs');
-const Icon        = require('./icon.class.js');
-const Modal       = require('etudiant-mod-modal').default;
+import $           from 'etudiant-mod-dom';
+import eventablejs from 'eventablejs';
+import Icon        from './icon.class.js';
+import Modal       from 'etudiant-mod-modal';
 
-const mockIconData = {
+const MOCK = {
     content: [
         {
             src: 'inc/icons/bullhorn.svg',
@@ -28,11 +28,18 @@ const mockIconData = {
     ]
 };
 
-function getIconById(icons, name) {
-    return icons.filter(icon => icon.name.toString() === name.toString())[0];
-}
+function constructor(iconsData = MOCK.content) {
+    this.$elem = $('<div class="st-icon-picker-container"></div>');
 
-function constructor() {
+    this.icons = iconsData.map(iconDataItem => {
+        const icon = Icon.create(iconDataItem);
+        this.$elem.append(icon.$elem);
+
+        return icon;
+    });
+
+    this.$elem.on('click', 'div.st-illustrated-icon', e => this.select(e.currentTarget.dataset.iconName));
+
     this.modal = Modal.create({
         slug: 'icons-picker',
         animation: 'fade',
@@ -40,53 +47,46 @@ function constructor() {
     });
 
     this.modal.render({
-        header: 'Choisissez une icône',
+        header: i18n.t('blocks:illustrated:pickIcon'),
         content: '',
         footer: {
             ok: 'OK'
         }
     });
 
-    this.iconContainer = $('<div class="icon-picker-container"></div>');
-
-    this.iconContainer.on('click', 'div.st-illustrated-icon', e => {
-        this.trigger('selected', getIconById(this.icons, e.currentTarget.dataset.iconName));
-    });
-
-    this.modal.appendToContentArea(this.iconContainer);
-
-    const iconData = mockIconData.content;
-
-    this.icons = iconData.map(iconDataItem => {
-        const icon = Icon.create(iconDataItem);
-        this.iconContainer.append(icon.$elem);
-        return icon;
-    });
-
+    this.modal.appendToContentArea(this.$elem);
 }
 
-const prototype = {
+export default {
+    create(...args) {
+        const instance = Object.assign({}, eventablejs, this.prototype);
 
-    close() {
-        this.modal.hide();
-    },
-
-    destroy() {
-        this.modal.destroy();
-    },
-
-    open() {
-        this.modal.show();
-    }
-
-};
-
-module.exports = {
-    create(params) {
-        const instance = Object.assign({}, prototype, eventablejs, params);
-
-        constructor.call(instance, params);
+        constructor.apply(instance, args);
 
         return instance;
+    },
+
+    prototype: {
+        open() {
+            this.modal.show();
+        },
+
+        close() {
+            this.modal.hide();
+        },
+
+        destroy() {
+            this.modal.destroy();
+            this.$elem.remove();
+            this.$elem = null;
+        },
+
+        select(name) {
+            this.trigger('selected', this.getIconById(name));
+        },
+
+        getIconById(name) {
+            return this.icons.filter(icon => icon.name.toString() === name.toString())[0];
+        }
     }
 };

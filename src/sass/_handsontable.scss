@@ -21,3 +21,37 @@
         border-top: 1px solid $base-ui-color;
     }
 }
+
+textarea.st-xls-field {
+    width: 100%;
+    min-height: $input-height * 10;
+
+    line-height: 1.4;
+
+    resize: vertical;
+}
+
+.handsontable-container {
+    overflow-x: auto;
+
+    .ht_master {
+        overflow: visible !important;
+    }
+
+    .wtHider,
+    .wtHolder,
+    .wtSpreader {
+        width: auto!important;
+        height: auto!important;
+    }
+
+    .wtHolder {
+        overflow: visible !important;
+    }
+
+    table.htCore {
+        width: 100% !important;
+
+        table-layout: auto !important;
+    }
+}

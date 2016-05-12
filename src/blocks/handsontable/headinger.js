@@ -9,15 +9,24 @@ function THInfoCollection() {
         if (!this.some(item => item.row === info.row && item.col === info.col)) {
             this.push(info);
         }
+
+        return this;
     };
 
     collection.removeInfo = function(info) {
         this.some((item, idx) => {
             if (item.row === info.row && item.col === info.col) {
-                this.splice(idx, 1);
-                return true;
+                return this.splice(idx, 1);
             }
         });
+
+        return this;
+    };
+
+    collection.clear = function() {
+        this.splice(0, this.length);
+
+        return this;
     };
 
     return collection;
@@ -45,6 +54,22 @@ Headinger.prototype.canBeTH = function(range) {
     return (range.from.row === 0 || range.from.col === 0) && (range.to.row === 0 || range.to.col === 0);
 };
 
+Headinger.prototype.setTHEAD = function() {
+    this.theadActive = true;
+};
+
+Headinger.prototype.setTFOOT = function() {
+    this.tfootActive = true;
+};
+
+Headinger.prototype.unsetTHEAD = function() {
+    this.theadActive = false;
+};
+
+Headinger.prototype.unsetTFOOT = function() {
+    this.tfootActive = false;
+};
+
 Headinger.prototype.toggleTHEAD = function() {
     this.theadActive = !this.theadActive;
 };
@@ -63,11 +88,14 @@ Headinger.prototype.setTH = function(range) {
         return;
     }
 
-    let iterateAxis = (range.from.row === range.to.row) ? 'col' : 'row';
-    let staticAxis = (range.from.row === range.to.row) ? 'row' : 'col';
-    let staticAxisValue = range.to[staticAxis];
+    const iterateAxis = (range.from.row === range.to.row) ? 'col' : 'row';
+    const staticAxis = (range.from.row === range.to.row) ? 'row' : 'col';
+    const baseIterate = (range.from[iterateAxis] <= range.to[iterateAxis]) ? range.from[iterateAxis] : range.to[iterateAxis];
+    const endIterate = (range.from[iterateAxis] <= range.to[iterateAxis]) ? range.to[iterateAxis] : range.from[iterateAxis];
 
-    for (let i = range.from[iterateAxis]; i <= range.to[iterateAxis]; i++) {
+    const staticAxisValue = range.from[staticAxis];
+
+    for (let i = baseIterate; i <= endIterate; i++) {
         this.thInfoCollection.setInfo({ [iterateAxis]: i, [staticAxis]: staticAxisValue });
     }
 };
@@ -78,11 +106,14 @@ Headinger.prototype.unsetTH = function(range) {
         return;
     }
 
-    let iterateAxis = (range.from.row === range.to.row) ? 'col' : 'row';
-    let staticAxis = (range.from.row === range.to.row) ? 'row' : 'col';
-    let staticAxisValue = range.to[staticAxis];
+    const iterateAxis = (range.from.row === range.to.row) ? 'col' : 'row';
+    const staticAxis = (range.from.row === range.to.row) ? 'row' : 'col';
+    const baseIterate = (range.from[iterateAxis] <= range.to[iterateAxis]) ? range.from[iterateAxis] : range.to[iterateAxis];
+    const endIterate = (range.from[iterateAxis] <= range.to[iterateAxis]) ? range.to[iterateAxis] : range.from[iterateAxis];
 
-    for (let i = range.from[iterateAxis]; i <= range.to[iterateAxis]; i++) {
+    const staticAxisValue = range.from[staticAxis];
+
+    for (let i = baseIterate; i <= endIterate; i++) {
         this.thInfoCollection.removeInfo({ [iterateAxis]: i, [staticAxis]: staticAxisValue });
     }
 };

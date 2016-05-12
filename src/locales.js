@@ -63,7 +63,8 @@ var Locales = {
             },
             illustrated: {
                 title: 'Illustrée',
-                placeholder: 'Place holder :D'
+                placeholder: 'Place holder :D',
+                pickIcon: 'Choisissez une icône'
             },
             table: {
                 title: 'Tableau',
@@ -82,7 +83,8 @@ var Locales = {
                 setTHEAD: 'Mettre THEAD',
                 unsetTHEAD: 'Retirer THEAD',
                 setTFOOT: 'Mettre TFOOT',
-                unsetTFOOT: 'Retirer TFOOT'
+                unsetTFOOT: 'Retirer TFOOT',
+                pasteXLS: 'Coller le excel'
             },
             table1D: {
                 addRef: 'Ajouter une Section',
