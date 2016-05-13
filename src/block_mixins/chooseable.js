@@ -17,11 +17,11 @@ function choiceContainer(choices) {
     `;
 }
 
-function choiceButton({ icon, name, type }) {
+function choiceButton({ icon, title, type }) {
     return `
     <button class="${CLASSES.button}" data-choice="${type}" type="button">
         <svg class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-${icon}"></use></svg>
-        ${ name }
+        ${ title }
     </button>
     `;
 }

@@ -38,12 +38,12 @@ export default Block.extend({
         }
     },
 
-    loadData(data) {
-        if (this.options.convertFromMarkdown && data.format !== 'html') {
-            this.setTextBlockHTML(stToHTML(data.text, this.type));
+    loadData({ text, format }) {
+        if (this.options.convertFromMarkdown && format !== 'html') {
+            this.setTextBlockHTML(stToHTML(text, this.type));
         }
         else {
-            this.setTextBlockHTML(data.text);
+            this.setTextBlockHTML(text);
         }
     },
 
@@ -51,6 +51,7 @@ export default Block.extend({
         if (this.isEmpty()) {
             this.focus();
         }
+
         this.toggleEmptyClass();
     },
 

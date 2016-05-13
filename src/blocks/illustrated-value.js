@@ -5,28 +5,45 @@
 import Block from '../block';
 import IconPicker from '../helpers/iconpicker.class';
 
+import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
+import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
+
 const editorHTML = `
     <div class="st-block--illustated">
-        <img class="st-block-img st-utils__v-middle" src="" width="100" height="100" />
-        <input type="text" name="title" />
+        <img class="st-block-img left st-utils__v-middle" src="" width="100" height="100" />
+        <input type="text" name="title" placeholder="${ i18n.t('blocks:illustratedValue:placeholder') }" />
         <input type="color" name="color" />
-        <div class="st-required st-text-block" contenteditable="true"></div>
+        <div class="st-text-block" contenteditable="true"></div>
     </div>
 `;
 
 export default Block.extend({
 
-    type: 'illustrated',
+    type: 'illustratedValue',
 
-    title: () => i18n.t('blocks:illustrated:title'),
+    title: () => i18n.t('blocks:illustratedValue:title'),
 
     editorHTML,
 
     'icon_name': 'illustrated-value',
 
-    toolbarEnabled: true,
+    textable: true,
 
-    loadData({ title = '', color = '', text = '', image = '' }){
+    toolbarEnabled: false,
+
+    configureScribe(scribe) {
+        scribe.use(new ScribeTextBlockPlugin(this));
+        scribe.use(new ScribePastePlugin(this));
+    },
+
+    scribeOptions: {
+        allowBlockElements: true,
+        tags: {
+            p: true
+        }
+    },
+
+    loadData({ title = '', color = '', text = '<p><br/></p>', image = '' }) {
         this.setTextBlockHTML(text);
         this.$('img.st-block-img')[0].src = image;
         this.$('input[name="title"]')[0].value = title;
@@ -55,5 +72,10 @@ export default Block.extend({
         this.$('img.st-block-img')[0].src = icon.src;
         this.setData({ image: icon.src });
         this.iconPicker.close();
+    },
+
+    isEmpty() {
+        const { text } = this.getBlockData();
+        return !text;
     }
 });

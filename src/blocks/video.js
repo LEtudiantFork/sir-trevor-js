@@ -29,7 +29,7 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
-    loadData({ file = '', thumbnail = '' }){
+    loadData({ file = '', thumbnail = '' }) {
         this.$('.c-video')[0].dataset.vidPoster = thumbnail;
         this.$('source')[0].src = file;
     },

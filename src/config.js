@@ -1,25 +1,31 @@
 'use strict';
 
 var drop_options = {
-    html: ['<div class="st-block__dropzone">',
-        '<svg role="img" class="st-icon"><use xlink:href="<%= config.defaults.iconUrl %>#icon-<%= _.result(block, "icon_name") %>"/></svg>',
-        '<p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>',
-        '</p></div>'].join('\n'),
-        re_render_on_reorder: false
+    html: `
+        <div class="st-block__dropzone">
+            <svg role="img" class="st-icon"><use xlink:href="<%= config.defaults.iconUrl %>#icon-<%= _.result(block, "icon_name") %>"/></svg>
+            <p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>
+            </p>
+        </div>
+    `,
+    re_render_on_reorder: false
 };
 
 var paste_options = {
-    html: ['<input type="text" placeholder="<%= i18n.t("general:paste") %>"',
-        ' class="st-block__paste-input st-paste-block">'].join('')
+    html: `
+        <input type="text"
+        placeholder="<%= i18n.t("general:paste") %>"
+        class="st-block__paste-input st-paste-block">
+    `
 };
 
 var upload_options = {
-    html: [
-        '<div class="st-block__upload-container">',
-        '<input type="file" type="st-file-upload">',
-        '<button class="st-upload-btn"><%= i18n.t("general:upload") %></button>',
-        '</div>'
-    ].join('\n')
+    html: `
+        <div class="st-block__upload-container">
+        <input type="file" type="st-file-upload">
+        <button class="st-upload-btn"><%= i18n.t("general:upload") %></button>
+        </div>
+    `
 };
 
 module.exports = {

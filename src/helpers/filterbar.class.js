@@ -1,6 +1,7 @@
 import * as _ from '../lodash.js';
 import eventablejs from 'eventablejs';
-import fieldHelper from './field.js';
+import fieldHelper from './field';
+
 import xhr from 'etudiant-mod-xhr';
 
 const filterBarTemplate = `
@@ -11,24 +12,36 @@ const filterBarTemplate = `
     </div>
 `;
 
-function init(params) {
-    this.accessToken = params.accessToken;
-    this.app = params.app;
-    this.application = params.application;
-    this.fields = params.fields;
-    this.limit = params.limit;
-    this.subType = params.subType;
-    this.type = params.type;
-    this.url = params.url;
+/**
+ * @param  {string} options.accessToken
+ * @param  {Object} options.app
+ * @param  {string} options.application
+ * @param  {Object[]} options.fields
+ * @param  {number} options.limit
+ * @param  {string} options.type
+ * @param  {string} options.subType
+ * @param  {string} options.url
+ * @param  {Object} options.container
+ * @param  {boolean} options.before
+ */
+function init({ accessToken, app, application, fields, limit, type, subType, url, container, before }) {
+    this.accessToken = accessToken;
+    this.app = app;
+    this.application = application;
+    this.fields = fields;
+    this.limit = limit;
+    this.type = type;
+    this.subType = subType;
+    this.url = url;
 
-    if (params.container) {
-        if (params.before === true) {
-            params.container.before(this.render(this.fields));
-            this.bindToDOM(params.container.parent());
+    if (container) {
+        if (before === true) {
+            container.before(this.render(this.fields));
+            this.bindToDOM(container.parent());
         }
         else {
-            params.container.append(this.render(this.fields));
-            this.bindToDOM(params.container);
+            container.append(this.render(this.fields));
+            this.bindToDOM(container);
         }
     }
 }
@@ -47,10 +60,10 @@ function searchBuilder($elem) {
 }
 
 export default {
-    create() {
+    create(...args) {
         const instance = Object.assign(Object.create(this.prototype), eventablejs);
 
-        init.apply(instance, arguments);
+        init.apply(instance, args);
 
         return instance;
     },
@@ -58,13 +71,9 @@ export default {
     prototype: {
 
         render() {
-            var fieldMarkup = '';
+            const fields = this.fields.reduce((prev, field) => `${ prev }${ fieldHelper.build(field) }`, '');
 
-            this.fields.forEach(function(field) {
-                fieldMarkup += fieldHelper.build(field);
-            });
-
-            return _.template(filterBarTemplate)({ fields: fieldMarkup });
+            return _.template(filterBarTemplate)({ fields });
         },
 
         bindToDOM(container) {
@@ -111,4 +120,4 @@ export default {
         }
 
     }
-}
+};

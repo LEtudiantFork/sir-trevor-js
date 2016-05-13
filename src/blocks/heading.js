@@ -43,17 +43,19 @@ export default Block.extend({
             this.focus();
             this._scribe.commands.h1.execute();
         },
+
         heading2(e) {
             e.preventDefault();
             this.focus();
             this._scribe.commands.h2.execute();
         },
+
         heading3(e) {
             e.preventDefault();
             this.focus();
             this._scribe.commands.h3.execute();
-        }
-        /* * /,
+        },
+
         extra: {
             event: 'change',
             html: '<select><option value="yep">yep</option><option value="nope">nope</option></select>',

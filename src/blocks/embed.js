@@ -1,40 +1,32 @@
 /*
     Embeded selector Block
 */
-
-import xhr from 'etudiant-mod-xhr';
-
 import Block from '../block';
-import fieldHelper from '../helpers/field';
-
-import PandoraSearch from '../helpers/pandora-search.class';
+import filters from '../helpers/filters';
+import { API_URL, parse as parseFilters, getConfig } from '../helpers/filters-embed';
 
 const CHOOSEABLE = [
     {
         title: i18n.t('blocks:quiz:title'),
         api: 'quizzes',
         icon: 'quiz',
-        name: 'Quiz',
         type: 'quiz'
     },
     {
         title: i18n.t('blocks:personality:title'),
         api: 'personalities',
         icon: 'personality',
-        name: 'Personality',
         type: 'personality'
     },
     {
         title: i18n.t('blocks:poll:title'),
         api: 'sondage',
         icon: 'Poll',
-        name: 'Poll',
         type: 'poll'
     },
     {
         title: i18n.t('blocks:script:title'),
         icon: 'script',
-        name: 'Script',
         type: 'script'
     }
 ];
@@ -58,60 +50,23 @@ export default Block.extend({
     onBlockRender() {
         this.createChoices(CHOOSEABLE, choice => {
             if (choice.type === 'script') {
-                this.mediator.trigger('block:replace', this.el, choice.type, {});
-                return;
+                return this.mediator.trigger('block:replace', this.el, choice.type);
             }
 
-            const thematicOptionsUrl = `${this.globalConfig.apiUrl}/jcs/thematics/list/${choice.api}`;
-
-            const sliderConfig = {
-                controls: {
-                    next: i18n.t('blocks:embed:next'),
-                    prev: i18n.t('blocks:embed:prev')
-                },
-                itemsPerSlide: 2,
-                increment: 2
-            };
-
-            xhr.get(thematicOptionsUrl, {
-                data: {
-                    'access_token': this.globalConfig.accessToken
-                }
+            filters
+            .get({
+                url: `${ this.globalConfig.apiUrl }${ API_URL }${ choice.api }`,
+                filtersUrl: `${ this.globalConfig.apiUrl }/jcs/${ choice.api }/search`,
+                accessToken: this.globalConfig.accessToken,
+                application: this.globalConfig.application,
+                container: this.editor,
+                type: choice.type,
+                callback: parseFilters,
+                getConfig
             })
-            .then(({ content = [] }) => {
-                const options = content.map(({ id: value, label }) => ({ value, label }));
-
-                return fieldHelper.addNullOptionToArray(options, i18n.t('blocks:embed:defaultOption'));
-            })
-            .then(thematics => {
-                const filterConfig = {
-                    url: `${this.globalConfig.apiUrl}/jcs/${choice.api}/search`,
-                    accessToken: this.globalConfig.accessToken,
-                    application: this.globalConfig.application,
-                    limit: 20,
-                    fields: [
-                        {
-                            type: 'search',
-                            name: 'query',
-                            placeholder: 'Rechercher'
-                        }, {
-                            type: 'select',
-                            name: 'thematic',
-                            placeholder: 'Thematique',
-                            options: thematics
-                        }
-                    ]
-                };
-
-                let pandoraSearch = PandoraSearch.create({
-                    container: this.editor,
-                    filterConfig,
-                    sliderConfig,
-                    subBlockType: choice.type
-                })
-                .once('selected', selected => {
-                    const { name } = CHOOSEABLE.find(choice => choice.type === selected.type);
-                    this.mediator.trigger('block:replace', this.el, name, selected.content);
+            .then(pandoraSearch => {
+                pandoraSearch.once('selected', selected => {
+                    this.mediator.trigger('block:replace', this.el, selected.type, selected.content);
 
                     pandoraSearch.destroy();
                     pandoraSearch = null; // to garbage collect

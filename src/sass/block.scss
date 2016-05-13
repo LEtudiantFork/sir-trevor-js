@@ -127,6 +127,23 @@
     padding: 0.2rem;
 }
 
+.st-block--illustated {
+    @include clearfix;
+
+    .st-block-img {
+        margin-right: 10px;
+
+        float: left;
+
+        &.right {
+            margin-right: 0;
+            margin-left: 10px;
+
+            float: right;
+        }
+    }
+}
+
 .st-text-block {
     overflow: auto;
 

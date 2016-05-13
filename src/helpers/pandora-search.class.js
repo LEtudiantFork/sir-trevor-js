@@ -1,4 +1,5 @@
 import $ from 'etudiant-mod-dom';
+import randomID from 'random-id';
 
 import Slider from './slider.class';
 import FilterBar from './filterbar.class';
@@ -9,7 +10,7 @@ import eventablejs from 'eventablejs';
 import EventBus    from '../event-bus';
 
 function init(params) {
-    this.id = Date.now();
+    this.id = randomID();
 
     this.container = params.container;
     this.subBlockType = params.subBlockType;

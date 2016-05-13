@@ -47,7 +47,9 @@ var Locales = {
                 title: 'Diaporama'
             },
             embed: {
-                title: 'Embed',
+                title: 'Embed'
+            },
+            filters: {
                 defaultOption: 'Aucune Thematique',
                 next: 'Suivant',
                 prev: 'Précédent'
@@ -63,8 +65,21 @@ var Locales = {
             },
             illustrated: {
                 title: 'Illustrée',
-                placeholder: 'Place holder :D',
+                placeholder: 'Something something',
                 pickIcon: 'Choisissez une icône'
+            },
+            illustratedValue: {
+                title: 'Valeur Illustrée',
+                placeholder: 'Titre',
+                pickIcon: 'Choisir une icône'
+            },
+            illustratedLeft: {
+                title: 'Image à gauche',
+                pickImage: 'Choisir une image'
+            },
+            illustratedRight: {
+                title: 'Image à droite',
+                pickImage: 'Choisir une image'
             },
             table: {
                 title: 'Tableau',

@@ -30,7 +30,7 @@ export default Block.extend({
         scribe.use(new ScribeQuotePlugin(this));
     },
 
-    loadData(data){
+    loadData(data) {
         if (this.options.convertFromMarkdown && data.format !== 'html') {
             this.setTextBlockHTML(stToHTML(data.text, this.type));
         }

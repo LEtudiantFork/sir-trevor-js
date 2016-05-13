@@ -38,6 +38,7 @@
     "lodash.uniq": "^3.2.2",
     "lodash.uniqueid": "^4.0.0",
     "marked": "^0.3.5",
+    "random-id": "0.0.2",
     "replace": "^0.3.0",
     "scribe-editor": "2.1.1",
     "scribe-plugin-formatter-plain-text-convert-new-lines-to-html": "^0.1.1",

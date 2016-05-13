@@ -1,23 +1,19 @@
-var _ = require('../lodash.js');
+import * as _ from '../lodash.js';
+
+function buildOption(option) {
+    return `<option ${ option.selected } value="${ option.value }">${ option.label }</option>`;
+}
 
 function buildSelect(field) {
-    field.label = field.label ? ('<label for="' + field.name + '">' + field.label + '</label>') : '';
-    field.placeholder = field.placeholder ? ('<option value="" selected disabled>' + field.placeholder + '</option>') : '';
-    field.multiple = field.multiple ? ('multiple="multiple"') : '';
+    field.label = field.label ? `<label for="${ field.name }">${ field.label }</label>` : '';
+    field.placeholder = field.placeholder ? `<option value="" selected disabled>${ field.placeholder }</option>` : '';
+    field.multiple = field.multiple ? 'multiple="multiple"' : '';
 
-    field.options = field.options.map(function(singleOption) {
-
-        if (singleOption.selected && singleOption.selected !== '') {
-            singleOption.selected = 'selected';
-        }
-        else {
-            singleOption.selected = '';
-        }
-
-        return singleOption;
+    field.options.forEach(option => {
+        option.selected = option.selected ? 'selected' : '';
     });
 
-    var selectTemplate = `
+    const selectTemplate = `
         <div class="st-block-field st-block-field-select">
             <%= label %>
             <select <%= multiple %> id="<%= name %>" name="<%= name %>">
@@ -37,7 +33,7 @@ function buildStandardField(field) {
     field.placeholder = field.placeholder || '';
     field.value = field.value || '';
 
-    var fieldTemplate = `
+    const fieldTemplate = `
         <div class="st-block-field st-block-field-standard">
             <label for="<%= name %>">
                 <%= label %>
@@ -81,7 +77,7 @@ function addNullOptionToArray(array, message) {
     return arrayCopy;
 }
 
-module.exports = {
-    addNullOptionToArray: addNullOptionToArray,
+export default {
+    addNullOptionToArray,
     build: buildField
 };
