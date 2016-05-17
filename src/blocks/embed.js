@@ -2,7 +2,7 @@
     Embeded selector Block
 */
 import Block from '../block';
-import filters from '../helpers/filters';
+import { get as getFilters } from '../helpers/filters';
 import { API_URL, parse as parseFilters, getConfig } from '../helpers/filters-embed';
 
 const CHOOSEABLE = [
@@ -53,8 +53,7 @@ export default Block.extend({
                 return this.mediator.trigger('block:replace', this.el, choice.type);
             }
 
-            filters
-            .get({
+            let pandoraSearch = getFilters({
                 url: `${ this.globalConfig.apiUrl }${ API_URL }${ choice.api }`,
                 filtersUrl: `${ this.globalConfig.apiUrl }/jcs/${ choice.api }/search`,
                 accessToken: this.globalConfig.accessToken,
@@ -63,16 +62,14 @@ export default Block.extend({
                 type: choice.type,
                 callback: parseFilters,
                 getConfig
-            })
-            .then(pandoraSearch => {
-                pandoraSearch.once('selected', selected => {
-                    this.mediator.trigger('block:replace', this.el, selected.type, selected.content);
+            });
 
-                    pandoraSearch.destroy();
-                    pandoraSearch = null; // to garbage collect
-                });
-            })
-            .catch(err => console.error(err.stack));
+            pandoraSearch.once('selected', selected => {
+                this.mediator.trigger('block:replace', this.el, selected.type, selected.content);
+
+                pandoraSearch.destroy();
+                pandoraSearch = null; // for garbage collection
+            });
         });
     }
 });

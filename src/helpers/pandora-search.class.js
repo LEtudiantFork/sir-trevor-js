@@ -9,24 +9,24 @@ import subBlockManager from './sub-blocks';
 import eventablejs from 'eventablejs';
 import EventBus    from '../event-bus';
 
-function init(params) {
+function init({ container, subBlockType, subBlockPreProcess, filterConfig, sliderConfig }) {
     this.id = randomID();
 
-    this.container = params.container;
-    this.subBlockType = params.subBlockType;
-    this.subBlockPreProcess = params.subBlockPreProcess; // @todo is this in the right place?
+    this.container = container;
+    this.subBlockType = subBlockType;
+    this.subBlockPreProcess = subBlockPreProcess; // @todo is this in the right place?
 
     this.subBlocks = [];
 
     // create container element
     this.$elem = $('<div class="st-pandora-search"></div>');
 
-    params.filterConfig.container = this.$elem;
-    params.sliderConfig.container = this.$elem;
+    filterConfig.container = this.$elem;
+    sliderConfig.container = this.$elem;
 
-    this.filterBar = FilterBar.create(params.filterConfig);
+    this.filterBar = FilterBar.create(filterConfig);
 
-    this.slider = Slider.create(params.sliderConfig);
+    this.slider = Slider.create(sliderConfig);
 
     this.$elem.appendTo(this.container);
 

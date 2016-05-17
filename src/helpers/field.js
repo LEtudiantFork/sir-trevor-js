@@ -1,73 +1,51 @@
-import * as _ from '../lodash.js';
-
-function buildOption(option) {
-    return `<option ${ option.selected } value="${ option.value }">${ option.label }</option>`;
+function buildOptions(options) {
+    return options.reduce((prev, option) => `
+        ${ prev }
+        <option ${ option.selected ? 'selected' : '' } value="${ option.value }">${ option.label }</option>
+    `, '');
 }
 
 function buildSelect(field) {
-    field.label = field.label ? `<label for="${ field.name }">${ field.label }</label>` : '';
-    field.placeholder = field.placeholder ? `<option value="" selected disabled>${ field.placeholder }</option>` : '';
-    field.multiple = field.multiple ? 'multiple="multiple"' : '';
+    const multiple = field.multiple ? 'multiple="multiple"' : '';
+    const placeholder = field.placeholder ? `<option value="" selected disabled>${ field.placeholder }</option>` : '';
+    const disabled = field.options.then ? 'disabled' : '';
 
-    field.options.forEach(option => {
-        option.selected = option.selected ? 'selected' : '';
-    });
-
-    const selectTemplate = `
+    return `
         <div class="st-block-field st-block-field-select">
-            <%= label %>
-            <select <%= multiple %> id="<%= name %>" name="<%= name %>">
-                <%= placeholder %>
-                <% _.forEach(options, function(option) { %>
-                    <option <%= option.selected %> value="<%= option.value %>"><%= option.label %></option>
-                <% }); %>
+            <label for="${ field.name }">${ field.label || '' }</label>
+            <select ${ multiple } ${ disabled } id="${ field.name }" name="${ field.name }">
+                ${ placeholder }
+                ${ !disabled ? buildOptions(field.options) : '' }
             </select>
         </div>
     `;
-
-    return _.template(selectTemplate, { imports: { '_': _ } })(field);
 }
 
-function buildStandardField(field) {
-    field.label = field.label || '';
-    field.placeholder = field.placeholder || '';
-    field.value = field.value || '';
-
-    const fieldTemplate = `
+function buildInput(field) {
+    return `
         <div class="st-block-field st-block-field-standard">
-            <label for="<%= name %>">
-                <%= label %>
-            </label>
-            <input type="<%= type %>" name="<%= name %>" value="<%= value %>" placeholder="<%= placeholder %>"/>
+            <label for="${ field.name }">${ field.label || '' }</label>
+            <input type="${ field.type || 'search' }" id="${ field.name }" name="${ field.name }" value="${ field.value || '' }" placeholder="${ field.placeholder || '' }"/>
         </div>
     `;
-
-    return _.template(fieldTemplate)({
-        name: field.name,
-        type: field.type,
-        label: field.label,
-        placeholder: field.placeholder,
-        value: field.value
-    });
 }
 
-function buildField(field) {
-    var fieldMarkup;
+function buildFields(field) {
+    let fieldMarkup;
 
     switch (field.type) {
         case 'select':
             fieldMarkup = buildSelect(field);
             break;
         default:
-            fieldMarkup = buildStandardField(field);
-            break;
+            fieldMarkup = buildInput(field);
     }
 
     return fieldMarkup;
 }
 
 function addNullOptionToArray(array, message) {
-    var arrayCopy = array.slice();
+    const arrayCopy = array.slice();
 
     arrayCopy.unshift({
         value: '',
@@ -79,5 +57,6 @@ function addNullOptionToArray(array, message) {
 
 export default {
     addNullOptionToArray,
-    build: buildField
+    buildFields,
+    buildOptions
 };

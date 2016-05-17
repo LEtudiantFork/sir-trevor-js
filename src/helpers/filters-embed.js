@@ -1,5 +1,3 @@
-import * as _ from '../lodash';
-
 const API_URL = '/jcs/thematics/list/';
 
 function parse(data) {

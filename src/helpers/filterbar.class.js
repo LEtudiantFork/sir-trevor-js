@@ -1,16 +1,19 @@
-import * as _ from '../lodash.js';
+import { debounce } from '../lodash.js';
 import eventablejs from 'eventablejs';
 import fieldHelper from './field';
 
+import $ from 'etudiant-mod-dom';
 import xhr from 'etudiant-mod-xhr';
 
-const filterBarTemplate = `
+function template(fields) {
+    return `
     <div class="st-block__filter-wrapper">
         <form name="" class="st-block__filter">
-            <%= fields %>
+            ${ fields }
         </form>
     </div>
-`;
+    `;
+}
 
 /**
  * @param  {string} options.accessToken
@@ -34,25 +37,16 @@ function init({ accessToken, app, application, fields, limit, type, subType, url
     this.subType = subType;
     this.url = url;
 
-    if (container) {
-        if (before === true) {
-            container.before(this.render(this.fields));
-            this.bindToDOM(container.parent());
-        }
-        else {
-            container.append(this.render(this.fields));
-            this.bindToDOM(container);
-        }
-    }
+    this.render(container, before);
 }
 
 function searchBuilder($elem) {
-    var search = {};
-    var $fields = $elem.find('input, select');
+    const search = {};
+    const $fields = $elem.find('input, select');
 
-    $fields.each(function() {
-        if (this.value) {
-            search[this.name] = this.value;
+    $fields.each(field => {
+        if (field.value) {
+            search[field.name] = field.value;
         }
     });
 
@@ -61,7 +55,7 @@ function searchBuilder($elem) {
 
 export default {
     create(...args) {
-        const instance = Object.assign(Object.create(this.prototype), eventablejs);
+        const instance = Object.assign({}, this.prototype, eventablejs);
 
         init.apply(instance, args);
 
@@ -70,27 +64,42 @@ export default {
 
     prototype: {
 
-        render() {
-            const fields = this.fields.reduce((prev, field) => `${ prev }${ fieldHelper.build(field) }`, '');
+        render(container, before = false) {
+            const fieldsTemplates = this.fields.reduce((prev, field) => `${ prev }${ fieldHelper.buildFields(field) }`, '');
 
-            return _.template(filterBarTemplate)({ fields });
-        },
-
-        bindToDOM(container) {
-            this.$elem = container.find('.st-block__filter');
-
-            this.$elem.on('keyup', 'input', _.debounce(() => this.search(), 300));
+            this.$elem = $(template(fieldsTemplates));
+            this.$elem.on('input', 'input', debounce(() => this.search(), 300));
             this.$elem.on('change', 'select', () => this.search());
+
+            this.fields
+                .filter(field => field.type === 'select' && field.options.then)
+                .forEach(select => {
+                    const $select = this.$elem.find(`select#${ select.name }`);
+
+                    select.options.then(options => {
+                        const optionsTemplate = fieldHelper.buildOptions(options);
+                        $select.append(optionsTemplate);
+                        $select.removeAttr('disabled');
+                    });
+                });
+
+            if (before) {
+                container.before(this.$elem);
+            }
+            else {
+                container.append(this.$elem);
+            }
         },
 
         search(search = {}, eventName = 'search') {
             this.trigger(eventName + ':start');
 
-            const data = Object.assign({}, search, searchBuilder(this.$elem), {
-                access_token: this.accessToken,
-                limit: this.limit,
-                application: this.application || this.app
-            });
+            const data = Object.assign({}, search, searchBuilder(this.$elem),
+                {
+                    'access_token': this.accessToken,
+                    limit: this.limit,
+                    application: this.application || this.app
+                });
 
             if (this.type) {
                 data.type = this.type;
@@ -116,7 +125,9 @@ export default {
         },
 
         destroy() {
+            this.$elem.off('input change');
             this.$elem.parent().remove();
+            this.$elem = null;
         }
 
     }
