@@ -35,7 +35,7 @@ export default Block.extend({
 
     onBlockRender() {
         this.createChoices(CHOOSEABLE, choice => {
-            let pandoraSearch = getFilters({
+            this.pandoraSearch = getFilters({
                 url: `${ this.globalConfig.apiUrl }${ API_URL }${ this.globalConfig.application }`,
                 filtersUrl: `${ this.globalConfig.apiUrl }/edt/media`,
                 accessToken: this.globalConfig.accessToken,
@@ -46,25 +46,24 @@ export default Block.extend({
                 getConfig
             });
 
-            const done = (type, data) => {
-                this.mediator.trigger('block:replace', this.el, type, data);
-
-                pandoraSearch.destroy();
-                pandoraSearch = null; // to garbage collect
-            };
-
-            pandoraSearch.once('selected', selected => {
-                const { type, api } = CHOOSEABLE.find(choice => choice.type === selected.type);
+            this.pandoraSearch.once('selected', ({ type, content }) => {
+                const { api } = CHOOSEABLE.find(choice => choice.type === type);
 
                 if (!api) {
-                    return done(type, selected.content);
+                    return this.done(type, content);
                 }
 
                 xhr.get(`${ this.globalConfig.apiUrl }${ api }${ selected.id }`, {
                     data: { 'access_token': this.globalConfig.accessToken }
                 })
-                .then(({ content = {} }) => done(type, content));
+                .then(({ content = {} }) => this.done(type, content));
             });
         });
+    },
+
+    done(type, data) {
+        this.pandoraSearch.destroy();
+        this.pandoraSearch = null; // to garbage collect
+        this.mediator.trigger('block:replace', this.el, type, data);
     }
 });

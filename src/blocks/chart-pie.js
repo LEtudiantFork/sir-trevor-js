@@ -9,7 +9,7 @@ import { isEmpty } from '../lodash';
 
 export default Block.extend({
 
-    type: 'chartPie',
+    type: 'chart_pie',
 
     title: () => 'Pie',
 

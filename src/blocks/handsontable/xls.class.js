@@ -1,5 +1,7 @@
-import $           from 'etudiant-mod-dom';
 import eventablejs from 'eventablejs';
+import randomID from 'random-id';
+
+import $           from 'etudiant-mod-dom';
 import Modal       from 'etudiant-mod-modal';
 
 const template = `
@@ -20,7 +22,7 @@ function constructor() {
     this.$field = this.$elem.find(SELECTORS.field);
 
     this.modal = Modal.create({
-        slug: 'import-xls',
+        slug: randomID(),
         animation: 'fade',
         theme: 'pandora'
     });
@@ -57,9 +59,9 @@ export default {
         },
 
         destroy() {
-            this.modal.destroy();
             this.$elem.remove();
             this.$elem = null;
+            this.modal.destroy();
         },
 
         sendData() {

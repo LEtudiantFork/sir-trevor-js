@@ -1,6 +1,9 @@
-import $           from 'etudiant-mod-dom';
 import eventablejs from 'eventablejs';
+import randomID from 'random-id';
+
 import Icon        from './icon.class.js';
+
+import $           from 'etudiant-mod-dom';
 import Modal       from 'etudiant-mod-modal';
 
 const MOCK = {
@@ -41,7 +44,7 @@ function constructor(iconsData = MOCK.content) {
     this.$elem.on('click', 'div.st-illustrated-icon', e => this.select(e.currentTarget.dataset.iconName));
 
     this.modal = Modal.create({
-        slug: 'icons-picker',
+        slug: randomID(),
         animation: 'fade',
         theme: 'pandora'
     });
@@ -76,9 +79,9 @@ export default {
         },
 
         destroy() {
-            this.modal.destroy();
             this.$elem.remove();
             this.$elem = null;
+            this.modal.destroy();
         },
 
         select(name) {

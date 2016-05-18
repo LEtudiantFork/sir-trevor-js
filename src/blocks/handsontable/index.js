@@ -4,7 +4,6 @@ import Handsontable from 'handsontable/dist/handsontable.full'; // Handsontable 
 import Marked from 'marked';
 
 import Headinger from './headinger';
-import Xls from './xls';
 
 const CLASSES = {
     th: 'visualy-th',
@@ -89,12 +88,6 @@ function callback(type) {
     }
 }
 
-function loadData(hot, data) {
-    hot.resetCells();
-    hot.loadData(data);
-    hot.render();
-}
-
 export function getHandsontable(context, data = DEFAULT_TABLE, mergeCells, thCells, thActive, tfootActive) {
     const contextMenu = Object.assign({}, CONTEXT_MENU, { callback });
 
@@ -105,8 +98,6 @@ export function getHandsontable(context, data = DEFAULT_TABLE, mergeCells, thCel
                 return this;
             };
             this.headinger = new Headinger(thCells, thActive, tfootActive);
-            this.xlsImport = Xls.create();
-            this.xlsImport.on('import:xsl', data => loadData(this, data));
         },
         renderer,
         contextMenu,

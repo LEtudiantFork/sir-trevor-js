@@ -5,6 +5,8 @@
 import Block from '../block';
 import utils from '../utils';
 
+import Xls from './handsontable/xls.class';
+
 import { DEFAULT_DATA, getHandsontable } from './handsontable';
 
 const editorHTML = `
@@ -64,11 +66,28 @@ export default Block.extend({
     },
 
     setHandsontable(table, mergeCells, thCells, theadActive, tfootActive) {
-        if (!this.handsontable) {
-            this.handsontable = getHandsontable(this.$('.handsontable-container')[0], table, mergeCells, thCells, theadActive, tfootActive);
-
-            this.$('button.import-xls')[0].addEventListener('click', () => this.handsontable.xlsImport.open());
+        if (this.handsontable) {
+            return;
         }
+        this.handsontable = getHandsontable(this.$('.handsontable-container')[0], table, mergeCells, thCells, theadActive, tfootActive);
+
+        this.xlsImport = Xls.create();
+        this.xlsImport.on('import:xsl', data => {
+            this.handsontable.resetCells();
+            this.handsontable.loadData(data);
+            this.handsontable.render();
+        });
+
+        this.$('button.import-xls')[0].addEventListener('click', () => this.xlsImport.open());
+
+        this.mediator.on('block:remove', blockID => {
+            if (this.blockID === blockID) {
+                this.handsontable.destroy();
+                this.handsontable = null;
+                this.xlsImport.destroy();
+                this.xlsImport = null;
+            }
+        });
     }
 
 });

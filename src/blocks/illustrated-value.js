@@ -19,7 +19,7 @@ const editorHTML = `
 
 export default Block.extend({
 
-    type: 'illustratedValue',
+    type: 'illustrated_value',
 
     title: () => i18n.t('blocks:illustratedValue:title'),
 
@@ -27,7 +27,7 @@ export default Block.extend({
 
     'icon_name': 'illustrated-value',
 
-    textable: true,
+    textable: false,
 
     toolbarEnabled: false,
 
@@ -38,12 +38,10 @@ export default Block.extend({
 
     scribeOptions: {
         allowBlockElements: true,
-        tags: {
-            p: true
-        }
+        tags: { p: true }
     },
 
-    loadData({ title = '', color = '', text = '<p><br/></p>', image = '' }) {
+    loadData({ title = '', color = '', text = '', image = '' }) {
         this.setTextBlockHTML(text);
         this.$('img.st-block-img')[0].src = image;
         this.$('input[name="title"]')[0].value = title;
@@ -62,6 +60,13 @@ export default Block.extend({
 
         this.$('input[name="color"]')[0].addEventListener('input', () => this.setColor());
         this.$('img.st-block-img')[0].addEventListener('click', () => this.iconPicker.open());
+
+        this.mediator.on('block:remove', blockID => {
+            if (this.blockID === blockID) {
+                this.iconPicker.destroy();
+                this.iconPicker = null;
+            }
+        });
     },
 
     setColor() {
@@ -75,7 +80,6 @@ export default Block.extend({
     },
 
     isEmpty() {
-        const { text } = this.getBlockData();
-        return !text;
+        return !this.getBlockData().text;
     }
 });

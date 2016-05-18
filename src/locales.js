@@ -73,6 +73,10 @@ var Locales = {
                 placeholder: 'Titre',
                 pickIcon: 'Choisir une icône'
             },
+            illustratedImage: {
+                title: 'Valeur Imagée',
+                pickImage: 'Choisir une image'
+            },
             illustratedLeft: {
                 title: 'Image à gauche',
                 pickImage: 'Choisir une image'

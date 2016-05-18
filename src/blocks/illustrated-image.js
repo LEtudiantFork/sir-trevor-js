@@ -3,6 +3,7 @@
 */
 
 import Block from '../block';
+import IconPicker from '../helpers/mediapicker.class';
 
 import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
@@ -16,15 +17,15 @@ const editorHTML = `
 
 export default Block.extend({
 
-    type: 'illustratedLeft',
+    type: 'illustrated_image',
 
-    title: () => i18n.t('blocks:illustratedLeft:title'),
+    title: () => i18n.t('blocks:illustratedImage:title'),
 
     editorHTML,
 
     'icon_name': 'illustrated-value',
 
-    textable: true,
+    textable: false,
 
     toolbarEnabled: false,
 
@@ -40,9 +41,9 @@ export default Block.extend({
         }
     },
 
-    loadData({ text = '<br/>', image = '', position = 'left' }) {
+    loadData({ text = '', media: { thumbnail = '' } = {}, position = 'left' }) {
         this.setTextBlockHTML(text);
-        this.$('img.st-block-img')[0].src = image;
+        this.$('img.st-block-img')[0].src = thumbnail;
         this.$('img.st-block-img')[0].classList.add(position);
     },
 
@@ -51,11 +52,32 @@ export default Block.extend({
             this.focus();
         }
 
-        this.$('img.st-block-img')[0].addEventListener('click', () => console.log('open Mediatheque'));
+        this.mediaPicker = IconPicker.create({
+            apiUrl: this.globalConfig.apiUrl,
+            accessToken: this.globalConfig.accessToken,
+            application: this.globalConfig.application,
+            type: 'image'
+        });
+
+        this.mediaPicker.on('selected', media => this.addMedia(media));
+
+        this.$('img.st-block-img')[0].addEventListener('click', () => this.mediaPicker.open());
+
+
+        this.mediator.on('block:remove', blockID => {
+            if (this.blockID === blockID) {
+                this.mediaPicker.destroy();
+                this.mediaPicker = null;
+            }
+        });
+    },
+
+    addMedia(media) {
+        this.setData({ media });
+        this.$('img.st-block-img')[0].src = media.thumbnail;
     },
 
     isEmpty() {
-        const { text } = this.getBlockData();
-        return !text;
+        return !this.getBlockData().text;
     }
 });
