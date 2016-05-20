@@ -10,6 +10,8 @@ export { default as List } from './list';
 
 export { default as Quote } from './quote';
 
+export { default as Encard } from './encard';
+
 /**
  * GROUP ILLUSTRATED
  */

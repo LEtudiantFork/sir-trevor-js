@@ -33,6 +33,9 @@ var Locales = {
             text: {
                 title: 'Texte'
             },
+            encard: {
+                title: 'Encadré'
+            },
             list: {
                 title: 'Liste'
             },

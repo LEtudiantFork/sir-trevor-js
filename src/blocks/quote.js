@@ -22,9 +22,13 @@ export default Block.extend({
 
     'icon_name': 'fmt-quote',
 
-    textable: true,
+    controllable: false,
+
+    textable: false,
 
     toolbarEnabled: true,
+
+    formatBarEnabled: true,
 
     configureScribe(scribe) {
         scribe.use(new ScribeQuotePlugin(this));

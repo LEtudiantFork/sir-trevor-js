@@ -1,37 +1,82 @@
 /*
-    List Block
+    Encard Block
 */
 
 import Block from '../block';
 
 import ScribeListBlockPlugin from './scribe-plugins/scribe-list-block-plugin';
 
-const CLASS_CONTAINER = 'st-block--list';
+const CLASS_CONTAINER = 'st-block--encard';
 const SELECTOR_CONTAINER = `.${ CLASS_CONTAINER }`;
+
+const DEFAULT_THEME = {
+    ref: 'default',
+    label: 'Default'
+};
+
+const THEMES = [
+    {
+        ref: 'fishy',
+        label: 'Aquarium',
+        background: '#9BD7D9',
+        border: '#165383'
+    },
+    {
+        ref: 'golden',
+        label: 'Bouton d\'or',
+        background: '#F38805',
+        border: '#F27300'
+    }
+];
+
+function getControls() {
+    const controls = [ DEFAULT_THEME, ...THEMES ].map(theme => {
+        return Object.assign({}, theme, {
+            event: 'click',
+            html: `
+                <button type="button" data-theme="${ theme.ref }" class="st-control-block st-btn">${ theme.label }</button>
+            `,
+            cb(e) {
+                const themeRef = e.target.dataset.theme;
+                this.setTheme(themeRef);
+                this.setData({ theme: themeRef });
+            }
+        });
+    });
+
+    return Object.assign.call({}, controls);
+}
 
 export default Block.extend({
 
-    type: 'list',
+    type: 'encard',
 
-    title: () => i18n.t('blocks:list:title'),
+    title: () => i18n.t('blocks:encard:title'),
 
-    editorHTML: `<ul class="${ CLASS_CONTAINER }"></ul>`,
+    editorHTML: `<div class="${ CLASS_CONTAINER }"></div>`,
 
-    listItemEditorHTML: '<li class="st-block--list__item"><div class="st-block--list__editor st-block__editor"></div></li>',
+    listItemEditorHTML: '<p class="st-block--encard__item st-block__editor"></p>',
 
-    'icon_name': 'List',
+    'icon_name': 'Encarded',
+
+    controllable: true,
+
+    textable: false,
+
+    toolbarEnabled: true,
+
+    formatBarEnabled: false,
 
     'multi_editable': true,
 
-    scribeOptions: {
-        allowBlockElements: false,
-        tags: {
-            p: false
-        }
-    },
+    controls: getControls.call(this),
 
     configureScribe(scribe) {
         scribe.use(new ScribeListBlockPlugin(this));
+    },
+
+    scribeOptions: {
+        allowBlockElements: false
     },
 
     initialize() {
@@ -42,14 +87,22 @@ export default Block.extend({
         this.container = this.container || this.inner.querySelector(SELECTOR_CONTAINER);
     },
 
-    loadData({ listItems = [] }) {
+    loadData({ theme = 'default', listItems = [] }) {
         this.setupContainer();
+        this.setTheme(theme);
         listItems.forEach(item => this.addListItem(item.content));
     },
 
     onBlockRender() {
         this.setupContainer();
         if (this.editorIds.length < 1) { this.addListItem(); }
+    },
+
+    setTheme(themeRef) {
+        this.themes = this.themes || [ DEFAULT_THEME, ...THEMES ];
+        const { background = '', border = '' } = this.themes.find(theme => theme.ref === themeRef) || {};
+        this.container.style.backgroundColor = background;
+        this.container.style.borderColor = border;
     },
 
     _serializeData() {
@@ -99,13 +152,12 @@ export default Block.extend({
     focusOn(editor) {
         const scribe = editor.scribe;
         const selection = new scribe.api.Selection();
-        const lastChild = scribe.el.lastChild;
         const range = selection.range ? selection.range.cloneRange() : false;
 
         editor.el.focus();
 
         if (range) {
-            range.setStartAfter(lastChild, 1);
+            range.setStartAfter(scribe.el.lastChild, 1);
             range.collapse(false);
         }
     },
@@ -156,5 +208,4 @@ export default Block.extend({
 
         return null;
     }
-
 });

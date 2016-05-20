@@ -24,8 +24,11 @@ export function get({ url, filtersUrl, accessToken, application, container, type
             { cache: CACHED }
         )
         .then(callback)
-        .then(data => fieldHelper.addNullOptionToArray(data, i18n.t('blocks:filters:defaultOption')))
-        .catch(err => console.error(err.stack));
+        .then((data = []) => fieldHelper.addNullOptionToArray(data, i18n.t('blocks:filters:defaultOption')))
+        .catch(err => {
+            console.error(err);
+            throw err;
+        });
 
     const filterConfig = getConfig({
         url: filtersUrl,

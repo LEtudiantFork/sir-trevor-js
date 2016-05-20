@@ -10,7 +10,7 @@ $input-margin: 0;
 $input-padding: 0.6em;
 $input-color: #42474b;
 $input-font-size: 0.875rem;
-$input-background: transparent;
+$input-background: rgba(255,255,255,0.7);
 $input-align: middle;
 
 // Reset all our input styles
@@ -65,7 +65,7 @@ textarea,
     margin: $input-margin;
     padding: $input-padding;
 
-    background: $input-background;
+    background-color: $input-background;
 }
 
 input[type='text'],
@@ -104,6 +104,7 @@ input[type='color']::-webkit-color-swatch {
 .st-btn {
     overflow: hidden;
 
+    border-radius: 3px;
     min-height: $input-height;
 
     font-weight: 600;

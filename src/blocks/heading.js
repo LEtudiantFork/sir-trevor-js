@@ -54,16 +54,7 @@ export default Block.extend({
             e.preventDefault();
             this.focus();
             this._scribe.commands.h3.execute();
-        },
-
-        extra: {
-            event: 'change',
-            html: '<select><option value="yep">yep</option><option value="nope">nope</option></select>',
-            cb() {
-                alert('This should be set off by the select');
-            }
         }
-        /* */
     },
 
     scribeOptions: {
@@ -73,12 +64,12 @@ export default Block.extend({
         }
     },
 
-    loadData(data) {
-        if (this.options.convertFromMarkdown && data.format !== 'html') {
-            this.setTextBlockHTML(stToHTML(data.text, this.type));
+    loadData({ text, format, cardable = false }) {
+        if (this.options.convertFromMarkdown && format !== 'html') {
+            this.setTextBlockHTML(stToHTML(text, this.type));
         }
         else {
-            this.setTextBlockHTML(data.text);
+            this.setTextBlockHTML(text);
         }
     },
 

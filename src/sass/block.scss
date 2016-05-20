@@ -35,8 +35,8 @@
     }
 }
 
-.st-block--with-plus:after,
-.st-icon--add:after {
+.st-block--with-plus::after,
+.st-icon--add::after {
     z-index: 1;
 
     display: block;
@@ -49,7 +49,7 @@
     display: none;
 }
 
-.st-icon--add:after {
+.st-icon--add::after {
     border-radius: 0.2em;
     padding: 0.3em 0;
 
@@ -58,7 +58,7 @@
     text-align: center;
 }
 
-.st-block--with-plus:after {
+.st-block--with-plus::after {
     color: $accent-color;
 
     background: $blocks-control-bg-color;
@@ -66,14 +66,14 @@
     cursor: pointer;
 }
 
-.with-st-controls:after,
-.with-st-controls:before {
+.with-st-controls::after,
+.with-st-controls::before {
     display: none;
 }
 
-.st-block.st-drag-over:after,
-.st-block.st-drag-over:last-child:after,
-.st-top-controls.st-drag-over:before {
+.st-block.st-drag-over::after,
+.st-block.st-drag-over:last-child::after,
+.st-top-controls.st-drag-over::before {
     display: block;
     width: 100%;
     height: 3px;
@@ -94,7 +94,7 @@
 
     position: absolute;
 
-    background: #fff;
+    background: $white;
     box-shadow: 3px 3px $accent-color inset, -3px -3px $accent-color inset ;
 
     .st-block-addition {
@@ -144,19 +144,7 @@
     }
 }
 
-.st-text-block {
-    overflow: auto;
-
-    font-size: $text-block-font-size;
-    line-height: 1.45;
-
-    h1,
-    h2,
-    h3,
-    p {
-        margin: 0;
-    }
-
+@mixin text-block-style-after {
     &::after {
         display: block;
         margin-top: -2px;
@@ -172,6 +160,25 @@
     }
 }
 
+@mixin text-block-style {
+    overflow: auto;
+
+    font-size: $text-block-font-size;
+    line-height: 1.45;
+}
+
+.st-text-block {
+    @include text-block-style;
+    @include text-block-style-after;
+
+    h1,
+    h2,
+    h3,
+    p {
+        margin: 0;
+    }
+}
+
 .st-text-block--heading {
     min-height: 1em;
 
@@ -180,7 +187,7 @@
 
 .st-text-block--quote {
     margin-bottom: 1rem;
-    border-left: 3px nth($input-border, 2) nth($input-border, 3);
+    border-left: solid 4px rgba(0,0,0,0.2);
     padding-left: 0.5em;
 
     font-size: 1.5em;
@@ -191,8 +198,6 @@
 }
 
 .st-block--table {
-    @include scroll-shadows-horizontal;
-
     overflow-x: auto;
 
     &::after {
@@ -210,21 +215,24 @@
     }
 }
 
-ul.st-text-block {
-    margin-left: 1.875em;
+.st-block--encard {
+    border: solid 2px rgba(0,0,0,0.2);
+
+    background: rgba(0,0,0,0.05);
 }
 
-.st-block--list__list {
+.st-block--list {
     margin: 0;
     padding-left: 1em;
-
-    font-size: $text-block-font-size;
 }
 
-.st-list-block__editor {
-    width: 100%;
+.st-block__editor {
+    @include text-block-style;
+    @include text-block-style-after;
 
-    line-height: 1.8em;
+    &.st-block--list__editor {
+        overflow: visible;
+    }
 }
 
 .st-block__inputs {

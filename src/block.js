@@ -165,13 +165,13 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
     // Add any inputs to the data attr
     var matcher = [
-      'input:not([class="st-paste-block"])',
-      'textarea:not([class="st-paste-block"])',
-      'select:not([class="st-paste-block"])',
-      'button:not([class="st-paste-block"])'
+      'input:not(.st-paste-block):not(.st-control-block)',
+      'textarea:not(.st-paste-block)',
+      'select:not(.st-paste-block)',
+      'button:not(.st-paste-block):not(.st-control-block)'
     ].join(",");
     if (this.$(matcher).length > 0) {
-      Array.prototype.forEach.call(this.$('input, textarea, select, button'), function(input) {
+      Array.prototype.forEach.call(this.$(matcher), function(input) {
         if (input.getAttribute('name')) {
           data[input.getAttribute('name')] = input.value;
         }

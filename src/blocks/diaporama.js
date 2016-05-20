@@ -1,12 +1,14 @@
 /*
     Diaporama Block
 */
-
+import xhr from 'etudiant-mod-xhr';
 import $ from 'etudiant-mod-dom';
 import CarCarousel from 'etudiant-mod-carousel';
 
 import config from '../config';
 import Block  from '../block';
+
+const API_URL = '/edt/media/';
 
 const editorHTML = `
     <div class="st-block--diaporama">
@@ -50,6 +52,10 @@ const mainSlide = image => `
     </figure>
 `;
 
+const thumbSlide = image => `
+    <img class="st-block-img" src="${ image.thumbnail }" width="80" height="80" />
+`;
+
 export default Block.extend({
 
     type: 'diaporama',
@@ -62,18 +68,28 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
-    loadData({ id, legend = '', images = [] }) {
+    loadData({ id, legend = '' }) {
         this.$('.st-block-legend')[0].innerHTML = legend;
         this.$elem = $(this.$('.st-block--diaporama')[0]);
-        this.$elem.append(carousel({
-            id,
-            slides: images.map(image => mainSlide(image))
-        }));
-        this.$elem.append(carousel({
-            parentId: id,
-            slides: images.map(image => `<img class="st-block-img" src="${ image.thumbnail }" width="80" height="80" />`)
-        }));
 
-        setTimeout(() => CarCarousel.initViaDOM(this.$elem), 10); // lory can't handle the speeeeeed
+        xhr.get(`${ this.globalConfig.apiUrl }${ API_URL }${ id }`, {
+            data: { 'access_token': this.globalConfig.accessToken }
+        })
+        .then(({ content: { images = [] } = {} }) => {
+            const mainCarousel = carousel({
+                id,
+                slides: images.map(image => mainSlide(image))
+            });
+
+            const thumbCarousel = carousel({
+                parentId: id,
+                slides: images.map(image => thumbSlide(image))
+            });
+
+            this.$elem.append(mainCarousel);
+            this.$elem.append(thumbCarousel);
+
+            setTimeout(() => CarCarousel.initViaDOM(this.$elem), 10); // lory can't handle the speeeeeed (loading images)
+        });
     }
 });

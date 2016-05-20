@@ -22,7 +22,7 @@ export default Block.extend({
 
     title: () => i18n.t('blocks:chart:title'),
 
-    editorHTML: '<div class="st-block__chart"></div>',
+    editorHTML: '<div class="st-block--chart"></div>',
 
     'icon_name': 'pie-chart',
 

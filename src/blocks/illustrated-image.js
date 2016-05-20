@@ -25,9 +25,13 @@ export default Block.extend({
 
     'icon_name': 'illustrated-value',
 
+    controllable: false,
+
     textable: false,
 
     toolbarEnabled: false,
+
+    formatBarEnabled: true,
 
     configureScribe(scribe) {
         scribe.use(new ScribeTextBlockPlugin(this));

@@ -6,13 +6,13 @@ var Dom = require('../packages/dom');
 var Events = require('../packages/events');
 
 const createControlsButton = () => {
-  return Dom.createElement("a", {
-      'class': 'st-block-ui-btn__settings',
-      'html': `<svg role="img" class="st-icon">
-                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="inc/icons.svg#icon-cog"></use>
-              </svg>`
-    });
-}
+  return Dom.createElement('a', {
+    class: 'st-block-ui-btn__settings',
+    html: `<svg role="img" class="st-icon">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="inc/icons.svg#icon-cog"></use>
+          </svg>`
+  });
+};
 
 module.exports = {
 
@@ -33,33 +33,33 @@ module.exports = {
     });
 
     Object.keys(this.controls).forEach(cmd => {
+      const command = this.controls[cmd];
 
-      if (typeof this.controls[cmd] === 'function') {
+      if (typeof command === 'function') {
         // Bind configured handler to current block context
         this.control_ui.appendChild(this.getControlTemplate(cmd, `st-icon st-block-control-ui-btn st-block-control-ui-btn--${cmd}`));
 
-        this.addUiControl(cmd, this.controls[cmd].bind(this));
+        this.addUiControl(cmd, command.bind(this));
       }
       else {
-        this.control_ui.appendChild(this.getControlTemplate(cmd, this.controls[cmd].cssClasses, this.controls[cmd].html));
+        this.control_ui.appendChild(this.getControlTemplate(cmd, command.cssClasses, command.html));
 
-        this.addUiControl(cmd, this.controls[cmd].cb.bind(this), this.controls[cmd].event)
+        this.addUiControl(cmd, command.cb.bind(this), command.event);
       }
-
     });
 
     this.inner.appendChild(this.control_ui);
   },
 
   toggleControls: function() {
-      this.control_ui.classList.toggle('hidden');
+    this.control_ui.classList.toggle('hidden');
   },
 
   getControlTemplate: function(cmd, cssClasses = 'st-block__control-ui__item', html = `<svg role="img" class="st-icon"><use xlink:href="${config.defaults.iconUrl}#icon-${cmd}"/></svg>`) {
-    return Dom.createElement("div", {
+    return Dom.createElement('div', {
       'data-st-controllable': cmd,
-      'class': cssClasses,
-      'html': html
+      class: cssClasses,
+      html: html
     });
   },
 

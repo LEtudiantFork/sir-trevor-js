@@ -34,6 +34,8 @@ export default Block.extend({
 
     title: () => i18n.t('blocks:illustrated:title'),
 
+    editorHTML: '<div class="st-block--illustrated"></div>',
+
     'icon_name': 'illustrated-value',
 
     chooseable: true,

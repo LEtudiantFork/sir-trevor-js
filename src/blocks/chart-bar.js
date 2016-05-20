@@ -13,7 +13,7 @@ export default Block.extend({
 
     title: () => 'Barres',
 
-    editorHTML: '<div class="st-block__chart"></div>',
+    editorHTML: '<div class="st-block--chart"></div>',
 
     'icon_name': 'bar-chart',
 

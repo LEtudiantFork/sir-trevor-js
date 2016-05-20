@@ -17,16 +17,16 @@ function generateBlocksHTML(Blocks, availableTypes) {
             return memo += BLOCK_REPLACER_CONTROL_TEMPLATE(Blocks[type].prototype);
         }
         return memo;
-    }, "");
+    }, '');
 }
 
 function render(Blocks, availableTypes) {
     var el = document.createElement('div');
-    el.className = "st-block-controls__buttons";
+    el.className = 'st-block-controls__buttons';
     el.innerHTML = generateBlocksHTML.apply(null, arguments);
 
     var elButtons = document.createElement('div');
-    elButtons.className = "st-block-controls";
+    elButtons.className = 'st-block-controls';
     elButtons.appendChild(el);
     return elButtons;
 }
@@ -41,7 +41,7 @@ module.exports.create = function(SirTrevor) {
         // REFACTOR: block create event expects data as second argument.
         /*jshint validthis:true */
         SirTrevor.mediator.trigger(
-            "block:replace", el.parentNode, this.dataset.type
+            'block:replace', el.parentNode, this.dataset.type
         );
     }
 
@@ -51,7 +51,7 @@ module.exports.create = function(SirTrevor) {
         var parent = this.parentNode;
         if (!parent || hide() === parent) { return; }
         parent.appendChild(el);
-        parent.classList.toggle("st-block--controls-active");
+        parent.classList.toggle('st-block--controls-active');
     }
 
     // Public
@@ -59,7 +59,7 @@ module.exports.create = function(SirTrevor) {
         var parent = el.parentNode;
         if (!parent) { return; }
         parent.removeChild(el);
-        parent.classList.remove("st-block--controls-active");
+        parent.classList.remove('st-block--controls-active');
         return parent;
     }
 
@@ -70,11 +70,11 @@ module.exports.create = function(SirTrevor) {
     }
 
     Events.delegate(
-        SirTrevor.wrapper, ".st-block-replacer", "click", insert
+        SirTrevor.wrapper, '.st-block-replacer', 'click', insert
     );
 
     Events.delegate(
-        SirTrevor.wrapper, ".st-block-controls__button", "click", replaceBlock
+        SirTrevor.wrapper, '.st-block-controls__button', 'click', replaceBlock
     );
 
     return {el, hide, destroy};

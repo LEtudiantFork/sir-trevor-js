@@ -76,11 +76,12 @@ export default {
                 .forEach(select => {
                     const $select = this.$elem.find(`select#${ select.name }`);
 
-                    select.options.then(options => {
+                    select.options.then((options = []) => {
                         const optionsTemplate = fieldHelper.buildOptions(options);
                         $select.append(optionsTemplate);
                         $select.removeAttr('disabled');
-                    });
+                    })
+                    .catch(err => console.error(err));
                 });
 
             if (before) {
