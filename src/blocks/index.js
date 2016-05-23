@@ -16,8 +16,8 @@ export { default as Encard } from './encard';
  * GROUP ILLUSTRATED
  */
 export { default as Illustrated } from './illustrated';
-export { default as IllustratedValue } from './illustrated-value';
-export { default as IllustratedImage } from './illustrated-image';
+export { default as Illustratedvalue } from './illustrated-value';
+export { default as Illustratedimage } from './illustrated-image';
 
 /**
  * GROUP MEDIA
@@ -42,7 +42,7 @@ export { default as Script } from './script';
  * GROUP CHART
  */
 export { default as Chart } from './chart';
-export { default as ChartPie } from './chart-pie';
-export { default as ChartBar } from './chart-bar';
+export { default as Chartpie } from './chart-pie';
+export { default as Chartbar } from './chart-bar';
 
 export { default as Table } from './table';

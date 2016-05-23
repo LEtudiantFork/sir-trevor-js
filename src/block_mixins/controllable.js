@@ -32,6 +32,10 @@ module.exports = {
       controlButton.addEventListener('click', () => this.toggleControls());
     });
 
+    if (typeof this.controls === 'function') {
+        this.controls = this.controls();
+    }
+
     Object.keys(this.controls).forEach(cmd => {
       const command = this.controls[cmd];
 

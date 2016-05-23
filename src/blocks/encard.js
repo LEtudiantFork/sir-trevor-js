@@ -14,39 +14,6 @@ const DEFAULT_THEME = {
     label: 'Default'
 };
 
-const THEMES = [
-    {
-        ref: 'fishy',
-        label: 'Aquarium',
-        background: '#9BD7D9',
-        border: '#165383'
-    },
-    {
-        ref: 'golden',
-        label: 'Bouton d\'or',
-        background: '#F38805',
-        border: '#F27300'
-    }
-];
-
-function getControls() {
-    const controls = [ DEFAULT_THEME, ...THEMES ].map(theme => {
-        return Object.assign({}, theme, {
-            event: 'click',
-            html: `
-                <button type="button" data-theme="${ theme.ref }" class="st-control-block st-btn">${ theme.label }</button>
-            `,
-            cb(e) {
-                const themeRef = e.target.dataset.theme;
-                this.setTheme(themeRef);
-                this.setData({ theme: themeRef });
-            }
-        });
-    });
-
-    return Object.assign.call({}, controls);
-}
-
 export default Block.extend({
 
     type: 'encard',
@@ -69,7 +36,25 @@ export default Block.extend({
 
     'multi_editable': true,
 
-    controls: getControls.call(this),
+    controls() {
+        const themes = this.globalConfig.themes || [];
+
+        this.themes = [ DEFAULT_THEME, ...themes ];
+
+        const controls = this.themes.map(theme => ({
+            event: 'click',
+            html: `
+                <button type="button" data-theme="${ theme.ref }" class="st-control-block st-btn">${ theme.label }</button>
+            `,
+            cb(e) {
+                const themeRef = e.target.dataset.theme;
+                this.setTheme(themeRef);
+                this.setData({ theme: themeRef });
+            }
+        }));
+
+        return Object.assign.call({}, controls);
+    },
 
     configureScribe(scribe) {
         scribe.use(new ScribeListBlockPlugin(this));
@@ -99,7 +84,6 @@ export default Block.extend({
     },
 
     setTheme(themeRef) {
-        this.themes = this.themes || [ DEFAULT_THEME, ...THEMES ];
         const { background = '', border = '' } = this.themes.find(theme => theme.ref === themeRef) || {};
         this.container.style.backgroundColor = background;
         this.container.style.borderColor = border;

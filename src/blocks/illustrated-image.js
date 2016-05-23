@@ -17,7 +17,7 @@ const editorHTML = `
 
 export default Block.extend({
 
-    type: 'illustrated_image',
+    type: 'illustratedimage',
 
     title: () => i18n.t('blocks:illustratedImage:title'),
 

@@ -19,7 +19,7 @@ const editorHTML = `
 
 export default Block.extend({
 
-    type: 'illustrated_value',
+    type: 'illustratedvalue',
 
     title: () => i18n.t('blocks:illustratedValue:title'),
 
