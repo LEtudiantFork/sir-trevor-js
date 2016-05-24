@@ -13,23 +13,6 @@ $input-font-size: 0.875rem;
 $input-background: rgba(255,255,255,0.7);
 $input-align: middle;
 
-// Reset all our input styles
-.st-input-label {
-    display: block;
-    margin-bottom: 0.5em;
-
-    font-size: 13px;
-    text-transform: uppercase;
-}
-
-// Focus / Active styles
-@mixin st-input-active {
-    &:active,
-    &:focus {
-        outline: none;
-        border-color: $input-border-color--active;
-    }
-}
 
 // Generic styles
 @mixin st-input {
@@ -42,6 +25,26 @@ $input-align: middle;
     font-size: $input-font-size;
 
     vertical-align: $input-align;
+}
+
+// Focus / Active styles
+@mixin st-input-active {
+    transition: all 200ms ease;
+
+    &:active,
+    &:focus {
+        outline: none;
+        border-color: $input-border-color--active;
+    }
+}
+
+// Reset all our input styles
+.st-input-label {
+    display: block;
+    margin-bottom: 0.5em;
+
+    font-size: 13px;
+    text-transform: uppercase;
 }
 
 [contenteditable='true'] {
@@ -58,8 +61,7 @@ input[type='number'],
 input[type='search'],
 input[type='color'],
 select,
-textarea,
-.st-btn {
+textarea {
     @include st-input;
 
     margin: $input-margin;
@@ -102,14 +104,20 @@ input[type='color']::-webkit-color-swatch {
 }
 
 .st-btn {
+    @include st-input;
+
     overflow: hidden;
 
+    margin: $input-margin;
     border-radius: 3px;
+    padding: $input-padding;
     min-height: $input-height;
 
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    background: $blocks-control-border-color;
 
     cursor: pointer;
 

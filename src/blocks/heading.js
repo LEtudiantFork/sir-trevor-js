@@ -3,7 +3,6 @@
 */
 
 import Block from '../block';
-import stToHTML from '../to-html';
 
 import scribeBuild from '../scribe.build';
 import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
@@ -64,13 +63,8 @@ export default Block.extend({
         }
     },
 
-    loadData({ text, format, cardable = false }) {
-        if (this.options.convertFromMarkdown && format !== 'html') {
-            this.setTextBlockHTML(stToHTML(text, this.type));
-        }
-        else {
-            this.setTextBlockHTML(text);
-        }
+    loadData({ text }) {
+        this.setTextBlockHTML(text);
     },
 
     onBlockRender() {

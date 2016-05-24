@@ -3,7 +3,6 @@
 */
 
 import Block from '../block';
-import stToHTML from '../to-html';
 
 import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
@@ -42,13 +41,8 @@ export default Block.extend({
         }
     },
 
-    loadData({ text, format }) {
-        if (this.options.convertFromMarkdown && format !== 'html') {
-            this.setTextBlockHTML(stToHTML(text, this.type));
-        }
-        else {
-            this.setTextBlockHTML(text);
-        }
+    loadData({ text }) {
+        this.setTextBlockHTML(text);
     },
 
     onBlockRender() {

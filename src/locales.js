@@ -106,6 +106,7 @@ var Locales = {
                 unsetTHEAD: 'Retirer THEAD',
                 setTFOOT: 'Mettre TFOOT',
                 unsetTFOOT: 'Retirer TFOOT',
+                importXLS: 'Importer un tableau excel',
                 pasteXLS: 'Coller le excel'
             },
             table1D: {

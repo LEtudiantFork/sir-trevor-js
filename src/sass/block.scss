@@ -381,19 +381,6 @@
     display: flex;
 }
 
-.st-illustrated-icon {
-    margin: 5px;
-
-    font-size: 5rem;
-
-    cursor: pointer;
-}
-
-.st-illustrated-icon img {
-    display: block;
-    width: 1em;
-}
-
 .st-block-link {
     display: block;
     width: 1em;
@@ -416,21 +403,6 @@
     }
 }
 
-.st-block--image img {
-    max-width: 100%;
-}
-
 .st-block--iframe iframe {
     width: 100%;
-}
-
-.c-carousel__slide {
-    display: flex;
-
-    align-items: flex-end;
-
-    .st-block-img {
-        width: 100%;
-        height: auto;
-    }
 }

@@ -12,7 +12,7 @@ import { DEFAULT_DATA, getHandsontable } from './handsontable';
 const editorHTML = `
     <div class="st-block--handsontable">
         <div class="st-actions">
-            <button type="button" class="import-xls st-btn">Import Excel</button>
+            <button type="button" class="import-xls st-btn">${ i18n.t('blocks:table:importXLS') }</button>
         </div>
         <div class="handsontable-container"></div>
         <div class="st-helper">

@@ -6,7 +6,7 @@ import Modal       from 'etudiant-mod-modal';
 
 const template = `
 <div class="hot-import-xls">
-    <textarea class="st-xls-field"></textarea>
+    <textarea class="st-xls-field" placeholder="${ i18n.t('blocks:table:pasteXLS') }"></textarea>
 </div>
 `;
 
@@ -28,7 +28,7 @@ function constructor() {
     });
 
     this.modal.render({
-        header: i18n.t('blocks:table:pasteXLS'),
+        header: i18n.t('blocks:table:importXLS'),
         content: '',
         footer: {
             ok: 'Valider'

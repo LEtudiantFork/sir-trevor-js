@@ -84,9 +84,8 @@ export default Block.extend({
     },
 
     setTheme(themeRef) {
-        const { background = '', border = '' } = this.themes.find(theme => theme.ref === themeRef) || {};
-        this.container.style.backgroundColor = background;
-        this.container.style.borderColor = border;
+        const { style } = this.themes.find(theme => theme.ref === themeRef) || {};
+        this.container.style = style;
     },
 
     _serializeData() {
