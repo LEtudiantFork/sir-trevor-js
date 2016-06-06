@@ -37,21 +37,21 @@ export default Block.extend({
     'multi_editable': true,
 
     controls() {
-        const themes = this.globalConfig.themes || [];
+        const themes = this.globalConfig.themesEncard || [];
 
         this.themes = [ DEFAULT_THEME, ...themes ];
 
-        const controls = this.themes.map(theme => ({
-            event: 'click',
-            html: `
-                <button type="button" data-theme="${ theme.ref }" class="st-control-block st-btn">${ theme.label }</button>
-            `,
-            cb(e) {
-                const themeRef = e.target.dataset.theme;
-                this.setTheme(themeRef);
-                this.setData({ theme: themeRef });
-            }
-        }));
+        const controls = this.themes.map(theme => {
+            return {
+                event: 'click',
+                html: `<button type="button" data-theme="${ theme.ref }" class="st-control-block st-btn">${ theme.label }</button>`,
+                cb(e) {
+                    const themeRef = e.target.dataset.theme;
+                    this.setTheme(themeRef);
+                    this.setData({ theme: themeRef });
+                }
+            };
+        });
 
         return Object.assign.call({}, controls);
     },

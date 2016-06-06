@@ -6,7 +6,7 @@ import Block  from '../block';
 
 const editorHTML = `
     <div class="st-block--script">
-        <textarea name="script"></textarea>
+        <textarea class="st-textarea" name="script"></textarea>
     </div>
 `;
 

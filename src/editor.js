@@ -20,6 +20,7 @@ var BlockControls = require('./block-controls');
 var BlockAddition = require('./block-addition');
 var BlockAdditionTop = require('./block-addition-top');
 var BlockManager = require('./block-manager');
+var ImportMarkdown = require('./import-markdown');
 var FormatBar = require('./format-bar');
 var EditorStore = require('./extensions/editor-store');
 var ErrorHandler = require('./error-handler');
@@ -80,6 +81,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     this.blockAddition = BlockAddition.create(this);
     this.BlockAdditionTop = BlockAdditionTop.create(this);
     this.blockControls = BlockControls.create(this);
+    this.importMarkdown = ImportMarkdown.create(this);
 
     this.formatBar = new FormatBar(this.options.formatBar, this.mediator, this);
 
@@ -192,6 +194,10 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
   },
 
   validateAndSaveBlock: function(block, shouldValidate) {
+    if (block.chooseable) { // should not save a choosable
+      return;
+    }
+
     if ((!config.skipValidation || shouldValidate) && !block.valid()) {
       this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
       utils.log("Block " + block.blockID + " failed validation");

@@ -1,6 +1,7 @@
 /*
     Illustrated Block
 */
+import xhr from 'etudiant-mod-xhr';
 
 import Block from '../block';
 import IconPicker from '../helpers/mediapicker.class';
@@ -8,9 +9,11 @@ import IconPicker from '../helpers/mediapicker.class';
 import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
 
+const API_URL = '/edt/media/';
+
 const editorHTML = `
     <div class="st-block--illustated">
-        <img class="st-block-img st-utils__v-middle" src="" width="100" height="100" />
+        <img class="st-block-img st-utils__v-middle" src="" />
         <div class="st-text-block" contenteditable="true"></div>
     </div>
 `;
@@ -45,10 +48,10 @@ export default Block.extend({
         }
     },
 
-    loadData({ text = '', media: { thumbnail = '' } = {}, position = 'left' }) {
+    loadData({ text = '', media, position = 'left' }) {
         this.setTextBlockHTML(text);
-        this.$('img.st-block-img')[0].src = thumbnail;
         this.$('img.st-block-img')[0].classList.add(position);
+        this.setImage(media);
     },
 
     onBlockRender() {
@@ -76,9 +79,18 @@ export default Block.extend({
         });
     },
 
-    addMedia(media) {
-        this.setData({ media });
-        this.$('img.st-block-img')[0].src = media.thumbnail;
+    addMedia({ id }) {
+        xhr.get(`${ this.globalConfig.apiUrl }${ API_URL }${ id }`, {
+            data: { 'access_token': this.globalConfig.accessToken }
+        })
+        .then(({ content: media }) => {
+            this.setData({ media });
+            this.setImage(media);
+        });
+    },
+
+    setImage({ formats, thumbnail }) {
+        this.$('img.st-block-img')[0].src = formats[this.globalConfig.formatImage] || thumbnail;
     },
 
     isEmpty() {

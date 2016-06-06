@@ -1,9 +1,3 @@
-export const MARKED_PARAMS = {
-    gfm: true,
-    tables: false,
-    smartLists: false
-};
-
 export const DEFAULT_TABLE = [
     [ '', 'Header 1', 'Header 2' ],
     [ 'Row 1', 'Data 1:1', 'Data 2:1' ],

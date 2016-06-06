@@ -3,6 +3,7 @@
 */
 
 import Block from '../block';
+import stToHTML from '../to-html';
 
 import ScribeListBlockPlugin from './scribe-plugins/scribe-list-block-plugin';
 
@@ -42,9 +43,19 @@ export default Block.extend({
         this.container = this.container || this.inner.querySelector(SELECTOR_CONTAINER);
     },
 
-    loadData({ listItems = [] }) {
+    loadData({ listItems = [], text = '', format = '' }) {
         this.setupContainer();
-        listItems.forEach(item => this.addListItem(item.content));
+
+        const list = format === 'html' ? listItems : this.parseFromMarkdown(text);
+
+        list.forEach(item => this.addListItem(item.content));
+    },
+
+    parseFromMarkdown(markdown) {
+        return markdown
+            .replace(/^ - (.+)$/mg, '$1').split('\n')
+            .filter(item => item.length)
+            .map(item => ({ content: stToHTML(item, this.type) }));
     },
 
     onBlockRender() {
