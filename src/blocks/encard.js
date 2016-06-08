@@ -3,6 +3,7 @@
 */
 
 import Block from '../block';
+import utils from '../utils';
 
 import ScribeListBlockPlugin from './scribe-plugins/scribe-list-block-plugin';
 
@@ -89,6 +90,8 @@ export default Block.extend({
     },
 
     _serializeData() {
+        utils.log(`toData for ${this.blockID}`);
+
         return {
             listItems: this.editorIds.map(editorId => {
                 const content = this.getTextEditor(editorId).scribe.getContent();

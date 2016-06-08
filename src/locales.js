@@ -147,6 +147,10 @@ var Locales = {
             },
             script: {
                 title: 'Script'
+            },
+            markdown: {
+                placeholder: 'Rediger / Coller le markdown ici',
+                button: 'Importer le markdown'
             }
         }
     }

@@ -114,6 +114,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     } else if (this.options.defaultType !== false) {
       this.mediator.trigger('block:create', this.options.defaultType, {});
     }
+    this.blockManager.triggerBlockCountUpdate();
   },
 
   destroy: function() {

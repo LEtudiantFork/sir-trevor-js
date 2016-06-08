@@ -62,6 +62,7 @@ module.exports = {
     },
 
     _serializeData: function() {},
+
     loadData: function() {},
 
     beforeLoadingData: function() {

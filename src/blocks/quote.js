@@ -3,7 +3,7 @@
 */
 
 import Block from '../block';
-import stToHTML from '../to-html';
+import { QUOTE } from '../helpers/import-marker/variables';
 
 import ScribeQuotePlugin from './scribe-plugins/scribe-quote-plugin';
 
@@ -35,8 +35,13 @@ export default Block.extend({
         scribe.use(new ScribeQuotePlugin(this));
     },
 
-    loadData({ text, cite = '', format = '' }) {
-        this.setTextBlockHTML(format === 'html' ? text : stToHTML(text, this.type));
+    loadData({ text, cite = '' }) {
+        const parsedText = this.parseFromMk(text);
+        this.setTextBlockHTML(parsedText);
         this.$('input[name="cite"]')[0].value = cite;
+    },
+
+    parseFromMk(markdown) {
+        return markdown.replace(QUOTE, '');
     }
 });

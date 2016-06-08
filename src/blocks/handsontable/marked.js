@@ -1,7 +1,6 @@
 import Marked from 'marked';
 
-function noop() {}
-noop.exec = noop;
+import { noop } from '../../helpers/import-marker/variables';
 
 /**
  * Bypass Lexer's rules for Marked, that way markdown specific block are avoided

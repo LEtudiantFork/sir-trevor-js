@@ -3,7 +3,8 @@
 */
 
 import Block from '../block';
-import stToHTML from '../to-html';
+import utils from '../utils';
+import { LIST_ITEM } from '../helpers/import-marker/variables';
 
 import ScribeListBlockPlugin from './scribe-plugins/scribe-list-block-plugin';
 
@@ -43,19 +44,21 @@ export default Block.extend({
         this.container = this.container || this.inner.querySelector(SELECTOR_CONTAINER);
     },
 
-    loadData({ listItems = [], text = '', format = '' }) {
+    loadData({ listItems = [] }) {
         this.setupContainer();
 
-        const list = format === 'html' ? listItems : this.parseFromMarkdown(text);
-
-        list.forEach(item => this.addListItem(item.content));
+        const list = this.parseFromMk(listItems);
+        list.forEach(({ content }) => this.addListItem(content));
     },
 
-    parseFromMarkdown(markdown) {
+    parseFromMk(markdown) {
+        if (Array.isArray(markdown)) {
+            return markdown;
+        }
         return markdown
-            .replace(/^ - (.+)$/mg, '$1').split('\n')
-            .filter(item => item.length)
-            .map(item => ({ content: stToHTML(item, this.type) }));
+            .split(LIST_ITEM)
+            .filter(item => item.trim())
+            .map(content => ({ content }));
     },
 
     onBlockRender() {
@@ -64,6 +67,8 @@ export default Block.extend({
     },
 
     _serializeData() {
+        utils.log(`toData for ${this.blockID}`);
+
         return {
             listItems: this.editorIds.map(editorId => {
                 const content = this.getTextEditor(editorId).scribe.getContent();

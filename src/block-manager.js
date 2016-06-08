@@ -9,7 +9,7 @@ var Blocks = require('./blocks');
 
 var Dom = require("./packages/dom");
 
-const BLOCK_OPTION_KEYS = 
+const BLOCK_OPTION_KEYS =
   ['convertToMarkdown', 'convertFromMarkdown', 'formatBar'];
 
 var BlockManager = function(SirTrevor) {
@@ -81,7 +81,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     var type = utils.classify(block.type);
     var previousBlock = this.getPreviousBlock(block);
     var nextBlock = this.getNextBlock(block);
-    
+
     if (options.transposeContent && block.textable) {
 
       // Don't allow removal of first block if it's the only block.
@@ -94,7 +94,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
           keepCaretPosition: true
         });
       } else {
-        // If there's content and the block above isn't textable then 
+        // If there's content and the block above isn't textable then
         // cancel remove.
         if (block.getScribeInnerContent() !== '') {
           return;
@@ -104,13 +104,13 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
         if (previousBlock) {
           previousBlock.focusAtEnd();
         } else if (nextBlock) {
-          // If there wasn't a previous block then 
+          // If there wasn't a previous block then
           // we'll want to focus on the next block.
           nextBlock.focus();
         }
       }
     }
-    
+
     this.mediator.trigger('block-controls:reset');
     this.blocks = this.blocks.filter(function(item) {
       return (item.blockID !== block.blockID);
@@ -137,7 +137,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
   },
 
   renderBlock: function(block, previousSibling) {
-    // REFACTOR: this will have to do until we're able to address 
+    // REFACTOR: this will have to do until we're able to address
     // the block manager
     if (previousSibling) {
       Dom.insertAfter(block.render().el, previousSibling);
@@ -178,7 +178,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   focusPreviousBlock: function(blockID) {
     var block = this.findBlockById(blockID);
-    
+
     if (block.textable) {
       var previousBlock = this.getPreviousBlock(block);
 
@@ -190,7 +190,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
 
   focusNextBlock: function(blockID) {
     var block = this.findBlockById(blockID);
-    
+
     if (block && block.textable) {
       var nextBlock = this.getNextBlock(block);
 

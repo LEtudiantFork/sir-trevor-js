@@ -69,6 +69,7 @@ export default Block.extend({
         if (this.handsontable) {
             return;
         }
+
         this.handsontable = getHandsontable(this.$('.handsontable-container')[0], table, mergeCells, thCells, theadActive, tfootActive);
 
         this.xlsImport = Xls.create();
