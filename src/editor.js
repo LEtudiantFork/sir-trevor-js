@@ -201,7 +201,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     if ((!config.skipValidation || shouldValidate) && !block.valid()) {
       this.mediator.trigger('errors:add', { text: _.result(block, 'validationFailMsg') });
-      utils.log("Block " + block.blockID + " failed validation");
+      utils.log(`Block %c${ block.blockID }`, utils.logBold, "%cfailed validation", utils.logDefault);
       return;
     }
 
@@ -210,7 +210,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     }
 
     var blockData = block.getData();
-    utils.log("Adding data for block " + block.blockID + " to block store:",
+    utils.log(`Adding data for block %c${ block.blockID }%c to block store:`, utils.logBold, utils.logDefault,
               blockData);
     this.store.addData(blockData);
   },
@@ -223,7 +223,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     // if undefined or null or anything other than false - treat as true
     shouldValidate = (shouldValidate === false) ? false : true;
 
-    utils.log("Handling form submission for Editor " + this.ID);
+    utils.log(`Handling form submission for Editor %c${ this.ID }`, utils.logBold);
 
     this.mediator.trigger('errors:reset');
     this.store.reset();

@@ -41,7 +41,7 @@ export default Block.extend({
     formatBarEnabled: false,
 
     _serializeData() {
-        utils.log(`toData for ${this.blockID}`);
+        utils.log(`toData for %c${this.blockID}`, utils.logBold);
 
         if (this.handsontable) {
             const table = this.handsontable.getData();

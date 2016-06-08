@@ -34,11 +34,15 @@ var utils = {
         );
     },
 
-    log: function() {
+    log: function(...args) {
         if (!_.isUndefined(console) && config.debug) {
-            console.log.apply(console, arguments);
+            console.log(...args);
         }
     },
+
+    logBold: 'font-weight: 900;',
+
+    logDefault: '',
 
     isURI : function(string) {
         return (urlRegex.test(string));

@@ -52,7 +52,7 @@ module.exports = {
      * This is used by the save() method.
      */
     setData: function(blockData) {
-        utils.log("Setting data for block " + this.blockID);
+        utils.log(`Setting data for block %c${ this.blockID }`, utils.logBold);
         Object.assign(this.blockStorage.data, blockData || {});
     },
 
@@ -66,7 +66,7 @@ module.exports = {
     loadData: function() {},
 
     beforeLoadingData: function() {
-        utils.log("loadData for " + this.blockID);
+        utils.log(`loadData for %c${ this.blockID }`, utils.logBold);
         EventBus.trigger("editor/block/loadData");
         this.loadData(this._getData());
     },

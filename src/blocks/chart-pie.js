@@ -25,7 +25,7 @@ export default Block.extend({
     },
 
     _serializeData() {
-        utils.log(`toData for ${this.blockID}`);
+        utils.log(`toData for %c${this.blockID}`, utils.logBold);
 
         if (this.chart) {
             return this.chart.getData();

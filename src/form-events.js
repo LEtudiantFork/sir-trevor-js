@@ -27,7 +27,7 @@ var FormEvents = {
         config.instances.forEach(function(inst, i) {
             errors += inst.onFormSubmit(shouldValidate);
         });
-        utils.log("Total errors: " + errors);
+        utils.log(`Total errors: %c${ errors }`, utils.logBold);
 
         return errors;
     },

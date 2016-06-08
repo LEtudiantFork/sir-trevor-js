@@ -68,7 +68,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.mediator.trigger('block:limitReached', this.blockLimitReached());
 
     EventBus.trigger(data ? "block:create:existing" : "block:create:new", block);
-    utils.log("Block created of type " + type);
+    utils.log(`Block created of type %c${ type }`, utils.logBold);
   },
 
   removeBlock: function(blockID, options) {
@@ -211,13 +211,13 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     }
 
     if (!this.isBlockTypeAvailable(type)) {
-      utils.log("Block type not available " + type);
+      utils.log(`Block type not available %c${ type }`, utils.logBold);
       return false;
     }
 
     // Can we have another one of these blocks?
     if (!this.canAddBlockType(type)) {
-      utils.log("Block Limit reached for type " + type);
+      utils.log(`Block Limit reached for type %c${ type }`, utils.logBold);
       return false;
     }
 
@@ -231,7 +231,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
       if (!this.isBlockTypeAvailable(type)) { return; }
 
       if (this._getBlockTypeCount(type) === 0) {
-        utils.log("Failed validation on required block type " + type);
+        utils.log(`Failed validation on required block type %c${ type }`, utils.logBold);
         this.mediator.trigger('errors:add',
                               { text: i18n.t("errors:type_missing", { type: type }) });
 
@@ -246,7 +246,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
           text: i18n.t("errors:required_type_empty", {type: type})
         });
 
-        utils.log("A required block type " + type + " is empty");
+        utils.log(`A required block type %c${ type }%c is empty`, utils.logBold, utils.logDefault);
       }
     }, this);
   },

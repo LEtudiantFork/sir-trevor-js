@@ -67,7 +67,7 @@ export default Block.extend({
     },
 
     _serializeData() {
-        utils.log(`toData for ${this.blockID}`);
+        utils.log(`toData for %c${this.blockID}`, utils.logBold);
 
         return {
             listItems: this.editorIds.map(editorId => {
