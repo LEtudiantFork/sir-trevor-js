@@ -6,32 +6,30 @@ import Icon        from './icon.class.js';
 import $           from 'etudiant-mod-dom';
 import Modal       from 'etudiant-mod-modal';
 
-const MOCK = {
-    content: [
-        {
-            src: 'inc/icons/bullhorn.svg',
-            name: 'bullhorn'
-        },
-        {
-            src: 'inc/icons/camera.svg',
-            name: 'camera'
-        },
-        {
-            src: 'inc/icons/headphones.svg',
-            name: 'headphones'
-        },
-        {
-            src: 'inc/icons/pacman.svg',
-            name: 'pacman'
-        },
-        {
-            src: 'inc/icons/video-camera.svg',
-            name: 'video-camera'
-        }
-    ]
-};
+const MOCK = [
+    {
+        src: 'inc/icons/bullhorn.svg',
+        name: 'bullhorn'
+    },
+    {
+        src: 'inc/icons/camera.svg',
+        name: 'camera'
+    },
+    {
+        src: 'inc/icons/headphones.svg',
+        name: 'headphones'
+    },
+    {
+        src: 'inc/icons/pacman.svg',
+        name: 'pacman'
+    },
+    {
+        src: 'inc/icons/video-camera.svg',
+        name: 'video-camera'
+    }
+];
 
-function constructor(iconsData = MOCK.content) {
+function constructor(iconsData = MOCK) {
     this.$elem = $('<div class="st-icon-picker-container"></div>');
 
     this.icons = iconsData.map(iconDataItem => {

@@ -59,7 +59,7 @@ export default Block.extend({
 
         this.setColor();
 
-        this.iconPicker = IconPicker.create();
+        this.iconPicker = IconPicker.create(this.globalConfig.illustratedIcons);
         this.iconPicker.on('selected', icon => this.setIcon(icon));
 
         this.$('input[name="color"]')[0].addEventListener('input', () => this.setColor());
