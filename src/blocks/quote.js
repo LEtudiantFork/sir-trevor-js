@@ -8,9 +8,9 @@ import { QUOTE } from '../helpers/import-marker/variables';
 import ScribeQuotePlugin from './scribe-plugins/scribe-quote-plugin';
 
 const editorHTML = `
-    <blockquote class="st-required st-text-block st-text-block--quote" contenteditable="true"></blockquote>
-    <label class="st-input-label"> ${ i18n.t('blocks:quote:credit_field') }</label>
-    <input class="st-input-string" maxlength="140" name="cite" placeholder="${ i18n.t('blocks:quote:credit_field') }" type="text" />
+    <blockquote class="st-required st-text-block st-text-block--quote" contenteditable="true">
+        Si vis pacem para bellum. Si vis pacem para bellum. Si vis pacem para bellum. Si vis pacem para bellum. Si vis pacem para bellum.
+    </blockquote>
 `;
 
 export default Block.extend({
@@ -35,10 +35,9 @@ export default Block.extend({
         scribe.use(new ScribeQuotePlugin(this));
     },
 
-    loadData({ text, cite = '' }) {
+    loadData({ text }) {
         const parsedText = this.parseFromMk(text);
         this.setTextBlockHTML(parsedText);
-        this.$('input[name="cite"]')[0].value = cite;
     },
 
     parseFromMk(markdown) {
