@@ -19,9 +19,11 @@ export default Block.extend({
 
     type: 'encard',
 
+    themeClass: `${CLASS_CONTAINER}--${DEFAULT_THEME.ref}`,
+
     title: () => i18n.t('blocks:encard:title'),
 
-    editorHTML: `<div class="${ CLASS_CONTAINER }"></div>`,
+    editorHTML: `<div class="${ CLASS_CONTAINER } ${CLASS_CONTAINER}--${DEFAULT_THEME.ref}"></div>`,
 
     listItemEditorHTML: '<p class="st-block--encard__item st-block__editor"></p>',
 
@@ -86,7 +88,13 @@ export default Block.extend({
 
     setTheme(themeRef) {
         const { style } = this.themes.find(theme => theme.ref === themeRef) || {};
-        this.container.style = style;
+        if (style) {
+            this.container.style = style;
+        }
+
+        this.container.classList.remove(this.themeClass);
+        this.themeClass = `${CLASS_CONTAINER}--${themeRef}`;
+        this.container.classList.add(this.themeClass);
     },
 
     _serializeData() {
