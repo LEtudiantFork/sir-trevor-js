@@ -1,11 +1,11 @@
-function getTemplate(name, src = 'http://placehold.it/100x100') {
-    return `<div class="st-illustrated-icon" data-icon-name="${ name }"><img src="${ src }" /></div>`;
-}
-
-function constructor({ name, src }) {
-    this.name = name;
-    this.src = src;
-    this.$elem = getTemplate(this.name, this.src);
+function constructor(iconSlug) {
+    this.$elem = `
+        <div class="st-illustrated-icon" data-icon-name="${ iconSlug }">
+            <svg class="c-icon-svg">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-${iconSlug}"></use>
+            </svg>
+        </div>
+    `;
 }
 
 export default {

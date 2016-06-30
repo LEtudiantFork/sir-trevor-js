@@ -36,7 +36,7 @@ var utils = {
 
     log: function(...args) {
         if (!_.isUndefined(console) && config.debug) {
-            console.log(...args);
+            // console.log(...args);
         }
     },
 

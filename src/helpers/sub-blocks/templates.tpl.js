@@ -16,8 +16,9 @@ export const image = `
     <figure class="st-sub-block-image">
         <img src="<%= data.thumbnail %>" />
     </figure>
-    <h3><%= data.legend %></h3>
-    <a class="st-sub-block-link" href="<%= data.file %>" target="_blank">${iconLink}</a>
+    <a class="st-sub-block-link" href="<%= data.file %>" target="_blank">
+        <svg role="img" class="st-icon"><use xlink:href="#icon-portrait"/></svg>
+    </a>
 `;
 
 export const quiz = `

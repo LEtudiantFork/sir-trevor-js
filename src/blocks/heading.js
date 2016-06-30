@@ -36,24 +36,22 @@ export default Block.extend({
         scribe.on('content-changed', () => this.toggleEmptyClass());
     },
 
-    controls: {
-        heading1(e) {
-            e.preventDefault();
-            this.focus();
-            this._scribe.commands.h1.execute();
-        },
+    controls() {
+        this.headings = [ 'h1', 'h2', 'h3' ];
 
-        heading2(e) {
-            e.preventDefault();
-            this.focus();
-            this._scribe.commands.h2.execute();
-        },
+        const controls = this.headings.map(heading => {
+            return {
+                event: 'click',
+                html: `<button type="button" class="st-control-block st-btn">${ heading }</button>`,
+                cb(e) {
+                    e.preventDefault();
+                    this.focus();
+                    this._scribe.commands[heading].execute();
+                }
+            };
+        });
 
-        heading3(e) {
-            e.preventDefault();
-            this.focus();
-            this._scribe.commands.h3.execute();
-        }
+        return Object.assign.call({}, controls);
     },
 
     scribeOptions: {

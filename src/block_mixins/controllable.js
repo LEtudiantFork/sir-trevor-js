@@ -1,16 +1,16 @@
 'use strict';
 
 var utils = require('../utils');
-var config = require('../config');
 var Dom = require('../packages/dom');
 var Events = require('../packages/events');
 
 const createControlsButton = () => {
   return Dom.createElement('a', {
     class: 'st-block-ui-btn__settings',
-    html: `<svg role="img" class="st-icon">
-            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="inc/icons.svg#icon-cog"></use>
-          </svg>`
+    html: `
+        <svg role="img" class="st-icon">
+            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-technologies"></use>
+        </svg>`
   });
 };
 
@@ -59,7 +59,7 @@ module.exports = {
     this.control_ui.classList.toggle('hidden');
   },
 
-  getControlTemplate: function(cmd, cssClasses = 'st-block__control-ui__item', html = `<svg role="img" class="st-icon"><use xlink:href="${config.defaults.iconUrl}#icon-${cmd}"/></svg>`) {
+  getControlTemplate: function(cmd, cssClasses = 'st-block__control-ui__item', html = `<svg role="img" class="st-icon"><use xlink:href="#icon-${cmd}"/></svg>`) {
     return Dom.createElement('div', {
       'data-st-controllable': cmd,
       class: cssClasses,

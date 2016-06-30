@@ -3,7 +3,7 @@
 var drop_options = {
     html: `
         <div class="st-block__dropzone">
-            <svg role="img" class="st-icon"><use xlink:href="<%= config.defaults.iconUrl %>#icon-<%= _.result(block, "icon_name") %>"/></svg>
+            <svg role="img" class="st-icon"><use xlink:href="#icon-<%= _.result(block, "icon_name") %>"/></svg>
             <p><%= i18n.t("general:drop", { block: "<span>" + _.result(block, "title") + "</span>" }) %>
             </p>
         </div>
@@ -22,8 +22,8 @@ var paste_options = {
 var upload_options = {
     html: `
         <div class="st-block__upload-container">
-        <input type="file" type="st-file-upload">
-        <button class="st-upload-btn"><%= i18n.t("general:upload") %></button>
+            <input type="file" type="st-file-upload">
+            <button class="st-upload-btn"><%= i18n.t("general:upload") %></button>
         </div>
     `
 };

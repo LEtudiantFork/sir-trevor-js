@@ -1,58 +1,46 @@
 import eventablejs from 'eventablejs';
 import randomID from 'random-id';
 
-import Icon        from './icon.class.js';
+import Icon    from './icon.class.js';
 
-import $           from 'etudiant-mod-dom';
-import Modal       from 'etudiant-mod-modal';
+import $       from 'etudiant-mod-dom';
+import Modal   from 'etudiant-mod-modal';
+import IcoIcon from 'etudiant-mod-icon';
 
-const MOCK = [
-    {
-        src: 'inc/icons/bullhorn.svg',
-        name: 'bullhorn'
-    },
-    {
-        src: 'inc/icons/camera.svg',
-        name: 'camera'
-    },
-    {
-        src: 'inc/icons/headphones.svg',
-        name: 'headphones'
-    },
-    {
-        src: 'inc/icons/pacman.svg',
-        name: 'pacman'
-    },
-    {
-        src: 'inc/icons/video-camera.svg',
-        name: 'video-camera'
-    }
-];
+const attrIcon = 'data-icon-name';
 
-function constructor(iconsData = MOCK) {
+function constructor() {
     this.$elem = $('<div class="st-icon-picker-container"></div>');
 
-    this.icons = iconsData.map(iconDataItem => {
-        const icon = Icon.create(iconDataItem);
-        this.$elem.append(icon.$elem);
+    IcoIcon.getSprite()
+    .then((spriteStr) => {
+        var rx = /symbol id="icon-(.*)" viewBox/gim;
 
-        return icon;
+        var icons = '';
+        var match;
+        while (match = rx.exec(spriteStr)){
+            const icon = Icon.create(match[1]);
+
+            icons += icon.$elem;
+        }
+
+        this.$elem.append(icons);
+
+        this.$elem.on('click', `[${attrIcon}]`, (e) => {
+            this.trigger('selected', $(e.currentTarget).attr(attrIcon));
+        });
     });
-
-    this.$elem.on('click', 'div.st-illustrated-icon', e => this.select(e.currentTarget.dataset.iconName));
 
     this.modal = Modal.create({
         slug: randomID(),
         animation: 'fade',
-        theme: 'pandora'
+        theme: 'pandora',
+        cssClasses: 'st-icon-picker-modal'
     });
 
     this.modal.render({
-        header: i18n.t('blocks:illustrated:pickIcon'),
-        content: '',
-        footer: {
-            ok: 'OK'
-        }
+        header: 'Choisissez un icône',
+        content: ''
     });
 
     this.modal.appendToContentArea(this.$elem);
@@ -80,14 +68,6 @@ export default {
             this.$elem.remove();
             this.$elem = null;
             this.modal.destroy();
-        },
-
-        select(name) {
-            this.trigger('selected', this.getIconById(name));
-        },
-
-        getIconById(name) {
-            return this.icons.filter(icon => icon.name.toString() === name.toString())[0];
         }
     }
 };

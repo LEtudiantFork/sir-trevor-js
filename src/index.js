@@ -1,9 +1,12 @@
-'use strict';
-
 // ES6/ES7 shims
 require('core-js/library/fn/array/includes');
 require('core-js/library/fn/array/find');
 require('core-js/library/es6/promise');
+
+import frontConf from '../front-conf.json';
+import CnfConf from 'etudiant-mod-conf';
+
+CnfConf.init(frontConf);
 
 var utils = require('./utils');
 

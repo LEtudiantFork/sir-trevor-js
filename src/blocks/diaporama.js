@@ -5,7 +5,6 @@ import xhr from 'etudiant-mod-xhr';
 import $ from 'etudiant-mod-dom';
 import CarCarousel from 'etudiant-mod-carousel';
 
-import config from '../config';
 import Block  from '../block';
 
 const API_URL = '/edt/media/';
@@ -33,10 +32,10 @@ const carousel = data => `
             </div>
         </div>
         <span class="c-carousel__nav c-carousel__nav--prev">
-            <svg class="st-icon c-icon-svg"><use xlink:href="${ config.defaults.iconUrl }#icon-chevron-left-thin" /></svg>
+            <svg class="st-icon c-icon-svg"><use xlink:href="#icon-chevron-left-thin" /></svg>
         </span>
         <span class="c-carousel__nav c-carousel__nav--next">
-            <svg class="st-icon c-icon-svg"><use xlink:href="${ config.defaults.iconUrl }#icon-chevron-right-thin" />></svg>
+            <svg class="st-icon c-icon-svg"><use xlink:href="#icon-chevron-right-thin" />></svg>
         </span>
     </div>
 `;

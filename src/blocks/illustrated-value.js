@@ -8,12 +8,21 @@ import IconPicker from '../helpers/iconpicker.class';
 import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
 
+import IcoIcon from 'etudiant-mod-icon';
+IcoIcon.insertSprite();
+
 const editorHTML = `
     <div class="st-block--illustated">
-        <img class="st-block-img left st-utils__v-middle" src="" width="100" height="100" />
-        <input type="text" name="title" placeholder="${ i18n.t('blocks:illustratedValue:placeholder') }" />
-        <input type="color" name="color" />
-        <div class="st-text-block" contenteditable="true"></div>
+        <div class="st-block--illustated__icon">
+            <svg class="c-icon-svg">
+                <use xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+            </svg>
+        </div>
+        <div class="st-block--illustated__content">
+            <input type="text" class="st-block--illustated__title" name="title" />
+            <input type="color" class="st-block--illustated__colorpicker" name="color" />
+            <div class="st-text-block st-block--illustated__text" contenteditable="true"></div>
+        </div>
     </div>
 `;
 
@@ -45,11 +54,18 @@ export default Block.extend({
         tags: { p: true }
     },
 
-    loadData({ title = '', color = '', text = '', image = '' }) {
+    loadData({ title = 'Titre', color = '#000000', text = 'Contenu du paragraphe', iconSlug = 'bulle-info' }) {
+        this.$svg = this.$('svg')[0];
+        this.$svgUse = this.$('use')[0];
+        this.$title = this.$('input[name="title"]')[0];
+        this.$color = this.$('input[name="color"]')[0];
+
         this.setTextBlockHTML(text);
-        this.$('img.st-block-img')[0].src = image;
-        this.$('input[name="title"]')[0].value = title;
-        this.$('input[name="color"]')[0].value = color;
+
+        this.setIcon(iconSlug);
+
+        this.$title.value = title;
+        this.$color.value = color;
     },
 
     onBlockRender() {
@@ -62,8 +78,8 @@ export default Block.extend({
         this.iconPicker = IconPicker.create(this.globalConfig.illustratedIcons);
         this.iconPicker.on('selected', icon => this.setIcon(icon));
 
-        this.$('input[name="color"]')[0].addEventListener('input', () => this.setColor());
-        this.$('img.st-block-img')[0].addEventListener('click', () => this.iconPicker.open());
+        this.$color.addEventListener('input', () => this.setColor());
+        this.$svg.addEventListener('click', () => this.iconPicker.open());
 
         this.mediator.on('block:remove', blockID => {
             if (this.blockID === blockID) {
@@ -74,13 +90,17 @@ export default Block.extend({
     },
 
     setColor() {
-        this.$('input[name="title"]')[0].style.color = this.$('input[name="color"]')[0].value;
+        this.$title.style.color = this.$color.value;
+        this.$svg.style.fill = this.$color.value;
     },
 
-    setIcon(icon) {
-        this.$('img.st-block-img')[0].src = icon.src;
-        this.setData({ image: icon.src });
-        this.iconPicker.close();
+    setIcon(iconSlug) {
+        this.setData({ iconSlug: iconSlug });
+        this.$svgUse.setAttributeNS('http://www.w3.org/1999/xlink', 'href', `#icon-${iconSlug}`);
+
+        if (this.iconPicker) {
+            this.iconPicker.close();
+        }
     },
 
     isEmpty() {
