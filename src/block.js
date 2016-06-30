@@ -13,7 +13,6 @@ var BlockMixins = require('./block_mixins');
 var SimpleBlock = require('./simple-block');
 var BlockReorder = require('./block-reorder');
 var BlockDeletion = require('./block-deletion');
-var BlockPositioner = require('./block-positioner');
 var EventBus = require('./event-bus');
 
 var Spinner = require('spin.js');
@@ -290,17 +289,13 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
   },
 
   _getBlockClass: function() {
-    return 'st-block--' + this.className;
+    return `st-block--${this.className}`;
   },
 
    //Init functions for adding functionality
   _initUIComponents: function() {
 
     this.addDeleteControls();
-
-    var positioner = new BlockPositioner(this.el, this.mediator);
-
-    this._withUIComponent(positioner, '.st-block-ui-btn__reorder', positioner.toggle);
 
     this._withUIComponent(new BlockReorder(this.el, this.mediator));
 
