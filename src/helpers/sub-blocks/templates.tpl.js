@@ -1,6 +1,6 @@
-import config from '../../config.js';
+var config = require('../../config');
 
-const iconLink = `<svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-fmt-link"/></svg>`;
+const iconLink = `<svg role="img" class="st-icon"><use xlink:href="${config.defaults.iconUrl}#icon-fmt-link"/></svg>`;
 
 export const diaporama = `
     <% if (data.thumbnail) { %>
@@ -16,6 +16,7 @@ export const image = `
     <figure class="st-sub-block-image">
         <img src="<%= data.thumbnail %>" />
     </figure>
+    <h3><%= data.legend %></h3>
     <a class="st-sub-block-link" href="<%= data.file %>" target="_blank">
         <svg role="img" class="st-icon"><use xlink:href="#icon-portrait"/></svg>
     </a>

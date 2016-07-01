@@ -1,4 +1,5 @@
 import $ from 'etudiant-mod-dom';
+import loadable from 'etudiant-mod-util/behaviour/loadable';
 
 import Slide from './slide.class';
 
@@ -7,6 +8,8 @@ const eventablejs = require('eventablejs');
 
 const sliderTemplate = `
     <div class="st-block__slider">
+        <div class="c-loader"></div>
+
         <div class="st-slider">
             <div class="st-slider-container">
             </div>
@@ -41,6 +44,8 @@ function init(params) {
     this.slides = prepareSlides(params.contents, this.config.itemsPerSlide);
 
     this.render();
+
+    this.initLoadable();
 
     if (params.container) {
         params.container.append(this.$elem);
@@ -132,7 +137,7 @@ function createElement(controls) {
 
 export default {
     create() {
-        const instance = Object.assign(Object.create(this.prototype), eventablejs);
+        const instance = Object.assign(Object.create(this.prototype), eventablejs, loadable);
 
         init.apply(instance, arguments);
 
@@ -149,7 +154,9 @@ export default {
         },
 
         goTo(index) {
-            this.$slideContainer.css('left', '-' + ((100 / this.config.increment).toFixed(2) * index) + '%');
+            const leftOffset = (100 / this.config.increment).toFixed(2) * index;
+
+            this.$slideContainer.css('left', `-${leftOffset}%`);
 
             this.currentIndex = index;
 
@@ -188,7 +195,6 @@ export default {
             });
 
             if (!this.isBoundToDOM) {
-
                 if (this.config.controls) {
                     registerButtons.call(this);
                 }

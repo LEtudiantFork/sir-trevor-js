@@ -1,3 +1,9 @@
+.st-block__slider {
+    &.is-loading {
+        text-align: center;
+    }
+}
+
 .st-slider {
     overflow: hidden;
 

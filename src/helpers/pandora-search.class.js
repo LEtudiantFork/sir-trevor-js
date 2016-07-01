@@ -41,6 +41,14 @@ function init({ container, subBlockType, subBlockPreProcess, filterConfig, slide
     this.filterBar.on('search:result', results => this.showResults(results));
     this.filterBar.on('search:no-result', () => this.resetResults());
 
+    this.filterBar.on('search:loading', () => {
+        this.slider.isLoading();
+    });
+
+    this.filterBar.on('search:done-loading', () => {
+        this.slider.isDoneLoading();
+    });
+
     this.filterBar.on('update:result', updateResults => this.updateResults(updateResults));
 
     this.filterBar.search();

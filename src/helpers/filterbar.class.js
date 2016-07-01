@@ -63,7 +63,6 @@ export default {
     },
 
     prototype: {
-
         render(container, before = false) {
             const fieldsTemplates = this.fields.reduce((prev, field) => `${ prev }${ fieldHelper.buildFields(field) }`, '');
 
@@ -108,8 +107,12 @@ export default {
 
             this.nextSearch = data;
 
+            this.trigger(eventName + ':loading');
+
             xhr.get(this.url, { data })
             .then(({ content }) => {
+                this.trigger(eventName + ':done-loading');
+
                 if (content) {
                     this.trigger(eventName + ':result', content);
                     this.nextSearch.offset = (this.nextSearch.offset || 0) + content.length;
