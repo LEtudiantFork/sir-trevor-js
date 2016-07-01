@@ -1,0 +1,15 @@
+.st-icon-drag {
+    $dot-space: 7px;
+
+    position: absolute;
+    top: -10px;
+    left: 7px;
+
+    font-size: 30px;
+
+    text-shadow: $dot-space 0 $aluminium,
+    0 $dot-space $aluminium,
+    $dot-space $dot-space $aluminium,
+    0 $dot-space*2 $aluminium,
+    $dot-space $dot-space*2 $aluminium; // Create the handle effet
+}

@@ -3,10 +3,10 @@
 
     margin-top: -0.6em;
     border-color: $error-color;
-    padding: 0.3em 0.5em;
+    padding: 0.3em;
 
     top: $ui-btn-pos-v;
-    right: $ui-btn-pos-h + $ui-btn-size * 2;
+    right: $block-side-width;
 
     font-size: 1rem;
 

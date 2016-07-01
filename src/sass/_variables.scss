@@ -1,7 +1,10 @@
 $text-block-font-size: 1.275rem;
 
+$aluminium: #9b9b9b;
+$cadmium-red: #dc001f;
+
 $text-block-font-color: #282d31;
-$accent-color: #17bb75;
+$accent-color: $cadmium-red;
 $base-ui-color: #42474b;
 $light-ui-color: #ccc;
 $blocks-control-bg-color: #f7f7f7;
@@ -9,7 +12,7 @@ $blocks-control-border-color: #ddd;
 $error-color: #d70014;
 $selection-color: #b1f2d6;
 
-$block-controls-color: #9b9b9b;
+$block-controls-color: $aluminium;
 
 $border-size: 2px;
 $border-style: solid;
@@ -17,8 +20,12 @@ $default-border: $border-size $border-style $accent-color;
 
 $white: #fff;
 $black: #222;
+$grey: rgba(0, 0, 0, 0.03);
 
-$block-spacing-vertical: 25px;
-$block-spacing-horizontal: 80px;
+$block-spacing-vertical: 5px;
+$block-spacing-horizontal: 0;
+$block-side-width: 30px;
+$block-side-color: rgba(0, 0, 0, 0.05);
 
+$block-addition-height: 5px;
 $button-addition-size: 2.5rem;

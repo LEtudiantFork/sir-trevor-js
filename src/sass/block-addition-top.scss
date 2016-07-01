@@ -1,46 +1,30 @@
 .st-block-addition-top {
-    z-index: 2;
+    z-index: 10;
     opacity: 0;
 
     display: block;
     outline: none;
     border: none;
     padding: 0;
-    height: 30px;
+    height: $block-addition-height;
 
     position: absolute;
-    top: -$block-spacing-vertical;
+    top: -6px;
     right: $block-spacing-horizontal;
     left: $block-spacing-horizontal;
 
     text-align: left;
 
-    transition: all $animation-speed 0.2s ease-in-out;
+    transition: opacity $animation-speed ease;
 
-    background-color: transparent;
+    background-color: rgba(0, 0, 0, 0.2);
 
-    cursor: text;
+    cursor: pointer;
 
     &::-moz-focus-inner {
         margin: 0;
         margin-left: -1px;
         padding: 0;
-    }
-
-    &:before {
-        display: block;
-        height: 2px;
-        content: '';
-
-        position: absolute;
-        top: $block-spacing-vertical;
-        right: 0;
-        left: 0;
-
-        transition: all $animation-speed 0.1s ease-in-out;
-        transform: translateY(-50%) translateZ(0);
-
-        background: $accent-color;
     }
 
     .st-block--empty & {
@@ -58,37 +42,6 @@
     .st-chooseable--is-active + .st-block &,
     .st-block--empty + .st-block & {
         display: none;
-    }
-}
-
-.st-block-addition-top__icon {
-    display: block;
-    box-sizing: border-box;
-    margin: 0 auto;
-    margin-right: 5px;
-    width: 1em;
-    height: 1em;
-
-    position: absolute;
-    top: $block-spacing-vertical;
-    right: 100%;
-
-    color: $accent-color;
-    font-size: $button-addition-size;
-
-    transform: translateY(-50%) translateZ(0);
-
-    cursor: pointer;
-
-    .st-icon {
-        color: inherit;
-    }
-
-    .st-block-addition-top:hover &,
-    .st-block--active & {
-        opacity: 1;
-
-        color: $accent-color;
     }
 }
 

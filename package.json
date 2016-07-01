@@ -16,6 +16,8 @@
     "deamdify": "^0.2.0",
     "etudiant-mod-carousel": "^2.16.1",
     "etudiant-mod-dom": "^1.0.0",
+    "etudiant-mod-icon": "^1.0.0",
+    "etudiant-mod-letudiant": "^1.70.12",
     "etudiant-mod-modal": "^3.0.0",
     "etudiant-mod-sass": "^1.0.0",
     "etudiant-mod-video": "^1.0.0",

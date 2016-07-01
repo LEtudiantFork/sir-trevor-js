@@ -9,13 +9,12 @@
     height: 1em;
 
     position: absolute;
-    top: 0;
-    left: $block-spacing-horizontal / 2;
+    top: 50%;
+    left: 50%;
 
-    font-size: $button-addition-size;
-    text-align: center;
+    font-size: 50px;
 
-    transform: translateY(50%);
+    transform: translate(-50%, -50%);
 
     background-color: transparent;
 
@@ -25,7 +24,7 @@
         padding: 0;
     }
 
-    .st-block--textable.st-block--empty & {
+    .st-block--empty:not(.st-block--controls-active) & {
         display: block;
     }
 }
@@ -39,14 +38,10 @@
 
     position: relative;
 
-    color: $accent-color;
+    color: $aluminium;
 
     transition: all $animation-speed ease-in-out;
     transform: translateZ(0);
 
     cursor: pointer;
-
-    .st-block--controls-active & {
-        transform: rotate(45deg);
-    }
 }

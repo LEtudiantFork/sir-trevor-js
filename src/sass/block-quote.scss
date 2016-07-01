@@ -1,0 +1,44 @@
+$blockquote-quote-size: 130px !default;
+$mercury: #e5e5e5 !default;
+
+.st-text-block--quote {
+    z-index: 1; // Needed so the icons stays visible
+
+    margin: 0;
+    padding: 25px 50px 20px 50px;
+
+    position: relative;
+
+    font-family: Georgia, Times, 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: bold;
+    font-style: italic;
+    line-height: 1.3em;
+
+    &::before,
+    &::after {
+        z-index: -1;
+
+        display: block;
+
+        position: absolute;
+
+        color: $mercury;
+        font-size: $blockquote-quote-size;
+        line-height: 1em;
+    }
+
+    &::before {
+        content: '\201F';
+
+        top: -15px;
+        left: 0;
+    }
+
+    &::after {
+        content: '\201E';
+
+        right: 0;
+        bottom: 20px;
+    }
+}

@@ -5,13 +5,14 @@
     z-index: 1;
 
     position: absolute;
-    top: 50%;
+    top: 0;
     right: $block-spacing-horizontal;
+    bottom: 0;
     left: $block-spacing-horizontal;
 
     font-size: 0.8em;
 
-    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.05);
 }
 
 .st-block-chooseable__buttons,

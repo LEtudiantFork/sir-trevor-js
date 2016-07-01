@@ -1,6 +1,4 @@
-$ui-btn-size: 1em;
-$ui-btn-pos-v: 0.5em;
-$ui-btn-pos-h: 0.5em;
+$ui-btn-pos-v: 8px;
 
 %st-block-ui-btn {
     @extend .st-icon;
@@ -13,10 +11,19 @@ $ui-btn-pos-h: 0.5em;
     cursor: pointer;
 }
 
+
+%st-block-ui-btn-hover {
+    &:hover {
+        color: darken($block-controls-color, 20%);
+    }
+}
+
 .st-block__control-ui {
     display: flex;
+    margin-top: 5px;
+    padding: 5px;
 
-    background-color: lighten($light-ui-color, 10%);
+    background-color: rgba(0, 0, 0, 0.05);
 
     &.hidden {
         display: none;
@@ -39,32 +46,32 @@ $ui-btn-pos-h: 0.5em;
 .st-block-ui-btn__reorder {
     @extend %st-block-ui-btn;
 
-    position: absolute;
-    top: $ui-btn-pos-v;
-    left: $ui-btn-pos-h;
+    height: 100%;
 
-    &:hover,
-    &:focus {
-        color: $accent-color;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    transition: background 0.2s ease;
+
+    cursor: move;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.05);
     }
 }
 
 .st-block-ui-btn__delete {
     @extend %st-block-ui-btn;
+    @extend %st-block-ui-btn-hover;
 
     position: absolute;
     top: $ui-btn-pos-v;
-    right: $ui-btn-pos-h;
+    right: 0;
 
     &:hover,
     &:focus {
         color: $error-color;
-    }
-
-    .st-block--textable &,
-    .st-block[data-type='list'] &,
-    .st-block {
-        display: none;
     }
 
     .st-block[data-type='quote'] & {
@@ -74,19 +81,43 @@ $ui-btn-pos-h: 0.5em;
 
 .st-block-ui-btn__settings {
     @extend %st-block-ui-btn;
+    @extend %st-block-ui-btn-hover;
 
     position: absolute;
-    top: $ui-btn-pos-v * 2 + $ui-btn-size * 2;
-    right: $ui-btn-pos-h;
+    top: 33px;
+    right: 0;
+}
+
+.st-block-ui-btn__reorder,
+.st-block-ui-btn__delete,
+.st-block-ui-btn__settings {
+    width: $block-side-width;
+
+    text-align: center;
 }
 
 .st-block-control-ui-btn {
     @extend %st-block-ui-btn;
-
-    margin: 0.25em;
+    @extend %st-block-ui-btn-hover;
 
     font-size: 2rem;
     line-height: 1;
+
+    &:not(:first-child) {
+        margin-left: 5px;
+    }
+}
+
+.st-block__control-ui__item {
+    &:not(:last-child) {
+        margin-right: 5px;
+    }
+
+    &.is-active {
+        button {
+            background: darken(#ddd, 10%);
+        }
+    }
 }
 
 .st-block--with-errors .st-block-control-ui-btn,

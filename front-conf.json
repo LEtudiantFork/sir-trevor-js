@@ -1,0 +1,11 @@
+{
+  "env": {
+    "domain": {
+      "api": "http://api.letudiant.fr",
+      "www": "http://www.letudiant.fr/"
+    },
+    "svg": {
+      "sprite_path": "svg/etu.sprite.svg"
+    }
+  }
+}

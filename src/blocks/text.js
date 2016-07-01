@@ -14,7 +14,7 @@ export default Block.extend({
 
     title: () => i18n.t('blocks:text:title'),
 
-    editorHTML: '<div class="st-text-block" contenteditable="true"></div>',
+    editorHTML: '<div class="st-text-block st-text-basic" contenteditable="true"></div>',
 
     'icon_name': 'text',
 

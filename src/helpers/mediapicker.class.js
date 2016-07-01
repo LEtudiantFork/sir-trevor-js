@@ -29,15 +29,13 @@ function constructor({ apiUrl, type, accessToken, application }) {
     this.modal = Modal.create({
         slug: randomID(),
         animation: 'fade',
-        theme: 'pandora'
+        theme: 'pandora',
+        cssClasses: 'st-media-modal'
     });
 
     this.modal.render({
         header: i18n.t('blocks:illustrated:pickIcon'),
-        content: '',
-        footer: {
-            ok: 'OK'
-        }
+        content: ''
     });
 
     this.modal.appendToContentArea(this.$elem);

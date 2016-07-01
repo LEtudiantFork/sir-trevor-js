@@ -1,3 +1,6 @@
+$generic-spacing: 10px !default;
+$theme-color: #03a486 !default;
+
 @import 'variables';
 @import 'icons';
 
@@ -21,15 +24,8 @@
 @import 'block-addition-top';
 @import 'block-controls';
 @import 'block-replacer';
-@import 'block-positioner';
-@import 'block-encard';
+@import 'block-reorder';
 @import 'block-delete';
-
-// Blocks
-@import 'block';
-@import 'block-chart';
-@import 'block-image';
-@import 'carousel';
 
 // Format Bar
 @import 'format-bar';
@@ -47,3 +43,69 @@
 @import 'helpers';
 
 @import 'handsontable/dist/handsontable.full';
+
+// Blocks
+@import 'block';
+@import 'block-chart';
+@import 'block-diaporama';
+@import 'block-encard';
+@import 'block-heading';
+@import 'block-illustrated';
+@import 'block-image';
+@import 'block-quote';
+@import 'carousel';
+
+body > svg[width='0'][height='0'] {
+    display: none;
+}
+
+.submit-wrap {
+    padding: 15px;
+
+    background: $grey;
+}
+
+.st-media-modal {
+    .c-modal__content {
+        padding: 0 !important;
+    }
+
+    .st-slider-controls {
+        padding: 10px;
+    }
+
+    select {
+        width: auto;
+    }
+}
+
+.c-icon-svg {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+
+    fill: currentColor;
+
+    .c-icon & {
+        height: 100%;
+    }
+
+    .c-link-icon--horizontal & {
+        float: left;
+    }
+
+    &.c-icon__label--icon-middle {
+        vertical-align: middle;
+    }
+
+    &.u-themed {
+        @extend %u-cl-theme--section;
+    }
+}
+
+.st-text-basic {
+    a {
+        color: $theme-color;
+        text-decoration: none;
+    }
+}

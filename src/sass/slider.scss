@@ -1,7 +1,3 @@
-.st-block__slider {
-    margin: 0 20px 20px;
-}
-
 .st-slider {
     overflow: hidden;
 
@@ -16,7 +12,7 @@
 
     position: relative;
 
-    transition: 300ms left ease; // would be better to use transform
+    transition: left 0.3s ease; // would be better to use transform (no shit sherlock)
 }
 
 .st-slider-slide {
@@ -25,6 +21,10 @@
 
 .st-slider-controls {
     @include clearfix;
+
+    .st-btn {
+        margin-left: 10px;
+    }
 
     .st-block & {
         padding-bottom: 30px;

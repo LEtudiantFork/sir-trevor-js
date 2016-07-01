@@ -10,9 +10,7 @@ import Block  from '../block';
 const API_URL = '/edt/media/';
 
 const editorHTML = `
-    <div class="st-block--diaporama">
-        <h4 class="st-block-legend"></h4>
-    </div>
+    <div class="st-block--diaporama"></div>
 `;
 
 const carousel = data => `
@@ -42,7 +40,7 @@ const carousel = data => `
 
 const mainSlide = image => `
     <figure>
-        <img class="st-block-img" src="${ image.file }" width="700" height="400" />
+        <img class="st-block-img" src="${ image.file.replace('original', '766x438') }" width="766" height="438" />
         <figcaption>
             <strong>${ image.title || ''}</strong><br/>
             ${ image.description || ''}
@@ -67,8 +65,7 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
-    loadData({ id, legend = '' }) {
-        this.$('.st-block-legend')[0].innerHTML = legend;
+    loadData({ id }) {
         this.$elem = $(this.$('.st-block--diaporama')[0]);
 
         xhr.get(`${ this.globalConfig.apiUrl }${ API_URL }${ id }`, {

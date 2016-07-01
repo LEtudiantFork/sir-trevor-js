@@ -1,0 +1,44 @@
+.st-text-block--heading {
+    h1 {
+        margin: $generic-spacing 0;
+
+        color: $theme-color;
+        font-size: 40px;
+        font-weight: bold;
+        line-height: 1em;
+        letter-spacing: 0.001em;
+
+        &::after {
+            display: block;
+            margin-top: 20px;
+            width: 80px;
+            height: 3px;
+            content: '';
+
+            background-color: #000;
+        }
+    }
+
+    h2,
+    h3 {
+        font-size: 18px;
+        font-weight: bold;
+
+        &:not(:first-child) {
+            margin-top: $generic-spacing;
+        }
+
+        &:not(:last-child) {
+            margin-bottom: $generic-spacing;
+        }
+
+        .c-title__sub {
+            color: $black;
+            font-size: 0.8em;
+        }
+    }
+
+    h2 {
+        color: $theme-color;
+    }
+}
