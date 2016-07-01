@@ -30,10 +30,10 @@ const carousel = data => `
             </div>
         </div>
         <span class="c-carousel__nav c-carousel__nav--prev">
-            <svg class="st-icon c-icon-svg"><use xlink:href="#icon-chevron-left-thin" /></svg>
+            <svg class="st-icon c-icon-svg"><use xlink:href="#icon-chevron-thin-left" /></svg>
         </span>
         <span class="c-carousel__nav c-carousel__nav--next">
-            <svg class="st-icon c-icon-svg"><use xlink:href="#icon-chevron-right-thin" />></svg>
+            <svg class="st-icon c-icon-svg"><use xlink:href="#icon-chevron-thin-right" />></svg>
         </span>
     </div>
 `;
