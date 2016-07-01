@@ -51,6 +51,7 @@ export default Block.extend({
     loadData({ text = '', media, position = 'left' }) {
         this.setTextBlockHTML(text);
         this.$('img.st-block-img')[0].classList.add(position);
+
         this.setImage(media);
     },
 
