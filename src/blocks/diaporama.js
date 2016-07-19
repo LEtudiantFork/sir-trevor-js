@@ -14,18 +14,39 @@ const editorHTML = `
 `;
 
 const carousel = data => `
-    <div class="c-carousel ${ data.parentId ? 'c-carousel--thumbnails' : ''}"
-        data-car-carousel="${ data.parentId ? `${ data.parentId }-thumb` : data.id }"
+    <div class="c-carousel"
+        data-car-carousel="${data.id }"
         data-car-rewind
-        ${ data.parentId ? `
-        data-car-thumbnails="${ data.parentId }"
-        data-car-slides="3"
-        ` : '' }>
+    >
         <div class="c-carousel__frame">
             <div class="c-carousel__slides">
                 ${ data.slides.reduce((prev, slide) => `
                     ${ prev }
                     <div class="c-carousel__slide">${ slide }</div>
+                `, '') }
+            </div>
+        </div>
+        <span class="c-carousel__nav c-carousel__nav--prev">
+            <svg class="st-icon c-icon-svg"><use xlink:href="#icon-chevron-thin-left" /></svg>
+        </span>
+        <span class="c-carousel__nav c-carousel__nav--next">
+            <svg class="st-icon c-icon-svg"><use xlink:href="#icon-chevron-thin-right" />></svg>
+        </span>
+    </div>
+`;
+
+const subCarousel = data => `
+    <div class="c-carousel c-carousel--thumbnails"
+        data-car-carousel="${ data.parentId }-thumb"
+        data-car-rewind
+        data-car-thumbnails="${ data.parentId }"
+        data-car-slides="3"
+    >
+        <div class="c-carousel__frame">
+            <div class="c-carousel__slides">
+                ${ data.slides.reduce((prev, slide, idx) => `
+                    ${ prev }
+                    <div class="c-carousel__slide" data-car-goto="${idx}">${ slide }</div>
                 `, '') }
             </div>
         </div>
@@ -77,7 +98,7 @@ export default Block.extend({
                 slides: images.map(image => mainSlide(image))
             });
 
-            const thumbCarousel = carousel({
+            const thumbCarousel = subCarousel({
                 parentId: id,
                 slides: images.map(image => thumbSlide(image))
             });
