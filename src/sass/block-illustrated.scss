@@ -94,3 +94,35 @@ input[type='text'].st-block--illustated__title {
 
     flex-wrap: wrap;
 }
+
+.st-block--illustated-image {
+    display: block;
+    padding: 0;
+
+    &::after {
+        display: block;
+        content: '';
+
+        clear: both;
+    }
+
+    .st-block-img {
+        &.left {
+            margin-right: 10px;
+
+            float: left;
+        }
+
+        &.right {
+            margin-left: 10px;
+
+            float: right;
+        }
+    }
+
+    .st-text-block {
+        p {
+            margin: 0;
+        }
+    }
+}

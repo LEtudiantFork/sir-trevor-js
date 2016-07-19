@@ -12,7 +12,7 @@ import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
 const API_URL = '/edt/media/';
 
 const editorHTML = `
-    <div class="st-block--illustated">
+    <div class="st-block--illustated st-block--illustated-image">
         <img class="st-block-img st-utils__v-middle" src="" />
         <div class="st-text-block" contenteditable="true"></div>
     </div>
@@ -52,7 +52,14 @@ export default Block.extend({
         this.setTextBlockHTML(text);
         this.$('img.st-block-img')[0].classList.add(position);
 
-        this.setImage(media);
+        if (media) {
+            this.setImage(media);
+        }
+        else {
+            this.setImage({
+                thumbnail: 'https://placeholdit.imgix.net/~text?txtsize=25&txt=Image&w=200&h=150'
+            });
+        }
     },
 
     onBlockRender() {
@@ -90,7 +97,7 @@ export default Block.extend({
         });
     },
 
-    setImage({ formats, thumbnail }) {
+    setImage({ formats = [], thumbnail }) {
         this.$('img.st-block-img')[0].src = formats[this.globalConfig.formatImage] || thumbnail;
     },
 

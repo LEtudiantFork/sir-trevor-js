@@ -13,14 +13,14 @@ const CHOOSEABLE = [
     },
     {
         title: i18n.t('blocks:illustratedLeft:title'),
-        icon: 'illustrated-value',
+        icon: 'Image',
         type: 'IllustratedimageLeft',
         block: 'Illustratedimage',
         position: 'left'
     },
     {
         title: i18n.t('blocks:illustratedRight:title'),
-        icon: 'illustrated-value',
+        icon: 'Image',
         type: 'IllustratedimageRight',
         block: 'Illustratedimage',
         position: 'right'
