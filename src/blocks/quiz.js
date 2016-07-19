@@ -5,14 +5,16 @@
 import Block  from '../block';
 import config from '../config';
 
+// <div class="st-block--quiz__img"></div>
+
 const editorHTML = `
     <div class="st-block--quiz">
-        <img class="st-block-img st-utils__v-middle" src="" />
-        <h4 class="st-block-title"></h4>
-        <p class="st-block-description"></p>
-        <a class="st-block-link" href="" target="_blank">
-            <svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-fmt-link"/></svg>
-        </a>
+        <div class="st-block--quiz__edito">Quiz</div>
+        <div class="st-block--quiz__title"></div>
+
+        <a class="st-block--quiz__link" href="" target="_blank">Commencer le Quiz</a>
+
+        <p class="st-block--quiz__desc"></p>
     </div>
 `;
 
@@ -28,10 +30,10 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
-    loadData({ title = '', thumbnail = '', description = '', url = '' }) {
-        this.$('.st-block-title')[0].innerHTML = title;
-        this.$('img.st-block-img')[0].src = thumbnail;
-        this.$('.st-block-description')[0].innerHTML = description;
-        this.$('a.st-block-link')[0].href = url;
+    loadData({ title = '', description = '', url = '' }) {
+        this.$('.st-block--quiz__title')[0].innerHTML = title;
+        this.$('.st-block--quiz__desc')[0].innerHTML = description;
+        this.$('.st-block--quiz__link')[0].href = url;
+        // this.$('.st-block--quiz__img')[0].innerHTML = `<img class="st-block-img st-utils__v-middle" src="${image}" />`;
     }
 });
