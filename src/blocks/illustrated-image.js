@@ -12,7 +12,7 @@ import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
 const API_URL = '/edt/media/';
 
 const editorHTML = `
-    <div class="st-block--illustated st-block--illustated-image">
+    <div class="st-block--illustated-image">
         <img class="st-block-img st-utils__v-middle" src="" />
         <div class="st-text-block" contenteditable="true"></div>
     </div>
