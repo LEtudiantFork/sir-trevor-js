@@ -11,6 +11,7 @@ $theme-color: #e2001a !default;
 
 @import 'etudiant-mod-letudiant/scss/components/basic/loader';
 @import 'etudiant-mod-letudiant/scss/components/basic/buttons';
+@import 'etudiant-mod-letudiant/scss/components/basic/quiz/core';
 @import 'etudiant-mod-letudiant/scss/components/composed/blocks/block-wire-core';
 @import 'etudiant-mod-letudiant/scss/components/composed/blocks/block-poll';
 @import 'etudiant-mod-letudiant/scss/components/composed/edito-genre';
@@ -60,10 +61,13 @@ $theme-color: #e2001a !default;
 @import 'block-illustrated-image';
 @import 'block-image';
 @import 'block-quote';
-@import 'block-quiz';
 @import 'carousel';
 
 body > svg[width='0'][height='0'] {
+    display: none;
+}
+
+p:empty {
     display: none;
 }
 

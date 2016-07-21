@@ -3,34 +3,44 @@
 */
 
 import Block  from '../block';
-import config from '../config';
 
-const editorHTML = `
-    <div class="st-block--quiz">
-        <div class="st-block--quiz__edito">Quiz</div>
-        <div class="st-block--quiz__title"></div>
+const tplBlock = (title, description, url) => `
+    <div class="c-quiz">
+        <div class="c-edito-genre">
+            <div class="c-edito-genre__icon">
+                <svg class="c-icon-svg c-icon-svg__sondage">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-question"></use>
+                </svg>
+            </div>
 
-        <a class="st-block--quiz__link" href="" target="_blank">Commencer le Quiz</a>
+            <div class="c-edito-genre__label">Quiz</div>
+        </div>
 
-        <p class="st-block--quiz__desc"></p>
+        <div class="c-quiz__title">${title}</div>
+        <div class="c-quiz__actions">
+            <a href="${url}" class="c-button c-button--medium c-button--rounded c-button--light-border u-themed u-typo--upper">
+                Commencer le quiz
+            </a>
+        </div>
+
+        <div class="c-quiz__summary">
+            <div class="c-quiz__summary__text">
+                <p>${description}</p>
+            </div>
+        </div>
     </div>
 `;
 
 export default Block.extend({
-
     type: 'quiz',
 
     title: () => i18n.t('blocks:quiz:title'),
-
-    editorHTML,
 
     'icon_name': 'quiz',
 
     toolbarEnabled: false,
 
     loadData({ title = '', description = '', url = '' }) {
-        this.$('.st-block--quiz__title')[0].innerHTML = title;
-        this.$('.st-block--quiz__desc')[0].innerHTML = description;
-        this.$('.st-block--quiz__link')[0].href = url;
+        this.inner.innerHTML = tplBlock(title, description, url);
     }
 });
