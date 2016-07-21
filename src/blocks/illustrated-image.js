@@ -48,18 +48,11 @@ export default Block.extend({
         }
     },
 
-    loadData({ text = '', media, position = 'left' }) {
+    loadData({ text = '', media = { thumbnail: 'https://placeholdit.imgix.net/~text?txtsize=25&txt=Image&w=200&h=150' }, position = 'left' }) {
         this.setTextBlockHTML(text);
         this.$('img.st-block-img')[0].classList.add(position);
 
-        if (media) {
-            this.setImage(media);
-        }
-        else {
-            this.setImage({
-                thumbnail: 'https://placeholdit.imgix.net/~text?txtsize=25&txt=Image&w=200&h=150'
-            });
-        }
+        this.setImage(media);
     },
 
     onBlockRender() {

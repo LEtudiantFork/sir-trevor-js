@@ -1,4 +1,3 @@
-$bg-color: #e2001a;
 $btn-bg-color: #535558;
 
 .st-block--quiz {
@@ -37,7 +36,7 @@ $btn-bg-color: #535558;
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    background-color: $bg-color;
+    background-color: $theme-color;
 }
 
 .st-block--quiz__link {

@@ -3,35 +3,55 @@
 */
 
 import Block  from '../block';
-import config from '../config';
 
-const editorHTML = `
-    <div class="st-block--poll">
-        <img class="st-block-img st-utils__v-middle" src="" />
-        <h4 class="st-block-title"></h4>
-        <p class="st-block-description"></p>
-        <a class="st-block-link" href="" target="_blank">
-            <svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-fmt-link"/></svg>
-        </a>
+const tplBlock = (title, choices, url) => `
+    <div class="c-block-poll c-block c-box c-box--wire">
+        <div class="c-edito-genre">
+            <div class="c-edito-genre__icon">
+                <svg class="c-icon-svg c-icon-svg__sondage">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-sondage"></use>
+                </svg>
+            </div>
+
+            <div class="c-edito-genre__label">Sondage</div>
+        </div>
+
+        <div class="c-block-poll__title">${title}</div>
+
+        <div class="c-block-poll__content">
+            <form action="" method="post" class="c-form c-block-poll__form">
+                ${choices.length === 0 ?
+                    '<div class="c-block-poll__no-choice">Aucun choix n\'a été trouvé dans ce sondage.</div>' : ''
+                }
+
+                ${choices.map(choice => `
+                    <div class="c-form__field__input c-radio-list c-block-poll__row">
+                        <label class="c-radio c-radio--standard c-radio--label-after u-themed">
+                            <input type="radio" name="question_x" value="1" />
+
+                            <span class="c-radio__label">${choice.label}</span>
+                            <div class="c-radio__indicator"></div>
+                        </label>
+                    </div>`
+                ).join('')}
+                <div class="c-block-poll__action">
+                    <a href="${url}" target="blank" class="c-button c-button--medium c-button--squared u-themed">Valider</a>
+                </div>
+            </form>
+        </div>
     </div>
 `;
 
 export default Block.extend({
-
     type: 'poll',
 
     title: () => i18n.t('blocks:poll:title'),
-
-    editorHTML,
 
     'icon_name': 'poll',
 
     toolbarEnabled: false,
 
-    loadData({ title = '', thumbnail = '', description = '', url = '' }) {
-        this.$('.st-block-title')[0].innerHTML = title;
-        this.$('img.st-block-img')[0].src = thumbnail;
-        this.$('.st-block-description')[0].innerHTML = description;
-        this.$('a.st-block-link')[0].href = url;
+    loadData({ title = '', choices = [], url = '' }) {
+        this.inner.innerHTML = tplBlock(title, choices, url);
     }
 });

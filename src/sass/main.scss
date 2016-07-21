@@ -1,5 +1,5 @@
 $generic-spacing: 10px !default;
-$theme-color: #03a486 !default;
+$theme-color: #e2001a !default;
 
 @import 'variables';
 @import 'icons';
@@ -8,7 +8,12 @@ $theme-color: #03a486 !default;
 @import 'etudiant-mod-sass/utility/clearfix';
 @import 'etudiant-mod-video/scss/style';
 @import 'etudiant-mod-carousel/scss/carousel';
+
 @import 'etudiant-mod-letudiant/scss/components/basic/loader';
+@import 'etudiant-mod-letudiant/scss/components/basic/buttons';
+@import 'etudiant-mod-letudiant/scss/components/composed/blocks/block-wire-core';
+@import 'etudiant-mod-letudiant/scss/components/composed/blocks/block-poll';
+@import 'etudiant-mod-letudiant/scss/components/composed/edito-genre';
 
 @import 'mixins/scroll-shadow';
 

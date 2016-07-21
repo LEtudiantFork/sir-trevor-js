@@ -5,8 +5,6 @@
 import Block  from '../block';
 import config from '../config';
 
-// <div class="st-block--quiz__img"></div>
-
 const editorHTML = `
     <div class="st-block--quiz">
         <div class="st-block--quiz__edito">Quiz</div>
@@ -34,6 +32,5 @@ export default Block.extend({
         this.$('.st-block--quiz__title')[0].innerHTML = title;
         this.$('.st-block--quiz__desc')[0].innerHTML = description;
         this.$('.st-block--quiz__link')[0].href = url;
-        // this.$('.st-block--quiz__img')[0].innerHTML = `<img class="st-block-img st-utils__v-middle" src="${image}" />`;
     }
 });
