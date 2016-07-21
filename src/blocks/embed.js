@@ -20,7 +20,7 @@ const CHOOSEABLE = [
     },
     {
         title: i18n.t('blocks:poll:title'),
-        api: 'sondage',
+        api: 'polls',
         icon: 'Poll',
         type: 'poll'
     },
