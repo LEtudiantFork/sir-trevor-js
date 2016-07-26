@@ -1,6 +1,6 @@
 {
   "name": "sir-trevor",
-  "version": "0.6.0-beta",
+  "version": "1.0.0",
   "main": "./index.js",
   "repository": {
     "type": "git",
@@ -14,13 +14,9 @@
     "browserify-derequire": "^0.9.4",
     "core-js": "^2.1.5",
     "deamdify": "^0.2.0",
-    "etudiant-mod-carousel": "^2.16.1",
     "etudiant-mod-dom": "^1.0.0",
     "etudiant-mod-icon": "^1.0.0",
-    "etudiant-mod-letudiant": "^1.70.12",
-    "etudiant-mod-modal": "^3.0.0",
-    "etudiant-mod-sass": "^1.0.0",
-    "etudiant-mod-video": "^1.0.0",
+    "etudiant-mod-modal": "^4.0.0",
     "etudiant-mod-xhr": "^1.0.0",
     "eventablejs": "^1.0.5",
     "handsontable": "^0.24.3",
