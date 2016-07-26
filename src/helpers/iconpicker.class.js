@@ -3,9 +3,9 @@ import randomID from 'random-id';
 
 import Icon    from './icon.class.js';
 
-import $       from 'etudiant-mod-dom';
-import Modal   from 'etudiant-mod-modal';
-import IcoIcon from 'etudiant-mod-icon';
+import $        from 'etudiant-mod-dom';
+import MdlModal from 'etudiant-mod-modal';
+import IcoIcon  from 'etudiant-mod-icon';
 
 const attrIcon = 'data-icon-name';
 
@@ -31,19 +31,19 @@ function constructor() {
         });
     });
 
-    this.modal = Modal.create({
+    this.mdlModal = MdlModal.create({
         slug: randomID(),
         animation: 'fade',
         theme: 'pandora',
         cssClasses: 'st-icon-picker-modal'
     });
 
-    this.modal.render({
+    this.mdlModal.render({
         header: 'Choisissez un icône',
         content: ''
     });
 
-    this.modal.appendToContentArea(this.$elem);
+    this.mdlModal.appendToContentArea(this.$elem);
 }
 
 export default {
@@ -57,17 +57,17 @@ export default {
 
     prototype: {
         open() {
-            this.modal.show();
+            this.mdlModal.show();
         },
 
         close() {
-            this.modal.hide();
+            this.mdlModal.hide();
         },
 
         destroy() {
             this.$elem.remove();
             this.$elem = null;
-            this.modal.destroy();
+            this.mdlModal.destroy();
         }
     }
 };

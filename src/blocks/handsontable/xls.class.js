@@ -1,8 +1,8 @@
 import eventablejs from 'eventablejs';
 import randomID from 'random-id';
 
-import $           from 'etudiant-mod-dom';
-import Modal       from 'etudiant-mod-modal';
+import $        from 'etudiant-mod-dom';
+import MdlModal from 'etudiant-mod-modal';
 
 const template = `
 <div class="hot-import-xls">
@@ -21,13 +21,13 @@ function constructor() {
     this.$elem = $(template);
     this.$field = this.$elem.find(SELECTORS.field);
 
-    this.modal = Modal.create({
+    this.mdlModal = MdlModal.create({
         slug: randomID(),
         animation: 'fade',
         theme: 'pandora'
     });
 
-    this.modal.render({
+    this.mdlModal.render({
         header: i18n.t('blocks:table:importXLS'),
         content: '',
         footer: {
@@ -35,10 +35,10 @@ function constructor() {
         }
     });
 
-    this.modal.appendToContentArea(this.$elem);
+    this.mdlModal.appendToContentArea(this.$elem);
 
-    this.modal.on('shown', () => this.$field.focus());
-    this.modal.$elem.on('click', '[data-mdl-ok]', () => this.sendData());
+    this.mdlModal.on('shown', () => this.$field.focus());
+    this.mdlModal.$elem.on('click', '[data-mdl-ok]', () => this.sendData());
 }
 
 export default {
@@ -51,17 +51,17 @@ export default {
     },
     prototype: {
         open() {
-            this.modal.show();
+            this.mdlModal.show();
         },
 
         close() {
-            this.modal.hide();
+            this.mdlModal.hide();
         },
 
         destroy() {
             this.$elem.remove();
             this.$elem = null;
-            this.modal.destroy();
+            this.mdlModal.destroy();
         },
 
         sendData() {
