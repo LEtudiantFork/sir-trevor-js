@@ -19,6 +19,7 @@
 }
 
 .st-block__inner {
+    margin: 0;
     border-right: $block-side-width solid $block-side-color;
     border-left: $block-side-width solid $block-side-color;
     padding: 0 10px;
@@ -34,6 +35,11 @@
     .st-block--empty &,
     .st-chooseable--is-active & {
         min-height: 90px;
+    }
+
+    .st-chooseable--is-active &,
+    .st-block--controls-active & {
+        display: none !important; // Yeah... I know
     }
 }
 
@@ -220,6 +226,10 @@
     padding: 10px 0 10px 15px;
 
     list-style: disc;
+}
+
+.st-block--list__item {
+    display: list-item;
 }
 
 .st-block__editor {

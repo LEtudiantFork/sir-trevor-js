@@ -4,11 +4,8 @@
 .st-block-controls {
     z-index: 1;
 
-    position: absolute;
-    top: 0;
-    right: $block-spacing-horizontal;
-    bottom: 0;
-    left: $block-spacing-horizontal;
+    margin: 0;
+    padding: 0 $block-side-width;
 
     font-size: 0.8em;
 
@@ -27,7 +24,6 @@
     border: none;
 
     font-size: 12px;
-    text-transform: uppercase;
     text-transform: uppercase;
 
     background: transparent;

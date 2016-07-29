@@ -12,25 +12,6 @@ const attrIcon = 'data-icon-name';
 function constructor() {
     this.$elem = $('<div class="st-icon-picker-container"></div>');
 
-    IcoIcon.getSprite()
-    .then((spriteStr) => {
-        var rx = /symbol id="icon-(.*)" viewBox/gim;
-
-        var icons = '';
-        var match;
-        while (match = rx.exec(spriteStr)){
-            const icon = Icon.create(match[1]);
-
-            icons += icon.$elem;
-        }
-
-        this.$elem.append(icons);
-
-        this.$elem.on('click', `[${attrIcon}]`, (e) => {
-            this.trigger('selected', $(e.currentTarget).attr(attrIcon));
-        });
-    });
-
     this.mdlModal = MdlModal.create({
         slug: randomID(),
         animation: 'fade',
@@ -38,12 +19,36 @@ function constructor() {
         cssClasses: 'st-icon-picker-modal'
     });
 
-    this.mdlModal.render({
-        header: 'Choisissez un icône',
-        content: ''
-    });
+    IcoIcon.getSprite()
+    .then((spriteStr) => {
+        var rx = /symbol id="icon-(.*)" viewBox/gim;
 
-    this.mdlModal.appendToContentArea(this.$elem);
+        var icons = '';
+        var match;
+        while (match = rx.exec(spriteStr)) {
+            const icon = Icon.create(match[1]);
+
+            icons += icon.$elem;
+        }
+
+        this.$elem.append(icons);
+
+        this.mdlModal.render({
+            header: 'Choisissez un icône',
+            content: this.$elem[0].outerHTML
+        });
+
+        console.log(this.$elem);
+
+        this.$elem.on('click', (e) => {
+            console.log('click la');
+        });
+
+        this.$elem.on('click', `[${attrIcon}]`, (e) => {
+            console.log('click', e);
+            this.trigger('selected', $(e.currentTarget).attr(attrIcon));
+        });
+    });
 }
 
 export default {

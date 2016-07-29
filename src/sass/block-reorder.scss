@@ -2,9 +2,10 @@
     $dot-space: 7px;
 
     position: absolute;
-    top: -10px;
+    top: 0;
     left: 7px;
 
+    color: $aluminium;
     font-size: 30px;
 
     text-shadow: $dot-space 0 $aluminium,

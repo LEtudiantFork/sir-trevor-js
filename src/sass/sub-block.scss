@@ -1,3 +1,5 @@
+$image-height: 100px;
+
 .st-sub-block {
     @include clearfix;
 
@@ -17,8 +19,8 @@
 
     .st-sub-block-image {
         margin: 0 10px 10px 0;
-        width: 100px;
-        height: 100px;
+        width: $image-height;
+        height: $image-height;
 
         float: left;
 
@@ -38,8 +40,12 @@
     }
 
     h3 {
+        overflow: hidden;
+
+        display: block;
         margin: 0;
         padding-right: 40px;
+        max-height: $image-height;
 
         font-size: 15px;
     }

@@ -8,9 +8,6 @@ import IconPicker from '../helpers/iconpicker.class';
 import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
 
-import IcoIcon from 'etudiant-mod-icon';
-IcoIcon.insertSprite();
-
 const editorHTML = `
     <div class="st-block--illustated">
         <div class="st-block--illustated__icon">

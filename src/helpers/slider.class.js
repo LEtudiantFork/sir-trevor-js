@@ -60,6 +60,7 @@ function calculateSliderDimensions(reset) {
     this.$slides = this.$slideContainer.find('.st-slider-slide');
 
     if (this.$slides.length > 0) {
+        this.$slider.css('width', this.$elem.dim().width);
         this.$slides.css('width', (this.$elem.dim().width / this.config.increment) + 'px');
         this.$slideContainer.css('width', (this.$slides[0].clientWidth * this.$slides.length) + 'px');
 
@@ -189,6 +190,7 @@ export default {
             this.$elem = createElement(this.config.controls);
 
             this.$slideContainer = this.$elem.find('.st-slider-container');
+            this.$slider = this.$elem.find('.st-slider');
 
             this.slides.forEach(slide => {
                 this.$slideContainer.append(slide.render());
