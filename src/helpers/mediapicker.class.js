@@ -35,10 +35,8 @@ function constructor({ apiUrl, type, accessToken, application }) {
 
     this.mdlModal.render({
         header: i18n.t('blocks:illustrated:pickIcon'),
-        content: ''
+        content: this.$elem[0].outerHTML
     });
-
-    this.mdlModal.appendToContentArea(this.$elem);
 }
 
 export default {

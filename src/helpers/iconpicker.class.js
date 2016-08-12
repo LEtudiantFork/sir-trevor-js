@@ -38,14 +38,7 @@ function constructor() {
             content: this.$elem[0].outerHTML
         });
 
-        console.log(this.$elem);
-
-        this.$elem.on('click', (e) => {
-            console.log('click la');
-        });
-
         this.$elem.on('click', `[${attrIcon}]`, (e) => {
-            console.log('click', e);
             this.trigger('selected', $(e.currentTarget).attr(attrIcon));
         });
     });
