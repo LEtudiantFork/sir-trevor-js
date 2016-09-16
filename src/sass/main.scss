@@ -99,7 +99,7 @@ p:empty {
     }
 
     &.u-themed {
-        @extend %u-cl-theme--section;
+        // @extend %u-cl-theme--section; @TODO REPLACE theme-section--current
     }
 }
 

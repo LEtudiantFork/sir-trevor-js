@@ -21,10 +21,10 @@ function constructor() {
 
     IcoIcon.getSprite()
     .then((spriteStr) => {
-        var rx = /symbol id="icon-(.*)" viewBox/gim;
+        let rx = /symbol id="icon-(.*)" viewBox/gim;
 
-        var icons = '';
-        var match;
+        let icons = '';
+        let match;
         while (match = rx.exec(spriteStr)) {
             const icon = Icon.create(match[1]);
 
