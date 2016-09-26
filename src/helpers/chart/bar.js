@@ -98,7 +98,8 @@ export default {
                 refKey: this.refKey,
                 propKey: this.propKey,
                 valueKey: this.valueKey,
-                table: this.data
+                table: this.data,
+                colors: this.colors
             };
         }
     }

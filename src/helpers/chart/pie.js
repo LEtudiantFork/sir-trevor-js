@@ -95,7 +95,8 @@ export default {
                 type: this.type,
                 refKey: this.refKey,
                 valueKey: this.valueKey,
-                table: this.data
+                table: this.data,
+                colors: this.colors
             };
         }
     }
