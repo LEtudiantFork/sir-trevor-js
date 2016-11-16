@@ -25,7 +25,7 @@ function constructor() {
 
         let icons = '';
         let match;
-        while (match = rx.exec(spriteStr)) {
+        while ((match = rx.exec(spriteStr)) !== null) {
             const icon = Icon.create(match[1]);
 
             icons += icon.$elem;
