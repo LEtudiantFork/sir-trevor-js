@@ -1,21 +1,23 @@
 .st-errors {
-  background-color: lighten($error-color, 52%);
-  padding: 2em;
-  color: $error-color;
-  margin-bottom: 2em;
+    margin-bottom: 2em;
+    padding: 2em;
+
+    color: $error-color;
+
+    background-color: lighten($error-color, 52%);
 }
 
 .st-errors p,
 .st-errors ul {
-  margin: 0;
+    margin: 0;
 }
 
 .st-errors ul {
-  padding-left: 1em;
+    padding-left: 1em;
 }
 
 .st-errors p {
-  margin-bottom: 0.5em;
-  font-weight: 700;
-}
+    margin-bottom: 0.5em;
 
+    font-weight: 700;
+}

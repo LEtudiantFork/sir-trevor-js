@@ -18,8 +18,6 @@ const SELECTORS = {
 };
 
 function constructor() {
-    this.$elem = $(template);
-    this.$field = this.$elem.find(SELECTORS.field);
 
     this.mdlModal = MdlModal.create({
         slug: randomID(),
@@ -29,13 +27,14 @@ function constructor() {
 
     this.mdlModal.render({
         header: i18n.t('blocks:table:importXLS'),
-        content: '',
+        content: template,
         footer: {
             ok: 'Valider'
         }
     });
 
-    this.mdlModal.appendToContentArea(this.$elem);
+    this.$elem = this.mdlModal.$elem.find('.hot-import-xls');
+    this.$field = this.$elem.find(SELECTORS.field);
 
     this.mdlModal.on('shown', () => this.$field.focus());
     this.mdlModal.$elem.on('click', '[data-mdl-ok]', () => this.sendData());
