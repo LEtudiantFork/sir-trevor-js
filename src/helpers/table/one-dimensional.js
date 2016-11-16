@@ -108,13 +108,21 @@ export default {
             this.render();
         },
 
-        render() {
+        render(inputData) {
             this.$elem.html(renderTable({
                 data:this.data,
                 refKey: this.refKey,
                 valueKey: this.valueKey,
                 colors: this.colors
             }));
+
+            if (inputData) { // Reset focus at the end of the input
+                const { type, value } = inputData;
+                const input = this.$elem.find(`input[data-type="${ type }"][value="${ value }"]`);
+                const selectionRange = input.val().length * 2;
+                input.focus();
+                input[0].setSelectionRange(selectionRange, selectionRange);
+            }
         },
 
         updateCell({ ref, newValue }) {

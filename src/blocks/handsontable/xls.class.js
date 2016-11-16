@@ -18,7 +18,6 @@ const SELECTORS = {
 };
 
 function constructor() {
-
     this.mdlModal = MdlModal.create({
         slug: randomID(),
         animation: 'fade',

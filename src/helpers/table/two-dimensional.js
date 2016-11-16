@@ -178,7 +178,7 @@ export default {
             this.render();
         },
 
-        render() {
+        render(inputData) {
             const content = `
                 ${renderControls({
                     prop: this.propKey,
@@ -196,6 +196,14 @@ export default {
             `;
 
             this.$elem.html(content);
+
+            if (inputData) { // Reset focus at the end of the input
+                const { type, value } = inputData;
+                const input = this.$elem.find(`input[data-type="${ type }"][value="${ value }"]`);
+                const selectionRange = input.val().length * 2;
+                input.focus();
+                input[0].setSelectionRange(selectionRange, selectionRange);
+            }
         },
 
         updateCell({ ref, prop, newValue }) {

@@ -18,7 +18,8 @@ const HEADERS = {
     'prop-header': 'propKey'
 };
 
-const DEBOUNCE = 500;
+const DEBOUNCE = 1000; // for header/axis values who trigger re rendering
+const DEBOUNCE_SHORT = 500; // for input who doesn't trigger re rendering
 
 export default {
     registerClickListeners() {
@@ -58,7 +59,8 @@ export default {
             this.updateHeader({
                 key,
                 oldValue,
-                newValue
+                newValue,
+                _type: type
             });
         }, DEBOUNCE));
 
@@ -78,9 +80,9 @@ export default {
             this.updateKey({
                 type: AXIS[type],
                 oldValue,
-                newValue
+                newValue,
+                _type: type
             });
-            input.dataset.oldValue = newValue;
         }, DEBOUNCE));
 
         this.$elem.on('input', 'input[data-type="color"]', debounce(e => {
@@ -89,12 +91,13 @@ export default {
             const newValue = input.value.trim();
 
             this.updateColor({
-                prop,
                 ref,
+                prop,
                 newValue
             });
+
             input.dataset.oldValue = newValue;
-        }, DEBOUNCE));
+        }, DEBOUNCE_SHORT));
 
         this.$elem.on('input', 'input[data-type="number"]', debounce(e => {
             const input = e.currentTarget;
@@ -111,14 +114,16 @@ export default {
             }
 
             this.updateCell({
-                prop,
                 ref,
+                prop,
                 newValue
             });
+
             this.trigger(EVENTS.UPDATE.DATA);
+
             input.value = newValue;
             input.dataset.oldValue = newValue;
-        }, DEBOUNCE));
+        }, DEBOUNCE_SHORT));
     },
 
     getData() {
@@ -129,12 +134,12 @@ export default {
         return this.colors;
     },
 
-    updateKey({ type, oldValue, newValue }) {
+    updateKey({ type, _type, oldValue, newValue }) {
         this[type] = newValue;
 
         this.trigger(EVENTS.UPDATE.KEY, {
             type,
-            value: this[type]
+            value: newValue
         });
 
         this.data.forEach(item => {
@@ -144,7 +149,11 @@ export default {
         });
 
         this.trigger(EVENTS.UPDATE.DATA);
-        this.render();
+
+        this.render({
+            type: _type,
+            value: newValue
+        });
     },
 
     updateColor({ ref, newValue }) {
@@ -157,7 +166,7 @@ export default {
         this.trigger(EVENTS.UPDATE.COLOR);
     },
 
-    updateHeader({ key, oldValue, newValue }) {
+    updateHeader({ key, _type, oldValue, newValue }) {
         if (key === this.refKey) {
             this.colors.forEach(item => {
                 if (item[this.refKey] === oldValue) {
@@ -173,6 +182,10 @@ export default {
         });
 
         this.trigger(EVENTS.UPDATE.DATA);
-        this.render();
+
+        this.render({
+            type: _type,
+            value: newValue
+        });
     }
 };
