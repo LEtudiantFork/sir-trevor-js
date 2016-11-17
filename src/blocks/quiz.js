@@ -18,7 +18,7 @@ const tplBlock = (title, description, url) => `
 
         <div class="c-quiz__title">${title}</div>
         <div class="c-quiz__actions">
-            <a href="${url}" class="c-button c-button--medium c-button--rounded c-button--light-border u-themed u-typo--upper">
+            <a href="${url}" target="_blank" class="c-button c-button--medium c-button--rounded c-button--light-border u-themed u-typo--upper">
                 Commencer le quiz
             </a>
         </div>
