@@ -9,7 +9,7 @@
 const Blocks = require("./blocks");
 const Events = require("./packages/events");
 
-const BLOCK_REPLACER_CONTROL_TEMPLATE    = require("./templates/block-control");
+const BLOCK_REPLACER_CONTROL_TEMPLATE = require("./templates/block-control");
 
 function generateBlocksHTML(Blocks, availableTypes) {
     return availableTypes.reduce((memo, type) => {
