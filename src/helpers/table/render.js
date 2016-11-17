@@ -1,7 +1,7 @@
 import config from '../../config.js';
 
 const assets = {
-    iconBin: `<svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-Bin"/></svg>`
+    iconBin: () => `<svg role="img" class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-Bin"/></svg>`
 };
 
 export function renderBUTTON({ action = '', key = '', content = '' }) {
@@ -15,7 +15,7 @@ export function renderADD({ action, content }) {
 }
 
 export function renderDELETE({ action, key }) {
-    return renderBUTTON({ action: `delete-${action}`, key, content: assets.iconBin });
+    return renderBUTTON({ action: `delete-${action}`, key, content: assets.iconBin() });
 }
 
 export function renderINPUT({ value = '', cell = 'number', prop = '', ref = '' }) {

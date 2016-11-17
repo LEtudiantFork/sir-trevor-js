@@ -17,6 +17,12 @@
         border: none;
 
         background: transparent;
+
+        vertical-align: middle;
+    }
+
+    input[type=text] {
+        height: 2.5em;
     }
 
     button {

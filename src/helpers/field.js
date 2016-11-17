@@ -7,8 +7,8 @@ function buildOptions(options) {
 
 function buildSelect(field) {
     const multiple = field.multiple ? 'multiple="multiple"' : '';
-    const placeholder = field.placeholder ? `<option value="" selected disabled>${ field.placeholder }</option>` : '';
     const disabled = field.options.then ? 'disabled' : '';
+    const placeholder = field.placeholder ? `<option value="" selected placeholder disabled >${ field.placeholder }</option>` : '';
 
     return `
         <div class="st-block-field st-block-field-select">

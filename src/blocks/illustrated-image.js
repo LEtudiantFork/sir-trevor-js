@@ -4,7 +4,7 @@
 import xhr from 'etudiant-mod-xhr';
 
 import Block from '../block';
-import IconPicker from '../helpers/mediapicker.class';
+import MediaPicker from '../helpers/mediapicker.class';
 
 import ScribeTextBlockPlugin from './scribe-plugins/scribe-text-block-plugin';
 import ScribePastePlugin from './scribe-plugins/scribe-paste-plugin';
@@ -60,7 +60,7 @@ export default Block.extend({
             this.focus();
         }
 
-        this.mediaPicker = IconPicker.create({
+        this.mediaPicker = MediaPicker.create({
             apiUrl: this.globalConfig.apiUrl,
             accessToken: this.globalConfig.accessToken,
             application: this.globalConfig.application,
@@ -70,7 +70,6 @@ export default Block.extend({
         this.mediaPicker.on('selected', media => this.addMedia(media));
 
         this.$('img.st-block-img')[0].addEventListener('click', () => this.mediaPicker.open());
-
 
         this.mediator.on('block:remove', blockID => {
             if (this.blockID === blockID) {

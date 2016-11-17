@@ -20,7 +20,7 @@ function choiceContainer(choices) {
 function choiceButton({ icon, title, type }) {
     return `
     <button class="${CLASSES.button}" data-choice="${type}" type="button">
-        <svg class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-${icon}"></use></svg>
+        <svg class="st-icon"><use xlink:href="${ config.defaults.iconUrl }#icon-${ icon }"></use></svg>
         ${ title }
     </button>
     `;

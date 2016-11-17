@@ -35,7 +35,7 @@ const tplBlock = (title, choices, url) => `
                     </div>`
                 ).join('')}
                 <div class="c-block-poll__action">
-                    <a href="${url}" target="blank" class="c-button c-button--medium c-button--squared u-themed">Valider</a>
+                    <a href="${url}" target="_blank" class="c-button c-button--medium c-button--squared u-themed">Valider</a>
                 </div>
             </form>
         </div>

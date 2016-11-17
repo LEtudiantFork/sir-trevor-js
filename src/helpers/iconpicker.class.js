@@ -9,9 +9,9 @@ import IcoIcon  from 'etudiant-mod-icon';
 
 const attrIcon = 'data-icon-name';
 
-function constructor() {
-    this.$elem = $('<div class="st-icon-picker-container"></div>');
+const template = '<div class="st-icon-picker-container"></div>';
 
+function constructor() {
     this.mdlModal = MdlModal.create({
         slug: randomID(),
         animation: 'fade',
@@ -31,14 +31,15 @@ function constructor() {
             icons += icon.$elem;
         }
 
-        this.$elem.append(icons);
-
         this.mdlModal.render({
             header: 'Choisissez un icône',
-            content: this.$elem[0].outerHTML
+            content: template
         });
 
-        this.$elem.on('click', `[${attrIcon}]`, (e) => {
+        this.$elem = this.mdlModal.$elem.find('.st-icon-picker-container');
+        this.$elem.append(icons);
+
+        this.$elem.on('click', `[${ attrIcon }]`, (e) => {
             this.trigger('selected', $(e.currentTarget).attr(attrIcon));
         });
     });

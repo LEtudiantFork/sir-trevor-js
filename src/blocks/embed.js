@@ -18,12 +18,12 @@ const CHOOSEABLE = [
         icon: 'personality',
         type: 'personality'
     },
-    {
+    /*{
         title: i18n.t('blocks:poll:title'),
         api: 'polls',
         icon: 'Poll',
         type: 'poll'
-    },
+    },*/
     {
         title: i18n.t('blocks:script:title'),
         icon: 'script',

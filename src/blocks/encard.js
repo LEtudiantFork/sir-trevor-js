@@ -19,11 +19,11 @@ export default Block.extend({
 
     type: 'encard',
 
-    themeClass: `${CLASS_CONTAINER}--${DEFAULT_THEME.ref}`,
+    themeClass: `${ CLASS_CONTAINER }--${ DEFAULT_THEME.ref }`,
 
     title: () => i18n.t('blocks:encard:title'),
 
-    editorHTML: `<div class="${ CLASS_CONTAINER } ${CLASS_CONTAINER}--${DEFAULT_THEME.ref}"></div>`,
+    editorHTML: `<div class="${ CLASS_CONTAINER } ${ CLASS_CONTAINER }--${ DEFAULT_THEME.ref }"></div>`,
 
     listItemEditorHTML: '<p class="st-block--encard__item st-block__editor"></p>',
 
@@ -40,9 +40,7 @@ export default Block.extend({
     'multi_editable': true,
 
     controls() {
-        const themes = this.globalConfig.themesEncard || [];
-
-        this.themes = [ DEFAULT_THEME, ...themes ];
+        this.themes = this.globalConfig.themesEncard || [ DEFAULT_THEME ];
 
         const controls = this.themes.map(theme => {
             return {
@@ -75,15 +73,23 @@ export default Block.extend({
         this.container = this.container || this.inner.querySelector(SELECTOR_CONTAINER);
     },
 
-    loadData({ theme = 'default', listItems = [] }) {
+    loadData({ theme = this.getFirstTheme(), listItems = [] }) {
         this.setupContainer();
         this.setTheme(theme);
         listItems.forEach(item => this.addListItem(item.content));
     },
 
     onBlockRender() {
-        this.setupContainer();
-        if (this.editorIds.length < 1) { this.addListItem(); }
+        if (this.editorIds.length < 1) {
+            this.setupContainer();
+            this.setTheme(this.getFirstTheme());
+            this.addListItem();
+        }
+    },
+
+    getFirstTheme() {
+        const [ { ref: theme } ] = this.themes;
+        return theme;
     },
 
     setTheme(themeRef) {
@@ -93,7 +99,7 @@ export default Block.extend({
         }
 
         this.container.classList.remove(this.themeClass);
-        this.themeClass = `${CLASS_CONTAINER}--${themeRef}`;
+        this.themeClass = `${ CLASS_CONTAINER }--${ themeRef }`;
         this.container.classList.add(this.themeClass);
     },
 
