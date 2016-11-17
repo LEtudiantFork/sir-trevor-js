@@ -79,6 +79,7 @@ export default {
                         const optionsTemplate = fieldHelper.buildOptions(options);
                         $select.append(optionsTemplate);
                         $select.removeAttr('disabled');
+                        $select.find('option[placeholder]').attr('disabled', true).attr('selected', true);
                     })
                     .catch(err => console.error(err));
                 });

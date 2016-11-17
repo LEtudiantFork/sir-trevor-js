@@ -1,6 +1,6 @@
 import xhr from 'etudiant-mod-xhr';
-import fieldHelper from '../helpers/field';
-import PandoraSearch from '../helpers/pandora-search.class';
+import fieldHelper from './field';
+import PandoraSearch from './pandora-search.class';
 
 const cb = ({ content }) => content;
 const noop = () => {};

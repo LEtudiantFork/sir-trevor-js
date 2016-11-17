@@ -1,30 +1,14 @@
 import eventablejs from 'eventablejs';
 import randomID from 'random-id';
 
-import $        from 'etudiant-mod-dom';
 import MdlModal from 'etudiant-mod-modal';
 
 import { get as getFilters } from './filters';
 import { API_URL, parse as parseFilters, getConfig } from './filters-media';
 
+const template = '<div class="st-media-picker-container"></div>';
+
 function constructor({ apiUrl, type, accessToken, application }) {
-    this.$elem = $('<div class="st-media-picker-container"></div>');
-
-    this.pandoraSearch = getFilters({
-        url: `${ apiUrl }${ API_URL }${ application }`,
-        filtersUrl: `${ apiUrl }/edt/media`,
-        accessToken,
-        application,
-        container: this.$elem,
-        type,
-        callback: data => parseFilters(data).categories,
-        getConfig
-    });
-
-    this.pandoraSearch.on('selected', ({ content }) => {
-        this.trigger('selected', content);
-        this.close();
-    });
 
     this.mdlModal = MdlModal.create({
         slug: randomID(),
@@ -35,7 +19,28 @@ function constructor({ apiUrl, type, accessToken, application }) {
 
     this.mdlModal.render({
         header: i18n.t('blocks:illustrated:pickIcon'),
-        content: this.$elem[0].outerHTML
+        content: template
+    });
+
+    this.$elem = this.mdlModal.$elem.find('.st-media-picker-container');
+
+    this.pandoraSearch = getFilters({
+        url: `${ apiUrl }${ API_URL }${ application }`,
+        filtersUrl: `${ apiUrl }/edt/media`,
+        accessToken,
+        application,
+        container: this.$elem,
+        type,
+        callback(data) {
+            let { categories = [] } = parseFilters(data);
+            return categories;
+        },
+        getConfig
+    });
+
+    this.pandoraSearch.on('selected', ({ content }) => {
+        this.trigger('selected', content);
+        this.close();
     });
 }
 
