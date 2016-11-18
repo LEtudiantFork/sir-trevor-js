@@ -12,6 +12,8 @@ export { default as Quote } from './quote';
 
 export { default as Encard } from './encard';
 
+export { default as Tweet } from './tweet';
+
 /**
  * GROUP ILLUSTRATED
  */

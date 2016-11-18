@@ -151,6 +151,10 @@ var Locales = {
             markdown: {
                 placeholder: 'Rediger / Coller le markdown ici',
                 button: 'Importer le markdown'
+            },
+            tweet: {
+                title: 'Tweet',
+                fetch_error: 'Une erreur est survenue lors de la récupération du tweet'
             }
         }
     }
