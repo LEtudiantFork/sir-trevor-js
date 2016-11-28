@@ -17,7 +17,6 @@ var FormEvents = {
             // initialiser. Bit weird.
             new Submittable(form); // jshint ignore:line
             form.addEventListener('submit', this.onFormSubmit);
-            formBound = true;
         }
     },
 
@@ -33,6 +32,7 @@ var FormEvents = {
     },
 
     onFormSubmit: function(ev) {
+        formBound = true;
         var errors = FormEvents.onBeforeSubmit();
 
         if(errors > 0) {
