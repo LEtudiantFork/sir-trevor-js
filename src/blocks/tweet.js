@@ -17,7 +17,8 @@ export default Block.extend({
 
     title() { return i18n.t('blocks:tweet:title'); },
 
-    icon_name: 'twitter',
+    icon_name: 'Tweet',
+
 
     loadData(data) {
         const { html } = data;
