@@ -69,7 +69,7 @@ var Locales = {
             illustrated: {
                 title: 'Illustrée',
                 placeholder: 'Something something',
-                pickIcon: 'Choisissez une icône'
+                pickIcon: 'Choisissez une image'
             },
             illustratedValue: {
                 title: 'Valeur Illustrée',
