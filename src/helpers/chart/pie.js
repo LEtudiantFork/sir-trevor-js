@@ -40,20 +40,23 @@ export default {
             this.visualization = this.visualization || window.d3plus.viz().container(`#${this.id}`).type(this.type);
 
             this.visualization
-            .data(this.data)
-            .id(this.refKey)
-            .size(this.valueKey)
-            .height(this.$chartArea.outerWidth() * 0.75)
-            .legend({
-                align: 'start',
-                order: {
-                    sort: 'asc',
-                    value: 'id'
-                }
-            })
-            .attrs(this.colors)
-            .color('color')
-            .draw();
+                .data(this.data)
+                .id(this.refKey)
+                .size(this.valueKey)
+                .format({
+                    locale: "fr_FR"
+                })
+                .height(this.$chartArea.outerWidth() * 0.75)
+                .legend({
+                    align: 'start',
+                    order: {
+                        sort: 'asc',
+                        value: 'id'
+                    }
+                })
+                .attrs(this.colors)
+                .color('color')
+                .draw();
         },
 
         generate({ refKey, valueKey, table, colors }) {
@@ -71,6 +74,7 @@ export default {
                 colors: this.colors
             });
 
+            console.log(this.table);
             this.$tableArea.append(this.table.$elem);
 
             // need to wait for redraw otherwise d3plus doesn't find element
