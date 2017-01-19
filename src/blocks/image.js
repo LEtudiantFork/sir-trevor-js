@@ -3,6 +3,8 @@
 */
 
 import Block  from '../block';
+import { get as getFilters } from '../helpers/filters';
+import { API_URL, parse as parseFilters, getConfig } from '../helpers/filters-media';
 
 const editorHTML = `
     <div class="st-block--image">
@@ -14,6 +16,28 @@ const editorHTML = `
 `;
 
 export default Block.extend({
+
+    initialize: function() {
+        this.el.addEventListener('click', () => {
+            this.pandoraSearch = getFilters({
+                url: `${ this.globalConfig.apiUrl }${ API_URL }${ this.globalConfig.application }`,
+                filtersUrl: `${ this.globalConfig.apiUrl }/edt/media`,
+                accessToken: this.globalConfig.accessToken,
+                application: this.globalConfig.application,
+                container: this.editor,
+                type: "image",
+                miniature: '866x495',
+                callback: data => parseFilters(data).categories,
+                getConfig
+            });
+
+            this.pandoraSearch.once('selected', ({ type, content }) => {
+                this.pandoraSearch.destroy();
+                this.pandoraSearch = null; // to garbage collect
+                this.mediator.trigger('block:replace', this.el, type, content);
+            });
+        })
+    },
 
     type: 'image',
 
