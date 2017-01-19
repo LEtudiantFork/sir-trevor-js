@@ -8,8 +8,7 @@ import { API_URL, parse as parseFilters, getConfig } from './filters-media';
 
 const template = '<div class="st-media-picker-container"></div>';
 
-function constructor({ apiUrl, type, accessToken, application }) {
-
+function constructor({ apiUrl, type, accessToken, application, miniature }) {
     this.mdlModal = MdlModal.create({
         slug: randomID(),
         animation: 'fade',
@@ -23,7 +22,6 @@ function constructor({ apiUrl, type, accessToken, application }) {
     });
 
     this.$elem = this.mdlModal.$elem.find('.st-media-picker-container');
-
     this.pandoraSearch = getFilters({
         url: `${ apiUrl }${ API_URL }${ application }`,
         filtersUrl: `${ apiUrl }/edt/media`,
@@ -31,6 +29,7 @@ function constructor({ apiUrl, type, accessToken, application }) {
         application,
         container: this.$elem,
         type,
+        miniature,
         callback(data) {
             let { categories = [] } = parseFilters(data);
             return categories;

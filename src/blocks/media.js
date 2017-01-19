@@ -9,7 +9,8 @@ const CHOOSEABLE = [
     {
         title: i18n.t('blocks:image:title'),
         icon: 'Image',
-        type: 'image'
+        type: 'image',
+        miniature: '866x495'
     }, {
         title: i18n.t('blocks:video:title'),
         icon: 'Video',
@@ -42,6 +43,7 @@ export default Block.extend({
                 application: this.globalConfig.application,
                 container: this.editor,
                 type: choice.type,
+                miniature: choice.miniature,
                 callback: data => parseFilters(data).categories,
                 getConfig
             });

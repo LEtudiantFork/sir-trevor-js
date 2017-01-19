@@ -14,10 +14,10 @@ export const diaporama = `
 
 export const image = `
     <figure class="st-sub-block-image">
-        <img src="<%= data.thumbnail %>" />
+        <img src="<%= data.miniature %>" />
     </figure>
     <h3><%= data.legend %></h3>
-    <a class="st-sub-block-link" href="<%= data.file %>" target="_blank">
+    <a class="st-sub-block-link" href="<%= data.miniature %>" target="_blank">
         <svg role="img" class="st-icon"><use xlink:href="#icon-portrait"/></svg>
     </a>
 `;

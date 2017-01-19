@@ -27,7 +27,7 @@ function template(fields) {
  * @param  {Object} options.container
  * @param  {boolean} options.before
  */
-function init({ accessToken, app, application, fields, limit, type, subType, url, container, before }) {
+function init({ accessToken, app, application, fields, limit, type, subType, url, container, miniature, before }) {
     this.accessToken = accessToken;
     this.app = app;
     this.application = application;
@@ -36,6 +36,7 @@ function init({ accessToken, app, application, fields, limit, type, subType, url
     this.type = type;
     this.subType = subType;
     this.url = url;
+    this.miniature = miniature;
 
     this.render(container, before);
 }
@@ -99,11 +100,15 @@ export default {
                 {
                     'access_token': this.accessToken,
                     limit: this.limit,
-                    application: this.application || this.app
+                    application: this.application || this.app,
                 });
 
             if (this.type) {
                 data.type = this.type;
+            }
+
+            if (this.miniature) {
+                data.miniature = this.miniature;
             }
 
             this.nextSearch = data;

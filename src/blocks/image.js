@@ -25,8 +25,8 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
-    loadData({ file = '', legend = '' }) {
+    loadData({ miniature = '', legend = '' }) {
         this.$('input[name="legend"]')[0].value = legend;
-        this.$('img.st-block-img')[0].src = file;
+        this.$('img.st-block-img')[0].src = miniature;
     }
 });

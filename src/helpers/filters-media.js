@@ -36,7 +36,7 @@ function parse({ content }) {
     return { categories, copyrights, formats };
 }
 
-function getConfig({ url, accessToken, application, type, options }) {
+function getConfig({ url, accessToken, application, type, miniature, options }) {
     return {
         url,
         accessToken,
@@ -55,7 +55,8 @@ function getConfig({ url, accessToken, application, type, options }) {
                 placeholder: 'Categorie',
                 options
             }
-        ]
+        ],
+        miniature
     };
 }
 

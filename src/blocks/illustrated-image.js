@@ -64,9 +64,9 @@ export default Block.extend({
             apiUrl: this.globalConfig.apiUrl,
             accessToken: this.globalConfig.accessToken,
             application: this.globalConfig.application,
-            type: 'image'
+            type: 'image',
+            miniature: '205x160'
         });
-
         this.mediaPicker.on('selected', media => this.addMedia(media));
 
         this.$('img.st-block-img')[0].addEventListener('click', () => this.mediaPicker.open());
@@ -81,7 +81,7 @@ export default Block.extend({
 
     addMedia({ id }) {
         xhr.get(`${ this.globalConfig.apiUrl }${ API_URL }${ id }`, {
-            data: { 'access_token': this.globalConfig.accessToken }
+            data: { 'access_token': this.globalConfig.accessToken, 'miniature': '205x160'}
         })
         .then(({ content: media }) => {
             this.setData({ media });
@@ -89,8 +89,8 @@ export default Block.extend({
         });
     },
 
-    setImage({ formats = [], thumbnail }) {
-        this.$('img.st-block-img')[0].src = formats[this.globalConfig.formatImage] || thumbnail;
+    setImage({ thumbnail, miniature }) {
+        this.$('img.st-block-img')[0].src = miniature || thumbnail;
     },
 
     isEmpty() {

@@ -16,7 +16,7 @@ const sliderConfig = {
     increment: 2
 };
 
-export function get({ url, filtersUrl, accessToken, application, container, type, getConfig = noop, callback = cb }) {
+export function get({ url, filtersUrl, accessToken, application, container, type, miniature, getConfig = noop, callback = cb }) {
     const options = xhr
         .get(
             url,
@@ -29,15 +29,14 @@ export function get({ url, filtersUrl, accessToken, application, container, type
             console.error(err);
             throw err;
         });
-
     const filterConfig = getConfig({
         url: filtersUrl,
         accessToken,
         application,
         type,
+        miniature,
         options
     });
-
     return PandoraSearch.create({
         container,
         filterConfig,
