@@ -2,6 +2,7 @@
     "type": "pie",
     "refKey": "ref",
     "valueKey": "valeur",
+    "locale": "fr_FR",
     "colors": [
         { "ref": "Section 1", "color": "#aa2222" },
         { "ref": "Section 2", "color": "#22aa22" },

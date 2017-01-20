@@ -59,22 +59,24 @@ export default {
                 .draw();
         },
 
-        generate({ refKey, valueKey, table, colors }) {
+        generate({ refKey, valueKey, locale,  table, colors }) {
             this.type = MODEL.type;
             this.refKey = refKey || MODEL.refKey;
             this.valueKey = valueKey || MODEL.valueKey;
+            this.locale = locale || MODEL.locale;
             this.data = table || MODEL.table;
             this.colors = colors || MODEL.colors;
 
             this.table = Table.create({
                 type: '1D',
+
                 refKey: this.refKey,
                 valueKey: this.valueKey,
+                locale: this.locale,
                 data: this.data,
                 colors: this.colors
             });
 
-            console.log(this.table);
             this.$tableArea.append(this.table.$elem);
 
             // need to wait for redraw otherwise d3plus doesn't find element
@@ -100,7 +102,8 @@ export default {
                 refKey: this.refKey,
                 valueKey: this.valueKey,
                 table: this.data,
-                colors: this.colors
+                colors: this.colors,
+                locale: this.locale
             };
         }
     }
