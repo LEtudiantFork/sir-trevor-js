@@ -15,7 +15,6 @@ function init({ container, subBlockType, subBlockPreProcess, filterConfig, slide
     this.container = container;
     this.subBlockType = subBlockType;
     this.subBlockPreProcess = subBlockPreProcess; // @todo is this in the right place?
-
     this.subBlocks = [];
 
     // create container element
