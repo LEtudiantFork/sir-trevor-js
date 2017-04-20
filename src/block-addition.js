@@ -13,9 +13,10 @@ const EventBus = require('./event-bus');
 const Dom = require('./packages/dom');
 const Events = require("./packages/events");
 
-const TOP_CONTROLS_TEMPLATE = require("./templates/top-controls");
+// const TOP_CONTROLS_TEMPLATE = require("./templates/top-controls");
+import TOP_CONTROLS_TEMPLATE from "./templates/top-controls";
 
-module.exports.create = function(SirTrevor) {
+export function create(SirTrevor) {
 
   function createBlock(e) {
     // REFACTOR: mediator so that we can trigger events directly on instance?

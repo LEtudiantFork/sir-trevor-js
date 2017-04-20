@@ -1,3 +1,6 @@
+import Locales from './locales';
+import Editor from './editor';
+
 // ES6/ES7 shims
 require('core-js/library/fn/array/includes');
 require('core-js/library/fn/array/find');
@@ -11,7 +14,7 @@ var SirTrevor = {
 
     log: utils.log,
 
-    Locales: require('./locales'),
+    Locales: Locales,
 
     Events: require('./events'),
     EventBus: require('./event-bus'),
@@ -33,7 +36,7 @@ var SirTrevor = {
     Blocks: require('./blocks'),
 
     FormatBar: require('./format-bar'),
-    Editor: require('./editor'),
+    Editor: Editor,
 
     toMarkdown: require('./to-markdown'),
     toHTML: require('./to-html'),
@@ -70,4 +73,4 @@ var SirTrevor = {
 Object.assign(SirTrevor, require('./form-events'));
 
 
-module.exports = SirTrevor;
+export default SirTrevor;

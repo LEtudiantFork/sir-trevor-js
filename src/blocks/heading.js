@@ -37,12 +37,17 @@ export default Block.extend({
     },
 
     controls() {
-        this.headings = [ 'h1', 'h2', 'h3' ];
+        this.headings = [ 'h2', 'h3', 'h1' ];
+        this.labels = {
+            'h1': 'Titre',
+            'h2': 'Inter-titre',
+            'h3': 'Sous-Inter'
+        };
 
         const controls = this.headings.map(heading => {
             return {
                 event: 'click',
-                html: `<button type="button" class="st-control-block st-btn">${ heading }</button>`,
+                html: `<button type="button" class="st-control-block st-btn">${ this.labels[heading] }</button>`,
                 cb(e) {
                     e.preventDefault();
                     this.focus();
@@ -68,7 +73,7 @@ export default Block.extend({
     onBlockRender() {
         if (this.isEmpty()) {
             this.focus();
-            this._scribe.commands.h1.execute();
+            this._scribe.commands.h2.execute();
         }
         this.toggleEmptyClass();
     },

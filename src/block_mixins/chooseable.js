@@ -107,7 +107,7 @@ const ChoiceBox = {
     }
 };
 
-module.exports = {
+export default {
 
     mixinName: 'Chooseable',
 

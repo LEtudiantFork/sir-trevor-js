@@ -1,6 +1,6 @@
 import config from '../config.js';
 
-module.exports = () => {
+export default function () {
     return `
         <button class="st-block-addition" type="button">
             <span class="st-block-addition__button">

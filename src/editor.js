@@ -21,7 +21,8 @@ var BlockAddition = require('./block-addition');
 var BlockAdditionTop = require('./block-addition-top');
 var BlockManager = require('./block-manager');
 var ImportMarkdown = require('./import-markdown');
-var FormatBar = require('./format-bar');
+// var FormatBar = require('./format-bar');
+import FormatBar from './format-bar';
 var EditorStore = require('./extensions/editor-store');
 var ErrorHandler = require('./error-handler');
 
@@ -308,6 +309,6 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
 });
 
-module.exports = Editor;
+export default Editor;
 
 

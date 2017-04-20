@@ -9,7 +9,8 @@ var config = require('./config');
 
 var BlockReorder = require('./block-reorder');
 
-const BLOCK_TEMPLATE = require('./templates/block');
+// const BLOCK_TEMPLATE = require('./templates/block');
+import BLOCK_TEMPLATE from './templates/block';
 
 function getGlobalConfig(instanceID) {
     var instance = config.instances.filter(instance => {
@@ -149,4 +150,4 @@ SimpleBlock.fn = SimpleBlock.prototype;
 // Allow our Block to be extended.
 SimpleBlock.extend = require('./helpers/extend');
 
-module.exports = SimpleBlock;
+export default SimpleBlock;

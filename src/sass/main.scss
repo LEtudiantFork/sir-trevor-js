@@ -37,7 +37,7 @@ $theme-color: #e2001a !default;
 // Helpers
 @import 'helpers';
 
-@import 'handsontable/dist/handsontable.full';
+@import '~handsontable/dist/handsontable.full';
 
 // Blocks
 @import 'block';

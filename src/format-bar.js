@@ -14,7 +14,8 @@ var utils = require('./utils');
 var Dom = require('./packages/dom');
 var Events = require('./packages/events');
 
-const FORMAT_BUTTON_TEMPLATE = require("./templates/format-button");
+// const FORMAT_BUTTON_TEMPLATE = require("./templates/format-button");
+import FORMAT_BUTTON_TEMPLATE from "./templates/format-button";
 
 var FormatBar = function(options, mediator, editor) {
     this.editor = editor;
@@ -134,4 +135,4 @@ Object.assign(FormatBar.prototype, require('./function-bind'), require('./mediat
 
 });
 
-module.exports = FormatBar;
+export default FormatBar;

@@ -10,7 +10,8 @@ var Dom = require('./packages/dom');
 var Events = require('./packages/events');
 var BlockMixins = require('./block_mixins');
 
-var SimpleBlock = require('./simple-block');
+// var SimpleBlock = require('./simple-block');
+import SimpleBlock from './simple-block';
 var BlockReorder = require('./block-reorder');
 var BlockDeletion = require('./block-deletion');
 var EventBus = require('./event-bus');
@@ -337,6 +338,22 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
         }
       });
     });
+
+    var ctrlDown = false;
+
+    Events.delegate(block.el,'.st-text-block', 'keyup', function(ev) {
+      if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
+        ctrlDown = false;
+      }
+    });
+    Events.delegate(block.el, '.st-text-block', 'keydown', function(ev) {
+      if(ev.which === 17 || ev.which === 224 || ev.which === 91) {
+        ctrlDown = true;
+      }
+      if(ev.which === 32 && ctrlDown) {
+        console.log('&nbsp;');
+      }
+    });
   },
 
   _initTextBlocks: function() {
@@ -426,4 +443,4 @@ Object.assign(Block.prototype, SimpleBlock.fn, require('./block-validations'), {
 
 Block.extend = require('./helpers/extend'); // Allow our Block to be extended.
 
-module.exports = Block;
+export default Block;

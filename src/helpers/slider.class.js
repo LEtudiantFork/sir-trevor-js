@@ -1,5 +1,5 @@
 import $ from 'etudiant-mod-dom';
-import loadable from 'etudiant-mod-util/dist/behaviour/loadable';
+import loadable from 'etudiant-mod-util/src/behaviour/loadable';
 
 import Slide from './slide.class';
 

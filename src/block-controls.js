@@ -9,7 +9,8 @@
 const Blocks = require("./blocks");
 const Events = require("./packages/events");
 
-const BLOCK_REPLACER_CONTROL_TEMPLATE = require("./templates/block-control");
+// const BLOCK_REPLACER_CONTROL_TEMPLATE = require("./templates/block-control");
+import BLOCK_REPLACER_CONTROL_TEMPLATE from "./templates/block-control";
 
 function generateBlocksHTML(Blocks, availableTypes) {
     return availableTypes.reduce((memo, type) => {
@@ -31,7 +32,7 @@ function render(Blocks, availableTypes) {
     return elButtons;
 }
 
-module.exports.create = function(SirTrevor) {
+export function create(SirTrevor) {
 
     // REFACTOR - should probably not know about blockManager
     var el = render(Blocks, SirTrevor.blockManager.blockTypes);
