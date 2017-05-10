@@ -155,6 +155,9 @@ var Locales = {
             tweet: {
                 title: 'Tweet',
                 fetch_error: 'Une erreur est survenue lors de la récupération du tweet'
+            },
+            hr: {
+                title: 'Séparateur'
             }
         }
     }

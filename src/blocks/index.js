@@ -14,6 +14,8 @@ export { default as Encard } from './encard';
 
 export { default as Tweet } from './tweet';
 
+export { default as Hr } from './hr';
+
 /**
  * GROUP ILLUSTRATED
  */

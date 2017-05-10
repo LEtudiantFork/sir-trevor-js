@@ -27,11 +27,28 @@ export default Block.extend({
     _serializeData() {
         utils.log(`toData for %c${this.blockID}`, utils.logBold);
 
+        var data = {};
+
         if (this.chart) {
-            return this.chart.getData();
+            data = this.chart.getData();
         }
 
-        return {};
+        // Add any inputs to the data attr
+        var matcher = [
+          'input:not(.st-paste-block):not(.st-control-block)',
+          'textarea:not(.st-paste-block)',
+          'select:not(.st-paste-block)',
+          'button:not(.st-paste-block):not(.st-control-block)'
+        ].join(",");
+        if (this.$(matcher).length > 0) {
+          Array.prototype.forEach.call(this.$(matcher), function(input) {
+            if (input.getAttribute('name')) {
+              data[input.getAttribute('name')] = input.value;
+            }
+          });
+        }
+
+        return data;
     },
 
     onBlockRender() {
