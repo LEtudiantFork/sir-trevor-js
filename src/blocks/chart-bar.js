@@ -3,7 +3,7 @@
 */
 
 import Block from '../block';
-import Chart from '../helpers/chart';
+import Chart from '../helpers/chart/index';
 import utils from '../utils';
 import { isEmpty } from '../lodash';
 
@@ -52,7 +52,9 @@ export default Block.extend({
     },
 
     onBlockRender() {
-        if (isEmpty(this.getBlockData())) {
+        var data = this.getBlockData();
+        var keys = Object.keys(data);
+        if (isEmpty(data) || (keys[0] === 'anchor' && keys.length === 1)) {
             this.chart = Chart.create({ type: 'bar' });
             this.editor.appendChild(this.chart.$elem[0]);
         }

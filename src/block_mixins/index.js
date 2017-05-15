@@ -3,7 +3,7 @@
 module.exports = {
   Ajaxable: require('./ajaxable.js'),
   Controllable: require('./controllable.js'),
-  Chooseable: require('./chooseable.js'),
+  Chooseable: require('./chooseable.js').default,
   Droppable: require('./droppable.js'),
   Fetchable: require('./fetchable.js'),
   Pastable: require('./pastable.js'),

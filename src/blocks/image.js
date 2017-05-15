@@ -16,27 +16,32 @@ const editorHTML = `
 `;
 
 export default Block.extend({
+    onBlockRender: function() {
+        this.onClickBinded = this.onClick.bind(this);
+        this.$('img.st-block-img')[0].addEventListener('click',  this.onClickBinded);
+    },
 
-    initialize: function() {
-        this.el.addEventListener('click', () => {
-            this.pandoraSearch = getFilters({
-                url: `${ this.globalConfig.apiUrl }${ API_URL }${ this.globalConfig.application }`,
-                filtersUrl: `${ this.globalConfig.apiUrl }/edt/media`,
-                accessToken: this.globalConfig.accessToken,
-                application: this.globalConfig.application,
-                container: this.editor,
-                type: "image",
-                miniature: '866x495',
-                callback: data => parseFilters(data).categories,
-                getConfig
-            });
 
-            this.pandoraSearch.once('selected', ({ type, content }) => {
-                this.pandoraSearch.destroy();
-                this.pandoraSearch = null; // to garbage collect
-                this.mediator.trigger('block:replace', this.el, type, content);
-            });
-        })
+    onClick: function(e) {
+        e.target.removeEventListener('click', this.onClickBinded);
+        this.pandoraSearch = getFilters({
+            url: `${ this.globalConfig.apiUrl }${ API_URL }${ this.globalConfig.application }`,
+            filtersUrl: `${ this.globalConfig.apiUrl }/edt/media`,
+            accessToken: this.globalConfig.accessToken,
+            application: this.globalConfig.application,
+            container: this.editor,
+            type: "image",
+            miniature: '866x495',
+            callback: data => parseFilters(data).categories,
+            getConfig
+        });
+
+        this.pandoraSearch.once('selected', ({ type, content }) => {
+            this.pandoraSearch.destroy();
+            this.pandoraSearch = null; // to garbage collect
+            this.mediator.trigger('block:replace', this.el, type, content);
+        });
+
     },
 
     type: 'image',

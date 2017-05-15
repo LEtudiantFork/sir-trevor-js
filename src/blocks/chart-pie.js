@@ -52,7 +52,9 @@ export default Block.extend({
     },
 
     onBlockRender() {
-        if (isEmpty(this.getBlockData())) {
+        var data = this.getBlockData();
+        var keys = Object.keys(data);
+        if (isEmpty(data) || (keys[0] === 'anchor' && keys.length === 1)) {
             this.chart = Chart.create({ type: 'pie' });
             this.editor.appendChild(this.chart.$elem[0]);
         }

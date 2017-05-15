@@ -50,8 +50,20 @@ export default Block.extend({
                 html: `<button type="button" class="st-control-block st-btn">${ this.labels[heading] }</button>`,
                 cb(e) {
                     e.preventDefault();
-                    this.focus();
-                    this._scribe.commands[heading].execute();
+
+                    if (!e.currentTarget.classList.contains("is-active")) {
+
+                        e.currentTarget.classList.add("is-active");
+                        var sibblings = e.currentTarget.parentNode.childNodes;
+                        for (var i = 0, lgth = sibblings.length; i<lgth; i++) {
+                            if (sibblings[i] !== e.currentTarget) {
+                                sibblings[i].classList.remove("is-active");
+                            }
+                        }
+
+                        this.focus();
+                        this._scribe.commands[heading].execute();
+                    }
                 }
             };
         });
