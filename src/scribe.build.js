@@ -571,7 +571,7 @@
       var array = this._array;
       var maxIndex = array.length - 1;
       var ii = 0;
-      return new Iterator(function() 
+      return new Iterator(function()
         {return ii > maxIndex ?
           iteratorDone() :
           iteratorValue(type, ii, array[reverse ? maxIndex - ii++ : ii++])}
@@ -1042,7 +1042,7 @@
 
     Repeat.prototype.__iterator = function(type, reverse) {var this$0 = this;
       var ii = 0;
-      return new Iterator(function() 
+      return new Iterator(function()
         {return ii < this$0.size ? iteratorValue(type, ii++, this$0._value) : iteratorDone()}
       );
     };
@@ -3226,7 +3226,7 @@
         return flipSequence;
       };
     }
-    reversedSequence.get = function(key, notSetValue) 
+    reversedSequence.get = function(key, notSetValue)
       {return iterable.get(useKeys ? key : -1 - key, notSetValue)};
     reversedSequence.has = function(key )
       {return iterable.has(useKeys ? key : -1 - key)};
@@ -3421,7 +3421,7 @@
         return this.cacheResult().__iterate(fn, reverse);
       }
       var iterations = 0;
-      iterable.__iterate(function(v, k, c) 
+      iterable.__iterate(function(v, k, c)
         {return predicate.call(context, v, k, c) && ++iterations && fn(v, k, this$0)}
       );
       return iterations;
@@ -3612,7 +3612,7 @@
     interposedSequence.size = iterable.size && iterable.size * 2 -1;
     interposedSequence.__iterateUncached = function(fn, reverse) {var this$0 = this;
       var iterations = 0;
-      iterable.__iterate(function(v, k) 
+      iterable.__iterate(function(v, k)
         {return (!iterations || fn(separator, iterations++, this$0) !== false) &&
         fn(v, iterations++, this$0) !== false},
         reverse
@@ -7449,29 +7449,32 @@ module.exports = function () {
                     return node.nodeName === this.nodeName;
                 }.bind(this));
                 var initialLink = anchorNode ? anchorNode.href : '';
-                var link = window.prompt('Enter a link.', initialLink);
+                var link = window.prompt('Saisissez un lien externe ou interne', initialLink);
                 if (anchorNode) {
                     range.selectNode(anchorNode);
                     selection.selection.removeAllRanges();
                     selection.selection.addRange(range);
                 }
                 if (link) {
+
+                  if (link.substr(0, 1) !== '#') {
                     var urlProtocolRegExp = /^https?\:\/\//;
                     var mailtoProtocolRegExp = /^mailto\:/;
                     if (!urlProtocolRegExp.test(link) && !mailtoProtocolRegExp.test(link)) {
                         if (/@/.test(link)) {
-                            var shouldPrefixEmail = window.confirm('The URL you entered appears to be an email address. ' + 'Do you want to add the required \u201Cmailto:\u201D prefix?');
+                            var shouldPrefixEmail = window.confirm('Vous avez saisi une adresse email. ' + ' Voulez vous ajouter le prefixe \u201Cmailto:\u201D ?');
                             if (shouldPrefixEmail) {
                                 link = 'mailto:' + link;
                             }
                         } else {
-                            var shouldPrefixLink = window.confirm('The URL you entered appears to be a link. ' + 'Do you want to add the required \u201Chttp://\u201D prefix?');
+                            var shouldPrefixLink = window.confirm('Vous n\'avez pas saisi le prefixe \u201Chttp://\u201D' + ' Voulez vous l\'ajouter ?');
                             if (shouldPrefixLink) {
                                 link = 'http://' + link;
                             }
                         }
                     }
-                    scribe.api.SimpleCommand.prototype.execute.call(this, link);
+                  }
+                  scribe.api.SimpleCommand.prototype.execute.call(this, link);
                 }
             };
             linkPromptCommand.queryState = function () {
