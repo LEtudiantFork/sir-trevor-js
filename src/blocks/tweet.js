@@ -21,14 +21,16 @@ export default Block.extend({
 
 
     loadData(data) {
-        const { html } = data;
-        this.inner.innerHTML = html;
+        if (data.html) {
+            const { html } = data;
+            this.inner.innerHTML = html;
 
-        const [ , scriptUrl ] = /<script .+src="(\S+)"/gi.exec(html);
-        const script = document.createElement('script');
-        script.setAttribute('src', scriptUrl);
+            const [ , scriptUrl ] = /<script .+src="(\S+)"/gi.exec(html);
+            const script = document.createElement('script');
+            script.setAttribute('src', scriptUrl);
 
-        this.inner.appendChild(script);
+            this.inner.appendChild(script);
+        }
     },
 
     onContentPasted(event) {

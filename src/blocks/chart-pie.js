@@ -48,6 +48,11 @@ export default Block.extend({
           });
         }
 
+        var keys = Object.keys(data);
+        if (_.isEmpty(data) || (keys[0] === 'anchor' && keys.length === 1)) {
+            data = {};
+        }
+
         return data;
     },
 

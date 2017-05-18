@@ -43,6 +43,8 @@ export default Block.extend({
     _serializeData() {
         utils.log(`toData for %c${this.blockID}`, utils.logBold);
 
+        var data = DEFAULT_DATA;
+
         if (this.handsontable) {
             const table = this.handsontable.getData();
             const mergeCells = this.handsontable.mergeCells.mergedCellInfoCollection;
@@ -50,10 +52,30 @@ export default Block.extend({
             const theadActive = this.handsontable.headinger.theadActive;
             const tfootActive = this.handsontable.headinger.tfootActive;
 
-            return { table, mergeCells, thCells, theadActive, tfootActive };
+            data = { table, mergeCells, thCells, theadActive, tfootActive };
         }
 
-        return DEFAULT_DATA;
+        // Add any inputs to the data attr
+        var matcher = [
+          'input:not(.st-paste-block):not(.st-control-block)',
+          'textarea:not(.st-paste-block)',
+          'select:not(.st-paste-block)',
+          'button:not(.st-paste-block):not(.st-control-block)'
+        ].join(",");
+        if (this.$(matcher).length > 0) {
+          Array.prototype.forEach.call(this.$(matcher), function(input) {
+            if (input.getAttribute('name')) {
+              data[input.getAttribute('name')] = input.value;
+            }
+          });
+        }
+
+        var keys = Object.keys(data);
+        if (_.isEmpty(data) || (keys[0] === 'anchor' && keys.length === 1)) {
+            data = {};
+        }
+
+        return data;
     },
 
     loadData({ table, mergeCells, thCells, theadActive, tfootActive }) {
