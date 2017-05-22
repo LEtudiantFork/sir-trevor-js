@@ -31,7 +31,7 @@ export { default as Image } from './image';
 export { default as Video } from './video';
 export { default as Diaporama } from './diaporama';
 
-// export { default as Iframe } from './iframe'; On ne se sert plus de l'iframe.
+export { default as Iframe } from './iframe';
 
 /**
  * GROUP EMBED
