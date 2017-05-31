@@ -86,6 +86,8 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
+    countable: false,
+
     loadData({ id }) {
         this.$elem = $(this.$('.st-block--diaporama')[0]);
 

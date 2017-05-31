@@ -22,6 +22,8 @@ export default Block.extend({
 
     formatBarEnabled: false,
 
-    anchorable: false
+    anchorable: false,
+
+    countable: false
 
 });

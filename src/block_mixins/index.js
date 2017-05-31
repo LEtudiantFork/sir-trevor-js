@@ -10,5 +10,6 @@ module.exports = {
   Uploadable: require('./uploadable.js'),
   MultiEditable: require('./multi-editable.js'),
   Textable: require('./textable.js'),
-  Anchorable: require('./anchorable.js')
+  Anchorable: require('./anchorable.js'),
+  Countable: require('./countable.js')
 };

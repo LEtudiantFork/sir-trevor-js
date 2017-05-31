@@ -22,6 +22,8 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
+    countable: false,
+
     loadData({ script = '' }) {
         this.$('textarea')[0].value = script;
     },

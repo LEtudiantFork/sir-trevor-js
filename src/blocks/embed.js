@@ -47,6 +47,8 @@ export default Block.extend({
 
     formatBarEnabled: false,
 
+    countable: false,
+
     onBlockRender() {
         this.createChoices(CHOOSEABLE, choice => {
             if (choice.type === 'script') {

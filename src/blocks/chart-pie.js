@@ -19,6 +19,8 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
+    countable: false,
+
     loadData(data) {
         this.chart = Chart.create(data);
         this.editor.appendChild(this.chart.$elem[0]);

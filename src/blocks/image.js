@@ -54,6 +54,8 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
+    countable: false,
+
     loadData({ miniature = '', legend = '' }) {
         this.$('input[name="legend"]')[0].value = legend;
         this.$('img.st-block-img')[0].src = miniature;

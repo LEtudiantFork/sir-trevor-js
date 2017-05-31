@@ -29,6 +29,8 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
+    countable: false,
+
     loadData({ file = '', thumbnail = '' }) {
         this.$('.c-video')[0].dataset.vidPoster = thumbnail;
         this.$('source')[0].src = file;

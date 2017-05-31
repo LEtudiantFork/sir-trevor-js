@@ -10,6 +10,7 @@ export default Block.extend({
 
     type: 'tweet',
     pastable: true,
+    countable: false,
 
     drop_options: {
         re_render_on_reorder: true

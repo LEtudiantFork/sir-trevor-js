@@ -28,6 +28,8 @@ export default Block.extend({
 
     chooseable: true,
 
+    countable: false,
+
     onBlockRender() {
         this.createChoices(CHOOSEABLE, choice => {
             this.mediator.trigger('block:replace', this.el, choice.type);

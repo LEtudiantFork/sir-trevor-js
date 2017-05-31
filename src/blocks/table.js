@@ -40,6 +40,8 @@ export default Block.extend({
 
     formatBarEnabled: false,
 
+    countable: false,
+
     _serializeData() {
         utils.log(`toData for %c${this.blockID}`, utils.logBold);
 

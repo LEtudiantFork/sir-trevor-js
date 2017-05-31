@@ -41,6 +41,8 @@ export default Block.extend({
 
     formatBarEnabled: true,
 
+    countable: false,
+
     configureScribe(scribe) {
         scribe.use(new ScribeTextBlockPlugin(this));
         scribe.use(new ScribePastePlugin(this));

@@ -40,6 +40,8 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
+    countable: false,
+
     loadData({ title = '', description = '', url = '' }) {
         this.inner.innerHTML = tplBlock(title, description, url);
     }

@@ -51,6 +51,8 @@ export default Block.extend({
 
     toolbarEnabled: false,
 
+    countable: false,
+
     loadData({ title = '', choices = [], url = '' }) {
         this.inner.innerHTML = tplBlock(title, choices, url);
     }

@@ -40,6 +40,8 @@ export default Block.extend({
 
     chooseable: true,
 
+    countable: false,
+
     onBlockRender() {
         this.createChoices(CHOOSEABLE, choice => {
             const { type, block, position } = choice;
