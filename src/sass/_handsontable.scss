@@ -6,17 +6,42 @@
 }
 
 .st-block--handsontable table.htCore {
+    border-radius: 5px;
+    border: 1px solid #000 !important;
+    font-size: 13px;
+
+    tr:last-child {
+        td,
+        th {
+            border-bottom: none;
+        }
+    }
+
     th,
     td {
+        border-top: none !important;
+        border-right: none !important;
+        border-left: none !important;
         background: none;
+        border-bottom: 1px dashed $black;
+        padding: 5px;
+        text-align: center;
+        height: auto;
+        line-height: 1;
+
+        &:not(:last-child) {
+            border-right: 1px dashed $black !important;
+        }
     }
 
     td.visualy-th {
-        background: $light-ui-color;
+        font-weight: bold;
     }
 
     td.visualy-thead,
     td.visualy-tfoot {
+        font-weight: bold;
+        background: $light-ui-color;
         border-color: $base-ui-color;
         border-top: 1px solid $base-ui-color;
     }

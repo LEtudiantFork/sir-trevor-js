@@ -22,8 +22,9 @@ module.exports = {
         this.el.insertBefore(input, this.inner);
 
         input.addEventListener('change', () => { this.blockStorage.data.anchor = input.value; });
-
-        this.blockStorage.data.anchor = input.value;
+        if (this.blockStorage.type === "quiz" || this.blockStorage.type === "personality") {
+            this.blockStorage.data.anchor = input.value;
+        }
         //$(this.inner).append('<input class="st-input-string js-anchor-input" name="anchor" placeholder="Anchor name" style="width: 100%; margin-top: 10px; text-align: center">');
     },
 
