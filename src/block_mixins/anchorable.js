@@ -23,6 +23,7 @@ module.exports = {
 
         input.addEventListener('change', () => { this.blockStorage.data.anchor = input.value; });
 
+        this.blockStorage.data.anchor = input.value;
         //$(this.inner).append('<input class="st-input-string js-anchor-input" name="anchor" placeholder="Anchor name" style="width: 100%; margin-top: 10px; text-align: center">');
     },
 
