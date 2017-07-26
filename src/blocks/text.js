@@ -28,7 +28,6 @@ export default Block.extend({
 
     configureScribe(scribe) {
         scribe.use(new ScribeTextBlockPlugin(this));
-        scribe.use(new ScribePastePlugin(this));
         scribe.use(new ScribeQuotePlugin(this));
 
         scribe.on('content-changed', () => this.toggleEmptyClass());
@@ -37,6 +36,7 @@ export default Block.extend({
     scribeOptions: {
         allowBlockElements: true,
         tags: {
+            br: true,
             p: true,
             strong: false
         }
