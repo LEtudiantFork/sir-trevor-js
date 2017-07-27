@@ -5,7 +5,7 @@ import Block from '../block';
 
 const CHOOSEABLE = [
     {
-        title: 'Barre',
+        title: 'Histogramme',
         icon: 'bar-chart',
         type: 'chartBar'
     },

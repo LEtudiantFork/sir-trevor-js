@@ -58,21 +58,21 @@ var Locales = {
                 prev: 'Précédent'
             },
             chart: {
-                title: 'Charte'
+                title: 'Diagramme'
             },
             barChart: {
-                title: 'Charte de barres'
+                title: 'Histogramme'
             },
             pieChart: {
-                title: 'Charte en camembert'
+                title: 'Camembert'
             },
             illustrated: {
-                title: 'Illustrée',
+                title: 'Illustration',
                 placeholder: 'Something something',
                 pickIcon: 'Choisissez une image'
             },
             illustratedValue: {
-                title: 'Valeur Illustrée',
+                title: 'Icône',
                 placeholder: 'Titre',
                 pickIcon: 'Choisir une icône'
             },
