@@ -31,7 +31,7 @@ export default Block.extend({
             application: this.globalConfig.application,
             container: this.editor,
             type: "image",
-            miniature: '866x495',
+            miniature: '1024x_',
             callback: data => parseFilters(data).categories,
             getConfig
         });

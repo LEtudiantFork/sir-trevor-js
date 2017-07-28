@@ -10,7 +10,7 @@ const CHOOSEABLE = [
         title: i18n.t('blocks:image:title'),
         icon: 'Image',
         type: 'image',
-        miniature: '866x495'
+        miniature: '1024x_'
     }, {
         title: i18n.t('blocks:video:title'),
         icon: 'Video',
