@@ -44,7 +44,11 @@ export default {
                 .id(this.refKey)
                 .size(this.valueKey)
                 .format({
-                    locale: "fr_FR"
+                  "locale": "fr_FR",
+                  //Evite la réecriture du texte par D3. Il ajoute par défaut des majuscules à chaque mot.
+                  "text": function(text,key){
+                    return text;
+                  }
                 })
                 .height(this.$chartArea.outerWidth() * 0.75)
                 .legend({

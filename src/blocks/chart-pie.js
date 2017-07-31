@@ -22,6 +22,7 @@ export default Block.extend({
     countable: false,
 
     loadData(data) {
+      //Reset les datas si on nous renvoie un mauvais json. 
         if(data.type == undefined) {
           data.type = 'pie'
         };
