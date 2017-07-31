@@ -22,6 +22,10 @@ export default Block.extend({
     countable: false,
 
     loadData(data) {
+        if(data.type == undefined) {
+          data.type = 'pie'
+        };
+
         this.chart = Chart.create(data);
         this.editor.appendChild(this.chart.$elem[0]);
     },
