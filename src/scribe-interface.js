@@ -6,7 +6,7 @@ var config = require('./config');
 var scribeBuild = require('./scribe.build.js');
 
 var sanitizeDefaults = {
-    p: true,
+    p: false,
     h1: true,
     h2: true,
     h3: true,
@@ -17,7 +17,7 @@ var sanitizeDefaults = {
     },
     i: true,
     b: true,
-    strong: true,
+    strong: false,
     em: true
 };
 

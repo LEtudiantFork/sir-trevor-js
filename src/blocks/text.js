@@ -34,10 +34,9 @@ export default Block.extend({
     },
 
     scribeOptions: {
-        allowBlockElements: true,
+        allowBlockElements: false,
         tags: {
-            br: true,
-            p: true,
+            p: false,
             strong: false
         }
     },

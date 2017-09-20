@@ -44,10 +44,11 @@ export default Block.extend({
             'h3': 'Sous-Inter'
         };
 
-        const controls = this.headings.map(heading => {
+        const controls = this.headings.map((heading, index) => {
             return {
                 event: 'click',
                 html: `<button type="button" class="st-control-block st-btn">${ this.labels[heading] }</button>`,
+                cssClasses: index === 0 ? 'st-block__control-ui__item is-active' : 'st-block__control-ui__item',
                 cb(e) {
                     e.preventDefault();
 
@@ -62,6 +63,7 @@ export default Block.extend({
                         }
 
                         this.focus();
+                        document.execCommand('selectAll',false,null); //FIX Firefox
                         this._scribe.commands[heading].execute();
                     }
                 }

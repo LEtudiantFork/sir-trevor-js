@@ -5,7 +5,7 @@
 import Block from '../block';
 import utils from '../utils';
 
-import ScribeListBlockPlugin from './scribe-plugins/scribe-list-block-plugin';
+// import ScribeListBlockPlugin from './scribe-plugins/scribe-list-block-plugin';
 
 const CLASS_CONTAINER = 'st-block--encard';
 const SELECTOR_CONTAINER = `.${ CLASS_CONTAINER }`;
@@ -58,7 +58,7 @@ export default Block.extend({
     },
 
     configureScribe(scribe) {
-        scribe.use(new ScribeListBlockPlugin(this));
+        //scribe.use(new ScribeListBlockPlugin(this));
     },
 
     scribeOptions: {
