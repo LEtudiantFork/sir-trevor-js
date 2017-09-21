@@ -133,11 +133,6 @@ var ScribeTextBlockPlugin = function(block) {
     scribe.el.addEventListener('keyup', function(ev) {
       if (ev.keyCode === 8 && isAtStart) {
         ev.preventDefault();
-
-        block.mediator.trigger('block:remove', block.blockID, {
-          transposeContent: true
-        });
-
         isAtStart = false;
       }
     });

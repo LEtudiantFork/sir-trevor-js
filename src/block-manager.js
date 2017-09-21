@@ -115,6 +115,7 @@ Object.assign(BlockManager.prototype, require('./function-bind'), require('./med
     this.blocks = this.blocks.filter(function(item) {
       return (item.blockID !== block.blockID);
     });
+    console.trace();
 
     block.remove();
 
