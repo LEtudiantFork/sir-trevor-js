@@ -62,7 +62,15 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     config.instances.push(this);
 
     this.build();
-
+    setInterval(() => {
+      if(this.store.store.data.length > 0) {
+        console.log('ENREGISTRE');
+        this.onFormSubmit();
+      } else {
+        console.log('ENREGISTRE PAS');
+      }
+      // this.form.submit();
+    },5000)
     FormEvents.bindFormSubmit(this.form);
   },
 
@@ -220,7 +228,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
    * Handle a form submission of this Editor instance.
    * Validate all of our blocks, and serialise all data onto the JSON objects
    */
-  onFormSubmit: function(shouldValidate) {
+    onFormSubmit: function(shouldValidate) {
     // if undefined or null or anything other than false - treat as true
     shouldValidate = (shouldValidate === false) ? false : true;
 
@@ -228,7 +236,7 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.mediator.trigger('errors:reset');
     this.store.reset();
-
+    console.log(this.store);
     this.validateBlocks(shouldValidate);
     this.blockManager.validateBlockTypesExist(shouldValidate);
 
@@ -310,5 +318,3 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 });
 
 export default Editor;
-
-

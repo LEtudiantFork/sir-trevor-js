@@ -33,6 +33,7 @@ Object.assign(Submittable.prototype, {
     this.canSubmit = true;
     this.globalUploadCount = 0;
     this._bindEvents();
+
   },
 
   setSubmitButton: function(e, message) {
@@ -107,4 +108,3 @@ Object.assign(Submittable.prototype, {
 });
 
 module.exports = Submittable;
-
