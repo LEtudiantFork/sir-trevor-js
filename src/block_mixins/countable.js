@@ -16,5 +16,6 @@ module.exports = {
 
         this.el.addEventListener('keyup', () => { setTimeout(() => {span.innerHTML = this.inner.querySelector('[contenteditable]').textContent.trim().length; },0); });
 
+        setTimeout(() => {span.innerHTML = this.inner.querySelector('[contenteditable]').textContent.trim().length;},0);
     }
 };
