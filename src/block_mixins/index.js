@@ -11,5 +11,6 @@ module.exports = {
   MultiEditable: require('./multi-editable.js'),
   Textable: require('./textable.js'),
   Anchorable: require('./anchorable.js'),
-  Countable: require('./countable.js')
+  Countable: require('./countable.js'),
+  Specialchar: require('./specialchar.js')
 };

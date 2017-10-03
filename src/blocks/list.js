@@ -32,6 +32,8 @@ export default Block.extend({
         }
     },
 
+    specialchar: false,
+
     configureScribe(scribe) {
         scribe.use(new ScribeListBlockPlugin(this));
     },

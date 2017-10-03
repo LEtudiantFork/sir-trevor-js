@@ -36,6 +36,8 @@ export default Block.extend({
 
     countable: false,
 
+    specialchar: false,
+
     onBlockRender() {
         this.createChoices(CHOOSEABLE, choice => {
             this.pandoraSearch = getFilters({

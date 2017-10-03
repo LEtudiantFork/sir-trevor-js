@@ -24,6 +24,8 @@ export default Block.extend({
 
     anchorable: false,
 
-    countable: false
+    countable: false,
+
+    specialchar: false
 
 });

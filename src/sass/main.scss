@@ -50,6 +50,7 @@ $theme-color: #e2001a !default;
 @import 'block-image';
 @import 'block-quote';
 @import 'carousel';
+@import 'specialchar';
 
 body > svg[width='0'][height='0'] {
     display: none;

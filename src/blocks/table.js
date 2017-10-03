@@ -42,6 +42,8 @@ export default Block.extend({
 
     countable: false,
 
+    specialchar: false,
+
     _serializeData() {
         utils.log(`toData for %c${this.blockID}`, utils.logBold);
 

@@ -30,6 +30,8 @@ export default Block.extend({
 
     countable: false,
 
+    specialchar: false,
+
     'paste_options': {
         html: `<input type="text" placeholder="${ i18n.t('blocks:iframe:placeholder') }" class="st-block__paste-input st-paste-block">`
     },
