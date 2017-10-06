@@ -63,6 +63,20 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 
     this.build();
 
+    // SAUVEGARDE AUTOMATIQUE TOUS LES X TEMPS PAR REQUETE AJAX
+    if(this.store.store.data.length > 0) {
+      setInterval(() => {
+        this.onFormSubmit();
+        var API_URL = `?ajax=1&noform=1`;
+        var form = document.querySelector('form');
+        var data = new FormData(form);
+        var req = new XMLHttpRequest();
+
+        req.open("POST",  API_URL, false )
+        req.send(data);
+      },300000)
+    }
+    
     FormEvents.bindFormSubmit(this.form);
   },
 
@@ -310,5 +324,3 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
 });
 
 export default Editor;
-
-
