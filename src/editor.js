@@ -62,15 +62,20 @@ Object.assign(Editor.prototype, require('./function-bind'), require('./events'),
     config.instances.push(this);
 
     this.build();
-    setInterval(() => {
-      if(this.store.store.data.length > 0) {
-        console.log('ENREGISTRE');
+
+    // SAUVEGARDE AUTOMATIQUE TOUS LES X TEMPS PAR REQUETE AJAX
+    if(this.store.store.data.length > 0) {
+      setInterval(() => {
         this.onFormSubmit();
-      } else {
-        console.log('ENREGISTRE PAS');
-      }
-      // this.form.submit();
-    },5000)
+        var API_URL = `?ajax=1&noform=1`;
+        var form = document.querySelector('form');
+        var data = new FormData(form);
+        var req = new XMLHttpRequest();
+
+        req.open("POST",  API_URL, false )
+        req.send(data);
+      },300000)
+    }
     FormEvents.bindFormSubmit(this.form);
   },
 
