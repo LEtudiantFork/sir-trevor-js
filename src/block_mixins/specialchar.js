@@ -106,7 +106,7 @@ module.exports = {
             $popin.style.left = x + 'px';
         }
 
-        document.querySelector('.st-popin-specialchar').addEventListener('mousedown', onMouseDown, false);
+        document.querySelector('.st-popin-handler').addEventListener('mousedown', onMouseDown, false);
         window.addEventListener('mouseup', onMouseUp);
     },
 
