@@ -4,7 +4,7 @@
 
 import Block  from '../block';
 
-import $        from 'etudiant-mod-dom';
+import $        from 'jquery';
 import VidVideo from 'etudiant-mod-video';
 
 const editorHTML = `

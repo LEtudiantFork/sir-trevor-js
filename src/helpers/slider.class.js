@@ -1,4 +1,4 @@
-import $ from 'etudiant-mod-dom';
+import $ from 'jquery';
 
 import loadable from 'etudiant-mod-util/src/behaviour/loadable';
 

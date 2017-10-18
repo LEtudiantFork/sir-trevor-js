@@ -3,7 +3,7 @@ import randomID from 'random-id';
 
 import Icon    from './icon.class.js';
 
-import $        from 'etudiant-mod-dom';
+import $        from 'jquery';
 import MdlModal from 'etudiant-mod-modal';
 import IcoIcon  from 'etudiant-mod-icon';
 

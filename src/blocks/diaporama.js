@@ -2,7 +2,7 @@
     Diaporama Block
 */
 import xhr from 'etudiant-mod-xhr';
-import $ from 'etudiant-mod-dom';
+import $ from 'jquery';
 import CarCarousel from 'etudiant-mod-carousel';
 
 import Block  from '../block';

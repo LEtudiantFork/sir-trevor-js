@@ -1,4 +1,4 @@
-import $ from 'etudiant-mod-dom';
+import $ from 'jquery';
 
 const slideTemplate = '<div class="st-slider-slide"></div>';
 

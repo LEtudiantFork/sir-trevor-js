@@ -2,7 +2,7 @@ import { debounce } from '../lodash.js';
 import eventablejs from 'eventablejs';
 import fieldHelper from './field';
 
-import $ from 'etudiant-mod-dom';
+import $ from 'jquery';
 import xhr from 'etudiant-mod-xhr';
 
 function template(fields) {
@@ -45,7 +45,7 @@ function searchBuilder($elem) {
     const search = {};
     const $fields = $elem.find('input, select');
 
-    $fields.each(field => {
+    $fields.each((index, field) => {
         if (field.value) {
             search[field.name] = field.value;
         }

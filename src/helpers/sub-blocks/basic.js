@@ -1,4 +1,4 @@
-import $ from 'etudiant-mod-dom';
+import $ from 'jquery';
 
 import * as templates from './templates.tpl.js';
 

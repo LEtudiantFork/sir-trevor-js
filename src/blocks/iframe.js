@@ -2,7 +2,7 @@
     Iframe Block
 */
 
-import $     from 'etudiant-mod-dom';
+import $     from 'jquery';
 import Block from '../block';
 
 const getTemplate = function({ src = '', scrolling = '', height = '', visible = false }) {

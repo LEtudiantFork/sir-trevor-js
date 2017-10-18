@@ -1,5 +1,5 @@
 import Table       from '../table';
-import $           from 'etudiant-mod-dom';
+import $           from 'jquery';
 import eventablejs from 'eventablejs';
 
 import fetchChartLibs from './library-fetcher';

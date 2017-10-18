@@ -1,6 +1,6 @@
 // @todo replace with etudiant-mod-carousel
 
-import $ from 'etudiant-mod-dom';
+import $ from 'jquery';
 import eventablejs from 'eventablejs';
 import Slider from './slider.class';
 

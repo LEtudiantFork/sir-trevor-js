@@ -1,4 +1,4 @@
-import $ from 'etudiant-mod-dom';
+import $ from 'jquery';
 import eventablejs from 'eventablejs';
 
 import * as EVENTS from '../events';

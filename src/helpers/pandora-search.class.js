@@ -1,4 +1,4 @@
-import $ from 'etudiant-mod-dom';
+import $ from 'jquery';
 import randomID from 'random-id';
 
 import Slider from './slider.class';

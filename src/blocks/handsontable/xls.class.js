@@ -1,7 +1,7 @@
 import eventablejs from 'eventablejs';
 import randomID from 'random-id';
 
-import $        from 'etudiant-mod-dom';
+import $        from 'jquery';
 import MdlModal from 'etudiant-mod-modal';
 
 const template = `
